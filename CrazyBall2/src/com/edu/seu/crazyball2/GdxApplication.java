@@ -34,6 +34,9 @@ public class GdxApplication extends AndroidApplication {
 			SCREEN_WIDTH = dm.heightPixels; // 为SCREEN_WIDTH赋值
 			SCREEN_HEIGHT = dm.widthPixels; // 为SCREEN_HEIGHT赋值
 		}
+		SCREEN_WIDTH/=10;
+		SCREEN_HEIGHT/=10;
+		System.out.println("width:"+SCREEN_WIDTH+"    "+"height:"+SCREEN_HEIGHT);
         initialize(new GdxAppUI(), false);
     }
 }

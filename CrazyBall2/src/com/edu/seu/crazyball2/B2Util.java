@@ -15,32 +15,32 @@ public final class B2Util {
 	
 	public static float PI = 3.141592653589793f;
 	
-	public static Body createEdge(World world, float fPosX1, float fPosY1, float fPosX2, float fPosY2,
-			BodyType bodyType, float fDensity, float fRestitution, float fFriction, Object objUser, Filter filter){
-
-		BodyDef bdEdge = new BodyDef(); 
-		bdEdge.type = bodyType;
-		
-		Body bodyEdge = world.createBody(bdEdge);
-		
-		PolygonShape shapeEdge = new PolygonShape();
-		shapeEdge.setAsEdge(new Vector2(fPosX1, fPosY1), new Vector2(fPosX2, fPosY2));
-		
-		FixtureDef fdEdge = new FixtureDef();
-		fdEdge.shape = shapeEdge;
-		fdEdge.density = fDensity;
-		fdEdge.restitution = fRestitution;
-		fdEdge.friction = fFriction;
-		Fixture fixture = bodyEdge.createFixture(fdEdge);
-		if(filter != null){
-			fixture.setFilterData(filter);
-		}
-		shapeEdge.dispose();
-		
-		if(objUser != null) bodyEdge.setUserData(objUser);
-		
-		return bodyEdge;
-	}
+//	public static Body createEdge(World world, float fPosX1, float fPosY1, float fPosX2, float fPosY2,
+//			BodyType bodyType, float fDensity, float fRestitution, float fFriction, Object objUser, Filter filter){
+//
+//		BodyDef bdEdge = new BodyDef(); 
+//		bdEdge.type = bodyType;
+//		
+//		Body bodyEdge = world.createBody(bdEdge);
+//		
+//		PolygonShape shapeEdge = new PolygonShape();
+//		shapeEdge.setAsEdge(new Vector2(fPosX1, fPosY1), new Vector2(fPosX2, fPosY2));
+//		
+//		FixtureDef fdEdge = new FixtureDef();
+//		fdEdge.shape = shapeEdge;
+//		fdEdge.density = fDensity;
+//		fdEdge.restitution = fRestitution;
+//		fdEdge.friction = fFriction;
+//		Fixture fixture = bodyEdge.createFixture(fdEdge);
+//		if(filter != null){
+//			fixture.setFilterData(filter);
+//		}
+//		shapeEdge.dispose();
+//		
+//		if(objUser != null) bodyEdge.setUserData(objUser);
+//		
+//		return bodyEdge;
+//	}
 	
 	public static Body createCircle(World world, float fRadius, float fPosX, float fPosY, BodyType bodyType, 
 			float fAngle, float fDensity, float fRestitution, float fFriction,  Object objUser, Filter filter){
