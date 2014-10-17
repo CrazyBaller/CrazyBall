@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -15,7 +16,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -26,6 +29,13 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import static com.edu.seu.crazyball2.Constant.*;
 
@@ -51,6 +61,15 @@ public class GdxAppUI implements ApplicationListener, ContactListener,
 	private Body tBound4;
 	private Body tBoard;
 	private Body tBall;
+	
+	private SpriteBatch batch;
+	private Texture texture;
+	private Texture texture2;
+	private ImageButton Btn_A_OK;
+	private ImageButton Btn_B_Cancel;
+	private	Stage stage;
+	private BitmapFont font;
+	private Window dialogWindow;
 
 	float board_halfwidth = SCREEN_WIDTH * boardrate;
 
@@ -63,16 +82,37 @@ public class GdxAppUI implements ApplicationListener, ContactListener,
 		camera.position.set(0, 10, 0);
 
 		gl = Gdx.graphics.getGL10();
-		renderer = new Box2DDebugRenderer();
+//		renderer = new Box2DDebugRenderer();
 		this.createWorld();
+		
 
 		setBoundColor();
 		setBallBoardColor();
-
+		
+		//弹窗
+		 stage = new Stage();
+		 batch = new SpriteBatch();
+		 font = new BitmapFont(Gdx.files.internal("data/potato.fnt"),
+	               Gdx.files.internal("data/potato.png"), false);
+		 texture2 = new Texture(Gdx.files.internal("data/ball.png"));
+		 
+	     setButton();
+	     setWindow();
+	     setBtnListener();
+	     
+	     
+	     
 		// 设置输入监听
-		Gdx.input.setInputProcessor(this);
+	     InputMultiplexer inputmultiplexer=new  InputMultiplexer();
+	     inputmultiplexer.addProcessor(stage);
+	     inputmultiplexer.addProcessor(this);
+	     Gdx.input.setInputProcessor(inputmultiplexer);
+		
+		
 	}
-
+	
+	
+	
 	private void setBoundColor() {
 		float halfwidth = bound_width / 2;
 		float halfheight = SCREEN_WIDTH / 2;
@@ -141,6 +181,7 @@ public class GdxAppUI implements ApplicationListener, ContactListener,
 					y - halfwidth, 0, Color.toFloatBits(192, 0, 0, 255) });
 			bound_four.setIndices(new short[] { 0, 1, 2, 3 });
 		}
+
 	}
 
 	private void setBallBoardColor() {
@@ -159,8 +200,7 @@ public class GdxAppUI implements ApplicationListener, ContactListener,
 				Color.toFloatBits(0, 0, 0, 255) });
 		board_mesh.setIndices(new short[] { 0, 1, 2, 3 });
 		
-		x=tBall.getPosition().x;
-		y=tBall.getPosition().y;
+
 		
 //		board_mesh = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
 //				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
@@ -214,6 +254,7 @@ public class GdxAppUI implements ApplicationListener, ContactListener,
 		tBoard = B2Util.createRectangle(world, SCREEN_WIDTH * boardrate,
 				board_halfheight, 0, 0, BodyType.StaticBody, 0, 0, 0, 0,
 				new BodyData(BodyData.BODY_BOARD), null);
+		
 
 		Vector2 tbv = tBoard.getWorldCenter();
 		// 创建砖块
@@ -236,6 +277,113 @@ public class GdxAppUI implements ApplicationListener, ContactListener,
 	// }
 	// }
 	// }
+	
+	public void setButton() {
+	       texture = new Texture(Gdx.files.internal("data/control.png"));
+
+	       TextureRegion[][] spilt = TextureRegion.split(texture, 64, 64);
+
+	       TextureRegion[] regionBtn = new TextureRegion[6];
+	       // 显示
+	       regionBtn[0] = spilt[0][0];
+	       regionBtn[1] = spilt[0][1];
+	       // 确认
+	       regionBtn[2] = spilt[0][2];
+	       regionBtn[3] = spilt[0][3];
+	       // 取消
+	       regionBtn[4] = spilt[1][0];
+	       regionBtn[5] = spilt[1][1];
+
+	       TextureRegionDrawable Btn_SHOW_UP = new TextureRegionDrawable(
+	               regionBtn[0]);
+	       TextureRegionDrawable Btn_SHOW_DOWN = new TextureRegionDrawable(
+	               regionBtn[1]);
+
+	       TextureRegionDrawable Btn_A_UP = new TextureRegionDrawable(regionBtn[2]);
+	       TextureRegionDrawable Btn_A_DOWN = new TextureRegionDrawable(
+	               regionBtn[3]);
+
+	       TextureRegionDrawable Btn_B_UP = new TextureRegionDrawable(regionBtn[4]);
+	       TextureRegionDrawable Btn_B_DOWN = new TextureRegionDrawable(
+	               regionBtn[5]);
+
+//	       Btn_SHOW = new ImageButton(Btn_SHOW_UP, Btn_SHOW_DOWN);
+
+	       Btn_A_OK = new ImageButton(Btn_A_UP, Btn_A_DOWN);
+
+	       Btn_B_Cancel = new ImageButton(Btn_B_UP, Btn_B_DOWN);
+
+	   }
+	
+	public void setWindow() {
+	       TextureRegionDrawable WindowDrable = new TextureRegionDrawable(
+	               new TextureRegion(new Texture(
+	                       Gdx.files.internal("data/dialog.png"))));
+	       
+	       WindowStyle style = new WindowStyle(font, Color.RED, WindowDrable);
+	       
+	       dialogWindow = new Window("Game", style);
+	       
+	       dialogWindow.setWidth(Gdx.graphics.getWidth()/1.5f);
+	       dialogWindow.setHeight(Gdx.graphics.getHeight()/4f);
+	       
+	       dialogWindow.setPosition(Gdx.graphics.getWidth()/6f,3*Gdx.graphics.getWidth()/8f);
+	       
+	       dialogWindow.setMovable(true);
+	       
+	               
+	       Btn_A_OK.setPosition(Gdx.graphics.getWidth()/10, 0);
+	       
+	       Btn_B_Cancel.setPosition(Gdx.graphics.getWidth()/3, 0);
+	       
+	       
+	       dialogWindow.addActor(Btn_A_OK);
+	       
+	       dialogWindow.addActor(Btn_B_Cancel);
+	       
+	   }
+	
+	 public void setBtnListener() {
+//	       Btn_SHOW.addListener(new InputListener(){
+//
+//	           @Override
+//	           public boolean touchDown(InputEvent event, float x, float y,
+//	                   int pointer, int button) {
+//	               
+//	               stage.addActor(dialogWindow);
+//	               
+//	               return true;
+//	           }
+//	           
+//	       });
+//	       
+	       Btn_A_OK.addListener(new InputListener(){
+	           
+	           @Override
+	           public boolean touchDown(InputEvent event, float x, float y,
+	                   int pointer, int button) {
+	               System.out.println("sdfjksfdjslajgkldsgjkldgj");
+	               Gdx.app.exit();
+	               
+	               return true;
+	           }
+	           
+	       }); 
+	       
+	       Btn_B_Cancel.addListener(new InputListener(){
+
+	           @Override
+	           public boolean touchDown(InputEvent event, float x, float y,
+	                   int pointer, int button) {
+	               
+	               dialogWindow.remove();
+	               tBall.setLinearVelocity(50f, 70f);
+	               return super.touchDown(event, x, y, pointer, button);
+	           }
+	           
+	       });
+	   }
+	   
 
 	@Override
 	public void render() {
@@ -252,11 +400,23 @@ public class GdxAppUI implements ApplicationListener, ContactListener,
 
 		setBallBoardColor();
 		board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		
+		batch.begin();
+	    font.draw(batch, "Touch The Button!!!!", 100, 200);
+		float x=tBall.getPosition().x;
+		float y=tBall.getPosition().y;
+		System.out.println("x:"+x+"  "+"y:"+y+" "+"set_x:"+set_x+" set_y:"+set_y);
+	    batch.draw(texture2,set_x-20f+x*10,set_y-120f+y*10,40f,40f);
+	    batch.end();
+	    stage.act();
+	    stage.draw(); 
+		
 		camera.update();
 		camera.apply(gl);
-		renderer.render(world, camera.combined);
+//		renderer.render(world, camera.combined);
 		/****************************/
-
+		
+		
 		// 销毁处理
 		// for (int i = 0; i < ballList.size(); i++) {
 		// Body b = ballList.get(i);
@@ -325,6 +485,8 @@ public class GdxAppUI implements ApplicationListener, ContactListener,
 		BodyData dB = (BodyData) cB.getUserData();
 		if ((dA.getType() == BodyData.BODY_BALL && dB.getType() == BodyData.BODY_BOTTOM)||(dA.getType() == BodyData.BODY_BOTTOM && dB.getType() == BodyData.BODY_BALL) ) {
 //			dA.health = 0;
+	 stage.addActor(dialogWindow);
+		tBall.setLinearVelocity(0, 0);	
 			System.out.println("你输了");
 		}
 	}
@@ -340,6 +502,14 @@ public class GdxAppUI implements ApplicationListener, ContactListener,
 		if (renderer != null) {
 			renderer.dispose();
 			renderer = null;
+		}
+		if ( texture!= null) {
+			texture.dispose();
+			texture = null;
+		}
+		if ( batch!= null) {
+			batch.dispose();
+			batch = null;
 		}
 	}
 

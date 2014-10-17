@@ -7,4 +7,6 @@ public class Constant {
 	public static float board_halfheight=1.5f;   //boardµÄÒ»°ë
 	public static float circle_radius=2.0f;
 	public static float boardrate=1f/8f;
+	public static float set_x;
+	public static float set_y;
 }

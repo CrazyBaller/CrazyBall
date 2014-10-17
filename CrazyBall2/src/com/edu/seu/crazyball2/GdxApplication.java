@@ -36,6 +36,8 @@ public class GdxApplication extends AndroidApplication {
 		}
 		SCREEN_WIDTH/=10;
 		SCREEN_HEIGHT/=10;
+		set_x=SCREEN_WIDTH*5;
+		set_y=SCREEN_HEIGHT*5;
 		System.out.println("width:"+SCREEN_WIDTH+"    "+"height:"+SCREEN_HEIGHT);
         initialize(new GdxAppUI(), false);
     }
