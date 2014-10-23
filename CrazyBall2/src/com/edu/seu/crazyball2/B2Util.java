@@ -1,6 +1,5 @@
 package com.edu.seu.crazyball2;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -14,33 +13,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 public final class B2Util {
 	
 	public static float PI = 3.141592653589793f;
-	
-//	public static Body createEdge(World world, float fPosX1, float fPosY1, float fPosX2, float fPosY2,
-//			BodyType bodyType, float fDensity, float fRestitution, float fFriction, Object objUser, Filter filter){
-//
-//		BodyDef bdEdge = new BodyDef(); 
-//		bdEdge.type = bodyType;
-//		
-//		Body bodyEdge = world.createBody(bdEdge);
-//		
-//		PolygonShape shapeEdge = new PolygonShape();
-//		shapeEdge.setAsEdge(new Vector2(fPosX1, fPosY1), new Vector2(fPosX2, fPosY2));
-//		
-//		FixtureDef fdEdge = new FixtureDef();
-//		fdEdge.shape = shapeEdge;
-//		fdEdge.density = fDensity;
-//		fdEdge.restitution = fRestitution;
-//		fdEdge.friction = fFriction;
-//		Fixture fixture = bodyEdge.createFixture(fdEdge);
-//		if(filter != null){
-//			fixture.setFilterData(filter);
-//		}
-//		shapeEdge.dispose();
-//		
-//		if(objUser != null) bodyEdge.setUserData(objUser);
-//		
-//		return bodyEdge;
-//	}
 	
 	public static Body createCircle(World world, float fRadius, float fPosX, float fPosY, BodyType bodyType, 
 			float fAngle, float fDensity, float fRestitution, float fFriction,  Object objUser, Filter filter){
@@ -71,38 +43,7 @@ public final class B2Util {
 		shapeCircle = null;
 		return bodyCircle;
 	}
-	
-	public static Body createPolygon(World world, Vector2[] vectris, float fPosX, float fPosY, BodyType bodyType, 
-			float fAngle, float fDensity, float fRestitution, float fFriction, Object objUser, Filter filter){
 		
-		BodyDef bdPoly = new BodyDef();
-		bdPoly.type = bodyType;
-		bdPoly.position.x = fPosX;
-		bdPoly.position.y = fPosY;
-		bdPoly.angle = fAngle;
-		Body bodyPoly = world.createBody(bdPoly);
-		
-		PolygonShape shapePoly = new PolygonShape();
-		shapePoly.set(vectris);
-		
-		FixtureDef fxDef = new FixtureDef();
-		fxDef.shape = shapePoly;
-		fxDef.density = fDensity;
-		fxDef.friction = fFriction;
-		fxDef.restitution = fRestitution;
-		
-		Fixture fixture = bodyPoly.createFixture(fxDef);
-		if(filter != null){
-			fixture.setFilterData(filter);
-		}
-		if(objUser != null) bodyPoly.setUserData(objUser);
-		
-		shapePoly.dispose();
-		shapePoly = null;
-		return bodyPoly;
-	}
-	
-	
 	public static Body createRectangle(World world, float fHalfWidth, float fHalfHeight, float fPosX, float fPosY,
 			BodyType bodyType, float fAngle, float fDensity, float fRestitution, float fFriction,
 			Object objUser, Filter filter){

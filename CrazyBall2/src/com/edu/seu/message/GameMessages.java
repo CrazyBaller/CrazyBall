@@ -12,6 +12,16 @@ public class GameMessages {
     
     public static final String TYPE_Remote_Location = "Remote_Location";
     
+    public static final String TYPE_BOARD_LOCATION = "board_location";
+    
+    public static final String TYPE_BALL_LOCATION = "ball_location";
+    
+    public static final String TYPE_UNIFY_ID = "unify_id";
+    
+    public static final String TYPE_STATE = "state";
+    
+    public static final String TYPR_STRING = "string";
+    
     public static abstract class AbstractGameMessage {
     	AbstractGameMessage(String type) {
     		mType = type;
@@ -46,13 +56,25 @@ public class GameMessages {
     		return null;
     	}
     	
-    	abstract public JSONObject toJSON() throws JSONException;
-    	
-    	abstract public void fromJSON(JSONObject json) throws JSONException;
+    	 public String getMessage() {
+             return mMessage;
+         }
+         
+         public JSONObject toJSON() throws JSONException {
+         	JSONObject json = new JSONObject();
+         	json.put("type", getType());
+         	json.put("message", mMessage);
+         	return json;
+         }
+         
+         public void fromJSON(JSONObject json) throws JSONException {
+         	mMessage = json.getString("message");
+         }
     	
     	private String mType;
     	private String mFrom;
     	private String mTo;
+    	String mMessage;
     }
 
     public static class HelloMessage extends AbstractGameMessage {
@@ -87,38 +109,7 @@ public class GameMessages {
     }
     
     
-    public static class TwoMessage extends AbstractGameMessage {
-    	int mMessage;
-    	
-    	public TwoMessage() {
-        	super(MSC_TYPE_TWO_SEND);
-        }
-
-        public TwoMessage(String from, String to, int message) {
-            super(MSC_TYPE_TWO_SEND);
-            
-            setFrom(from);
-            setTo(to);
-            mMessage = message;
-        }
-        
-        public int getMessage() {
-            return mMessage;
-        }
-        
-        public JSONObject toJSON() throws JSONException {
-        	JSONObject json = new JSONObject();
-        	json.put("type", getType());
-        	json.put("message", mMessage);
-        	return json;
-        }
-        
-        public void fromJSON(JSONObject json) throws JSONException {
-        	mMessage = json.getInt("message");
-        }
-    }
-    
-    
+   
     
     
     public static class RemoteLocationMessage extends AbstractGameMessage {
@@ -154,7 +145,24 @@ public class GameMessages {
     
     
     
-    
+ public static class StringMessage extends AbstractGameMessage {
+    	
+    	public StringMessage() {
+        	super(TYPR_STRING);
+        }
+    	
+    	public StringMessage(String type) {
+        	super(type);
+        }
+
+        public StringMessage(String type,String from, String to, String message) {
+            super(type);
+            
+            setFrom(from);
+            setTo(to);
+            mMessage = message;
+        }
+     }
     
     
 
@@ -163,14 +171,18 @@ public class GameMessages {
     	JSONObject json = new JSONObject(message);
     	if (type.equalsIgnoreCase(MSG_TYPE_SAY_HELLO))
     		gameMessage = new HelloMessage();
-    	else if(type.equalsIgnoreCase(MSC_TYPE_TWO_SEND))
-    		gameMessage = new TwoMessage();
     	else if(type.equalsIgnoreCase(TYPE_Remote_Location))
     		gameMessage = new RemoteLocationMessage();
+    	else
+    		{
+    		gameMessage = new StringMessage(type);
+    		
+    		}
     	if (gameMessage == null)
     		return null;
     	
     	gameMessage.fromJSON(json);
+    	System.out.println("77777777777"+type+gameMessage.toString());
     	return gameMessage;
     }
 }

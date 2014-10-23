@@ -2,19 +2,16 @@ package com.edu.seu.crazyball2;
 
 import static com.edu.seu.crazyball2.Constant.*;
 import static com.edu.seu.message.Data.*;
-
-import java.util.List;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.edu.seu.message.Data;
 import com.edu.seu.message.GameMessages;
 import com.edu.seu.message.GameMessages.AbstractGameMessage;
 import com.edu.seu.message.GameMessages.HelloMessage;
 import com.edu.seu.message.GameMessages.RemoteLocationMessage;
+import com.edu.seu.message.SendData;
 import com.lenovo.game.GameMessage;
 import com.lenovo.game.GameMessageListener;
 import com.lenovo.game.GameUserInfo;
@@ -39,6 +36,10 @@ public class GdxApplication extends AndroidApplication {
 	private static final int MSG_RECEIVED_MESSAGE = 1;
     private static final int MSG_RECEIVED_TWO = 2;
     private static final int RECEIVED_Remote_Location=3;
+    private static final int RECEIVED_BALL = 4;
+    private static final int RECEIVED_BOARD = 5;
+    private static final int RECEIVED_STATE = 6;
+    private static final int RECEIVED_UNFITY_ID = 7;
 	    //private GameShare mGameShare;
 	    //private GameUserInfo mLocalUser;
 	    //private List<GameUserInfo> mRemoteUser;
@@ -48,6 +49,9 @@ public class GdxApplication extends AndroidApplication {
 			@Override
 			public void handleMessage(Message msg) {
 				super.handleMessage(msg);
+				
+				  Data datadef = new Data();
+			      datadef.def();
 				
 				switch (msg.what) {
 				case MSG_RECEIVED_MESSAGE:
@@ -71,6 +75,60 @@ public class GdxApplication extends AndroidApplication {
 					}
 					}
 					break;
+				case RECEIVED_UNFITY_ID:
+					if(Data.inviter==false){
+					System.out.println("8888888888888"+(String)msg.obj);
+					
+					JSONObject json;
+					try {
+						json = new JSONObject((String)msg.obj);
+						//Data.myID= json.getInt("myid");
+						Data.myID=1;
+						Data.hostID=json.getString("hostid");
+							
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+					break;
+				case RECEIVED_BALL:
+					if(Data.inviter==false)
+					{
+						System.out.println((String)msg.obj);
+					
+					JSONObject json;
+					try {
+						json = new JSONObject((String)msg.obj);
+						float f=(float) json.getDouble("x");
+						Data.ball.set(0, f);
+						f=(float) json.getDouble("y");
+						Data.ball.set(1, f);
+							
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					}
+					
+					break;
+				case RECEIVED_BOARD:
+					JSONObject json;
+					try {
+						
+						System.out.println("8888888888888"+(String)msg.obj);
+						json = new JSONObject((String)msg.obj);
+						float f=(float) json.getDouble("x");
+						Data.location.set(json.getInt("id"), f);
+						//System.out.println("222222222222"+Data.ball.get(json.getInt("id")));
+						} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					break;
+					
+					
 				}
 			}
 
@@ -80,7 +138,8 @@ public class GdxApplication extends AndroidApplication {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        
+        Data datadef = new Data();
+        datadef.def();
         Intent intent = getIntent();
         
         // get the game mode, single, double or multi
@@ -101,6 +160,7 @@ public class GdxApplication extends AndroidApplication {
 
         }
         
+   
         
         Data.mGameShare = new GameShare(getApplicationContext());
         // bind SHAREIt application
@@ -124,8 +184,36 @@ public class GdxApplication extends AndroidApplication {
 		set_x=SCREEN_WIDTH*5;
 		set_y=SCREEN_HEIGHT*5;
 		
-//		mode=2;
-//		inviter=false;
+
+	    
+	//	mode=2;
+	//	inviter=false;
+		switch(mode){
+			case 1:
+				initialize(new SoloMode(), false);
+				break;
+			case 2:
+				if(inviter)
+					initialize(new TwoMode(),false);
+				else
+					initialize(new TwoModeClient(),false);
+				break;
+			case 3:
+				if(inviter)
+					initialize(new ThreeMode(),false);
+				else
+					initialize(new ThreeModeClient(),false);
+				break;
+			case 4:
+				if(inviter)
+					initialize(new FourMode(),false);
+				else
+					initialize(new FourModeClient(),false);
+				break;
+			default:
+				Gdx.app.exit();
+		}
+			
 		
 		if(mode==1)
 			initialize(new SoloMode(), false);
@@ -158,6 +246,13 @@ public class GdxApplication extends AndroidApplication {
         	System.out.println("onBind, is bind success : " + success);
         	Data.mLocalUser = Data.mGameShare.getLocalUser();
         	Data.mRemoteUser = Data.mGameShare.getRemoteUsers();
+        	
+        	
+        	 if(Data.inviter==true)
+ 	        {
+ 	        	SendData send =new SendData();
+ 	        	send.unfity();
+ 	        }
         }
     };
 
@@ -185,14 +280,40 @@ public class GdxApplication extends AndroidApplication {
            // Log.v(TAG, "onMessage, message : " + gameMessage.toString());
             try {
 				AbstractGameMessage message = GameMessages.createAbstractGameMessage(gameMessage.getType(), gameMessage.getMessage());
-				if (message.getType() == GameMessages.MSG_TYPE_SAY_HELLO) {
+				System.out.println("11111111111111"+message.getType());
+				if (message.getType().equals( GameMessages.MSG_TYPE_SAY_HELLO)) {
 					HelloMessage hello = (HelloMessage)message;
 					mHandler.sendMessage(mHandler.obtainMessage(MSG_RECEIVED_MESSAGE, hello.getMessage()));
-				}else if(message.getType() == GameMessages.TYPE_Remote_Location)
+				}else if(message.getType() .equals( GameMessages.TYPE_Remote_Location))
 				{
+					System.out.println("999999999999"+message.getMessage());
 					RemoteLocationMessage test = (RemoteLocationMessage)message;
 					mHandler.sendMessage(mHandler.obtainMessage(RECEIVED_Remote_Location, test.getMessage()));
+				}else if(message.getType() .equals( GameMessages.TYPE_BOARD_LOCATION))
+				{
+					
+					System.out.println("1111999999∞Â∞Â∞Â9999991111"+message.getMessage());
+					mHandler.sendMessage(mHandler.obtainMessage(RECEIVED_BOARD, message.getMessage()));
 				}
+				else if(message.getType() .equals( GameMessages.TYPE_BALL_LOCATION))
+					{
+					System.out.println("9999999«Ú«Ú«Ú99999"+message.getMessage());
+					mHandler.sendMessage(mHandler.obtainMessage(RECEIVED_BALL, message.getMessage()));
+					}
+				else if(message.getType().equals( GameMessages.TYPE_UNIFY_ID))
+					{
+					System.out.println("999999999999"+message.getMessage());
+					mHandler.sendMessage(mHandler.obtainMessage(RECEIVED_UNFITY_ID, message.getMessage()));
+					}
+				else if(message.getType() .equals( GameMessages.TYPE_STATE))
+					{
+					System.out.println("999999999999"+message.getMessage());
+					mHandler.sendMessage(mHandler.obtainMessage(RECEIVED_STATE, message.getMessage()));
+					}
+				
+				System.out.println("99999999999944444444444444");
+				
+					
 			} catch (JSONException e) {
 				return;
 			}

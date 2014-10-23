@@ -1,6 +1,9 @@
 package com.edu.seu.crazyball2;
 
 import static com.edu.seu.crazyball2.Constant.*;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 import android.util.Log;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -30,9 +33,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.edu.seu.message.Data;
-import com.edu.seu.message.SendData;
+import com.edu.seu.message.GameMessages.RemoteLocationMessage;
+import com.lenovo.game.GameMessage;
+import com.lenovo.game.GameUserInfo;
 
-public class TwoModeClient implements ApplicationListener, ContactListener,
+public class FourModeClient implements ApplicationListener, ContactListener,
 		InputProcessor {
 
 	private GL10 gl;
@@ -46,6 +51,8 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 	private Mesh bound_four;
 	private Mesh board_mesh;
 	private Mesh board_mesh1;
+	private Mesh board_mesh2;
+	private Mesh board_mesh3;
 
 	private SpriteBatch batch;
 	private Texture texture;
@@ -58,10 +65,6 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 	
 	private float board_x=0;
 	private float board_y=0;
-	
-	private float board1_x=0;
-	private float board1_y=SCREEN_WIDTH-2*board_halfheight;
-	
 
 
 	float board_halfwidth = SCREEN_WIDTH * boardrate;
@@ -186,20 +189,42 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 				Color.toFloatBits(0, 0, 0, 255) });
 		board_mesh.setIndices(new short[] { 0, 1, 2, 3 });
 		
-		board1_x=Data.location.get(0)*SCREEN_WIDTH/2;
-		
-		
 		board_mesh1 = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
 				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
 				"a_color"));
-		board_mesh1.setVertices(new float[] { board1_x-board_halfwidth,
-				board1_y+board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
-				 board1_x-board_halfwidth, board1_y-board_halfheight, 0,
-				Color.toFloatBits(0, 0, 0, 255),  board1_x+board_halfwidth,
-				board1_y+board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
-				board1_x+board_halfwidth,board1_y-board_halfheight, 0,
+		board_mesh1.setVertices(new float[] { - board_halfwidth,
+				SCREEN_WIDTH-board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
+				 - board_halfwidth, SCREEN_WIDTH-3*board_halfheight, 0,
+				Color.toFloatBits(0, 0, 0, 255), board_halfwidth,
+				SCREEN_WIDTH-board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
+				board_halfwidth,SCREEN_WIDTH-3*board_halfheight, 0,
 				Color.toFloatBits(0, 0, 0, 255) });
 		board_mesh1.setIndices(new short[] { 0, 1, 2, 3 });
+		
+		board_mesh2 = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
+				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
+				"a_color"));
+		board_mesh2.setVertices(new float[] { -SCREEN_WIDTH/2,
+				-board_halfheight+SCREEN_WIDTH / 2 + board_halfwidth, 0, Color.toFloatBits(0, 0, 0, 255),
+				-SCREEN_WIDTH/2, -board_halfheight+SCREEN_WIDTH / 2 - board_halfwidth, 0,
+				Color.toFloatBits(0, 0, 0, 255), -SCREEN_WIDTH/2+2*board_halfheight,
+				-board_halfheight+SCREEN_WIDTH / 2+ board_halfwidth, 0, Color.toFloatBits(0, 0, 0, 255),
+				-SCREEN_WIDTH/2+2*board_halfheight, -board_halfheight+SCREEN_WIDTH / 2 - board_halfwidth, 0,
+				Color.toFloatBits(0, 0, 0, 255) });
+		board_mesh2.setIndices(new short[] { 0, 1, 2, 3 });
+		
+		board_mesh3 = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
+				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
+				"a_color"));
+		board_mesh3.setVertices(new float[] { SCREEN_WIDTH/2-2*board_halfheight,
+				-board_halfheight+SCREEN_WIDTH / 2 + board_halfwidth, 0, Color.toFloatBits(0, 0, 0, 255),
+				SCREEN_WIDTH/2-2*board_halfheight , -board_halfheight+SCREEN_WIDTH / 2 - board_halfwidth, 0,
+				Color.toFloatBits(0, 0, 0, 255), SCREEN_WIDTH/2,
+				-board_halfheight+SCREEN_WIDTH / 2 + board_halfwidth, 0, Color.toFloatBits(0, 0, 0, 255),
+				SCREEN_WIDTH/2, -board_halfheight+SCREEN_WIDTH / 2 - board_halfwidth, 0,
+				Color.toFloatBits(0, 0, 0, 255) });
+		board_mesh3.setIndices(new short[] { 0, 1, 2, 3 });
+
 
 
 	}
@@ -293,26 +318,26 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 	@Override
 	public void render() {
 		
-//		if (Data.mRemoteUser.size() != 0)
-//		{	
-//    	GameUserInfo remoteUser = Data.mRemoteUser.get(0);
-//    	
-//    	JSONObject json = new JSONObject();
-//    	try {
-//			json.put("board_x", board_x);
-//			json.put("board_y", board_y);
-//		} catch (JSONException e) {
-//			
-//			e.printStackTrace();
-//		}
+		if (Data.mRemoteUser.size() != 0)
+		{	
+    	GameUserInfo remoteUser = Data.mRemoteUser.get(0);
     	
-//    	RemoteLocationMessage helloMsg = new RemoteLocationMessage(Data.mLocalUser.id, remoteUser.id, json.toString());
-//    	// convert to interface message
-//    	GameMessage gameMsg = helloMsg.toGameMessage();
-//    	if (gameMsg != null)
-//    	Data.mGameShare.sendMessage(gameMsg);
-//    	
-//		}
+    	JSONObject json = new JSONObject();
+    	try {
+			json.put("board_x", board_x);
+			json.put("board_y", board_y);
+		} catch (JSONException e) {
+			
+			e.printStackTrace();
+		}
+    	
+    	RemoteLocationMessage helloMsg = new RemoteLocationMessage(Data.mLocalUser.id, remoteUser.id, json.toString());
+    	// convert to interface message
+    	GameMessage gameMsg = helloMsg.toGameMessage();
+    	if (gameMsg != null)
+    	Data.mGameShare.sendMessage(gameMsg);
+    	
+		}
 		
 
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -326,21 +351,20 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 		setBallBoardColor();
 		board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		board_mesh1.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		board_mesh2.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		board_mesh3.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		
 		batch.begin();
 		float x=0;
 		float y=circle_radius+board_halfheight;
 	    batch.draw(texture2,set_x-20f+x*10,set_y-120f+y*10,40f,40f);
 	    batch.end();
-		
+	    
 		stage.act();
 		stage.draw();
 
 		camera.update();
-		camera.apply(gl);
-		
-		SendData send = new SendData();
-		send.myboard();
+		camera.apply(gl);	
 
 	}
 
@@ -361,7 +385,6 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 		camera.unproject(touchV);
 
 		board_x=touchV.x;
-		Data.location.set(Data.myID,2*board_x/SCREEN_WIDTH);
 		System.out.println("touch drag");
 
 		return false;
