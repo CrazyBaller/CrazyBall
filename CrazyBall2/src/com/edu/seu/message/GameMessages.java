@@ -20,6 +20,10 @@ public class GameMessages {
     
     public static final String TYPE_STATE = "state";
     
+    public static final String TYPE_START_GAME = "startgame";
+    
+    public static final String TYPE_GAME_RESULT = "game_result";
+    
     public static final String TYPR_STRING = "string";
     
     public static abstract class AbstractGameMessage {

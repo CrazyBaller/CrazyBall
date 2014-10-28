@@ -14,26 +14,33 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.edu.seu.crazyball2.GdxApplication"
-            android:label="@string/app_name" >
-             <intent-filter>
+            android:name="com.edu.seu.UI.LoadActivity"
+            android:label="@string/title_activity_load" >
+            <intent-filter>
                 <action android:name="com.lenovo.anyshare.action.START_GAME" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+
         <meta-data
             android:name="SHAREIT_SUPPORTED_PLAYER_NUM"
             android:value="1,2,3,4" >
         </meta-data>
-        
+
+         <activity
+            android:name="com.edu.seu.crazyball2.GdxApplication"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.edu.seu.UI.ReadyActivity"
+            android:label="@string/title_activity_ready" >
+        </activity>
     </application>
 
 </manifest>

@@ -1,5 +1,7 @@
 package com.edu.seu.crazyball2;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -21,14 +23,13 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-
 
 import static com.edu.seu.crazyball2.Constant.*;
 
 public class SoloMode implements ApplicationListener, ContactListener,
 		InputProcessor {
-	
+
+	private Handler windowHandler;
 	private CreateWorld mCreateWorld;
 	private World mworld;
 	private GL10 gl;
@@ -38,43 +39,50 @@ public class SoloMode implements ApplicationListener, ContactListener,
 
 	private Body tBoard0;
 	private Body tBall;
-	
+
 	private Mesh board_mesh;
-	
-	private Stage stage;
-	
-	float board_halfwidth = SCREEN_WIDTH * boardrate;
+
 	private boolean firstTouch = true;
+
+	public SoloMode(Handler h) {
+		this.windowHandler = h;
+	}
 
 	@Override
 	public void create() {
 		Log.d("debug", "create");
+
+		board_halfwidth = SCREEN_WIDTH * boardrate;
+		board_halfheight = board_halfwidth / 5;
 
 		// 镜头下的世界
 		camera = new OrthographicCamera(SCREEN_WIDTH, SCREEN_HEIGHT);
 		camera.position.set(0, 10, 0);
 
 		gl = Gdx.graphics.getGL10();
-		renderer = new Box2DDebugRenderer();
-		
-		//创建背景世界
-		mCreateWorld=new CreateWorld();
-		mworld=mCreateWorld.getWorld();
-		stage=mCreateWorld.getStage();
-		
-		//创建球和板
+		// renderer = new Box2DDebugRenderer();
+
+		// 创建背景世界
+		mCreateWorld = new CreateWorld();
+		mworld = mCreateWorld.getWorld();
+
+		board_mesh = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
+				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
+				"a_color"));
+
+		// 创建球和板
 		createBallBoard();
 		setBallBoardColor();
-		
+
 		// 设置碰撞监听
-		mworld.setContactListener(this); 
-		
+		mworld.setContactListener(this);
+
 		// 设置输入监听
-	    InputMultiplexer inputmultiplexer=new  InputMultiplexer();
-	    inputmultiplexer.addProcessor(stage);
-	    inputmultiplexer.addProcessor(this);
-	    Gdx.input.setInputProcessor(inputmultiplexer);	
+		InputMultiplexer inputmultiplexer = new InputMultiplexer();
+		inputmultiplexer.addProcessor(this);
+		Gdx.input.setInputProcessor(inputmultiplexer);
 	}
+
 	private void createBallBoard() {
 		// 创建球
 		tBall = B2Util.createCircle(mworld, circle_radius, 0, board_halfheight
@@ -84,15 +92,13 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		tBoard0 = B2Util.createRectangle(mworld, SCREEN_WIDTH * boardrate,
 				board_halfheight, 0, 0, BodyType.StaticBody, 0, 0, 0, 0,
 				new BodyData(BodyData.BODY_BOARD), null);
-		
+
 	}
+
 	private void setBallBoardColor() {
 		float x = tBoard0.getPosition().x;
 		float y = tBoard0.getPosition().y;
 
-		board_mesh = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
-				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
-				"a_color"));
 		board_mesh.setVertices(new float[] { x - board_halfwidth,
 				y + board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
 				x - board_halfwidth, y - board_halfheight, 0,
@@ -100,9 +106,8 @@ public class SoloMode implements ApplicationListener, ContactListener,
 				y + board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
 				x + board_halfwidth, y - board_halfheight, 0,
 				Color.toFloatBits(0, 0, 0, 255) });
-		board_mesh.setIndices(new short[] { 0, 1, 2, 3 });
-		
-	}	   
+
+	}
 
 	@Override
 	public void render() {
@@ -117,24 +122,21 @@ public class SoloMode implements ApplicationListener, ContactListener,
 
 		setBallBoardColor();
 		board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		
-		SpriteBatch batch=mCreateWorld.getBatch();
-			
+
+		SpriteBatch batch = mCreateWorld.getBatch();
+
 		batch.begin();
-		float x=tBall.getPosition().x;
-		float y=tBall.getPosition().y;
-	    batch.draw(mCreateWorld.getTexture2(),set_x-20f+x*10,set_y-120f+y*10,40f,40f);
-	    batch.end();
-	    stage.act();
-	    stage.draw(); 
-		
+		float x = tBall.getPosition().x;
+		float y = tBall.getPosition().y;
+		batch.draw(mCreateWorld.getTexture2(), set_x - 20f + x * 10, set_y
+				- 120f + y * 10, 40f, 40f);
+		batch.end();
+
 		camera.update();
 		camera.apply(gl);
-		renderer.render(mworld, camera.combined);
-		
+		// renderer.render(mworld, camera.combined);
+
 	}
-
-
 
 	@Override
 	public boolean touchDown(int arg0, int arg1, int arg2, int arg3) {
@@ -153,7 +155,13 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		Vector3 touchV = new Vector3(arg0, arg1, 0);
 		camera.unproject(touchV);
 		// 设置移动坐标
-		tBoard0.setTransform(touchV.x, tBoard0.getWorldCenter().y, 0);
+		if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
+				- board_halfwidth
+				&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
+						+ board_halfwidth) {
+			tBoard0.setTransform(touchV.x, tBoard0.getWorldCenter().y, 0);
+		}
+
 		return false;
 	}
 
@@ -165,9 +173,12 @@ public class SoloMode implements ApplicationListener, ContactListener,
 
 		BodyData dA = (BodyData) cA.getUserData();
 		BodyData dB = (BodyData) cB.getUserData();
-		if ((dA.getType() == BodyData.BODY_BALL && dB.getType() == BodyData.BODY_BOTTOM)||(dA.getType() == BodyData.BODY_BOTTOM && dB.getType() == BodyData.BODY_BALL) ) {
-		stage.addActor(mCreateWorld.getDialogWindow());
-		tBall.setLinearVelocity(0, 0);	
+		if ((dA.getType() == BodyData.BODY_BALL && dB.getType() == BodyData.BODY_BORDER_BOTTOM)
+				|| (dA.getType() == BodyData.BODY_BORDER_BOTTOM && dB.getType() == BodyData.BODY_BALL)) {
+			tBall.setLinearVelocity(0, 0);
+			Message m=new Message();
+			m.what=SHOW_DIALOG;
+			windowHandler.sendMessage(m);
 		}
 	}
 
@@ -183,13 +194,10 @@ public class SoloMode implements ApplicationListener, ContactListener,
 			renderer.dispose();
 			renderer = null;
 		}
-		if (mCreateWorld.getTexture()!= null) {
-			mCreateWorld.getTexture().dispose();
-		}
-		if ( mCreateWorld.getTexture2()!= null) {
+		if (mCreateWorld.getTexture2() != null) {
 			mCreateWorld.getTexture2().dispose();
 		}
-		if ( mCreateWorld.getBatch()!= null) {
+		if (mCreateWorld.getBatch() != null) {
 			mCreateWorld.getBatch().dispose();
 		}
 	}

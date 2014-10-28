@@ -1,5 +1,6 @@
 package com.edu.seu.crazyball2;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -72,5 +73,31 @@ public final class B2Util {
 		
 		if(objUser != null) bodyRect.setUserData(objUser);
 		return bodyRect;
+	}
+	
+	public static Body createSensor(World world, float fRadius , Fixture m_sensor, float fPosX, float fPosY,Object objUser, Filter filter){
+		BodyDef bdSensor = new BodyDef();
+		Body ground = world.createBody(bdSensor);
+		
+		CircleShape shapeSensor = new CircleShape();
+		shapeSensor.setRadius(fRadius);
+		Vector2 tempVe = new Vector2(fPosX,fPosY);
+		shapeSensor.setPosition(tempVe);
+		
+		FixtureDef fxDef = new FixtureDef();
+		fxDef.shape=shapeSensor;
+		fxDef.isSensor = true;
+		
+		Fixture fixture = ground.createFixture(fxDef);
+		if(filter != null){
+			fixture.setFilterData(filter);
+		}
+		if(objUser != null) ground.setUserData(objUser);
+		m_sensor = fixture ;
+		System.out.println(m_sensor);
+		shapeSensor.dispose();
+		shapeSensor = null;
+		
+		return ground;
 	}
 }

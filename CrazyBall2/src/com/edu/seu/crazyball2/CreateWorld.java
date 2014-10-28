@@ -4,6 +4,8 @@ import static com.edu.seu.crazyball2.Constant.SCREEN_WIDTH;
 import static com.edu.seu.crazyball2.Constant.board_halfheight;
 import static com.edu.seu.crazyball2.Constant.boardrate;
 import static com.edu.seu.crazyball2.Constant.bound_width;
+import android.content.Context;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Mesh;
@@ -42,13 +44,7 @@ public class CreateWorld {
 	private Mesh bound_four;
 
 	private SpriteBatch batch;
-	private Texture texture;
 	private Texture texture2;
-	private ImageButton Btn_A_OK;
-	private ImageButton Btn_B_Cancel;
-	private Stage stage;
-	private BitmapFont font;
-	private Window dialogWindow;
 
 	float board_halfwidth = SCREEN_WIDTH * boardrate;
 
@@ -57,19 +53,19 @@ public class CreateWorld {
 		tBound1 = B2Util.createRectangle(world, SCREEN_WIDTH / 2,
 				bound_width / 2, 0, -board_halfheight + SCREEN_WIDTH
 						- bound_width / 2, BodyType.StaticBody, 0, 0, 0, 0,
-				new BodyData(BodyData.BODY_BORDER), null); // up
+				new BodyData(BodyData.BODY_BORDER_UP), null); // up
 		tBound2 = B2Util.createRectangle(world, bound_width / 2,
 				SCREEN_WIDTH / 2, -SCREEN_WIDTH / 2, -board_halfheight
 						+ SCREEN_WIDTH / 2, BodyType.StaticBody, 0, 0, 0, 0,
-				new BodyData(BodyData.BODY_BORDER), null); // left
+				new BodyData(BodyData.BODY_BORDER_LEFT), null); // left
 		tBound3 = B2Util.createRectangle(world, bound_width / 2,
 				SCREEN_WIDTH / 2, SCREEN_WIDTH / 2, -board_halfheight
 						+ SCREEN_WIDTH / 2, BodyType.StaticBody, 0, 0, 0, 0,
-				new BodyData(BodyData.BODY_BORDER), null); // right
+				new BodyData(BodyData.BODY_BORDER_RIGHT), null); // right
 		tBound4 = B2Util.createRectangle(world, SCREEN_WIDTH / 2,
 				bound_width / 2, 0, -board_halfheight + bound_width / 2,
 				BodyType.StaticBody, 0, 0, 0, 0, new BodyData(
-						BodyData.BODY_BOTTOM), null); // down
+						BodyData.BODY_BORDER_BOTTOM), null); // down
 		tBound_circle1= B2Util.createCircle(world,board_halfheight*2,-SCREEN_WIDTH/2,SCREEN_WIDTH-board_halfheight, BodyType.StaticBody, 0, 0,0, 0,
 				new BodyData(BodyData.BODY_BALL), null);
 		tBound_circle2= B2Util.createCircle(world,board_halfheight*2,+SCREEN_WIDTH/2,SCREEN_WIDTH-board_halfheight, BodyType.StaticBody, 0, 0,0, 0,
@@ -81,15 +77,9 @@ public class CreateWorld {
 		
 
 		setBoundColor();
-		stage = new Stage();
 		batch = new SpriteBatch();
-		font = new BitmapFont(Gdx.files.internal("data/potato.fnt"),
-				Gdx.files.internal("data/potato.png"), false);
 		texture2 = new Texture(Gdx.files.internal("data/ball.png"));
 
-		setButton();
-		setWindow();
-		setBtnListener();
 	}
 
 	private void setBoundColor() {
@@ -162,92 +152,7 @@ public class CreateWorld {
 		}
 
 	}
-	public void setButton() {
-	       texture = new Texture(Gdx.files.internal("data/control.png"));
 
-	       TextureRegion[][] spilt = TextureRegion.split(texture, 64, 64);
-
-	       TextureRegion[] regionBtn = new TextureRegion[6];
-	       // 显示
-	       regionBtn[0] = spilt[0][0];
-	       regionBtn[1] = spilt[0][1];
-	       // 确认
-	       regionBtn[2] = spilt[0][2];
-	       regionBtn[3] = spilt[0][3];
-	       // 取消
-	       regionBtn[4] = spilt[1][0];
-	       regionBtn[5] = spilt[1][1];
-
-	       TextureRegionDrawable Btn_A_UP = new TextureRegionDrawable(regionBtn[2]);
-	       TextureRegionDrawable Btn_A_DOWN = new TextureRegionDrawable(
-	               regionBtn[3]);
-
-	       TextureRegionDrawable Btn_B_UP = new TextureRegionDrawable(regionBtn[4]);
-	       TextureRegionDrawable Btn_B_DOWN = new TextureRegionDrawable(
-	               regionBtn[5]);
-
-
-	       Btn_A_OK = new ImageButton(Btn_A_UP, Btn_A_DOWN);
-
-	       Btn_B_Cancel = new ImageButton(Btn_B_UP, Btn_B_DOWN);
-
-	   }
-	
-	public void setWindow() {
-	       TextureRegionDrawable WindowDrable = new TextureRegionDrawable(
-	               new TextureRegion(new Texture(
-	                       Gdx.files.internal("data/dialog.png"))));
-	       
-	       WindowStyle style = new WindowStyle(font, Color.RED, WindowDrable);
-	       
-	       dialogWindow = new Window("Game", style);
-	       
-	       dialogWindow.setWidth(Gdx.graphics.getWidth()/1.5f);
-	       dialogWindow.setHeight(Gdx.graphics.getHeight()/4f);
-	       
-	       dialogWindow.setPosition(Gdx.graphics.getWidth()/6f,3*Gdx.graphics.getWidth()/8f);
-	       
-	       dialogWindow.setMovable(true);
-	       
-	               
-	       Btn_A_OK.setPosition(Gdx.graphics.getWidth()/10, 0);
-	       
-	       Btn_B_Cancel.setPosition(Gdx.graphics.getWidth()/3, 0);
-	       
-	       
-	       dialogWindow.addActor(Btn_A_OK);
-	       
-	       dialogWindow.addActor(Btn_B_Cancel);
-	       
-	   }
-	
-	 public void setBtnListener() {
-
-	       Btn_A_OK.addListener(new InputListener(){
-	           
-	           @Override
-	           public boolean touchDown(InputEvent event, float x, float y,
-	                   int pointer, int button) {
-	               System.out.println("sdfjksfdjslajgkldsgjkldgj");
-	               Gdx.app.exit();
-	               
-	               return true;
-	           }
-	           
-	       }); 
-	       
-	       Btn_B_Cancel.addListener(new InputListener(){
-
-	           @Override
-	           public boolean touchDown(InputEvent event, float x, float y,
-	                   int pointer, int button) {
-	               
-	               dialogWindow.remove();
-	               return super.touchDown(event, x, y, pointer, button);
-	           }
-	           
-	       });
-	   }
 	public World getWorld() {
 		return world;
 	}
@@ -271,33 +176,8 @@ public class CreateWorld {
 	public SpriteBatch getBatch() {
 		return batch;
 	}
-
-	public Texture getTexture() {
-		return texture;
-	}
-
 	public Texture getTexture2() {
 		return texture2;
-	}
-
-	public ImageButton getBtn_A_OK() {
-		return Btn_A_OK;
-	}
-
-	public ImageButton getBtn_B_Cancel() {
-		return Btn_B_Cancel;
-	}
-
-	public Stage getStage() {
-		return stage;
-	}
-
-	public BitmapFont getFont() {
-		return font;
-	}
-
-	public Window getDialogWindow() {
-		return dialogWindow;
 	}
 
 }

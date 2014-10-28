@@ -1,9 +1,9 @@
 package com.edu.seu.crazyball2;
 
 import static com.edu.seu.crazyball2.Constant.*;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+import android.os.Handler;
 import android.util.Log;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -16,24 +16,16 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.edu.seu.message.Data;
 import com.edu.seu.message.GameMessages.RemoteLocationMessage;
+import com.edu.seu.message.SendData;
 import com.lenovo.game.GameMessage;
 import com.lenovo.game.GameUserInfo;
 
@@ -41,7 +33,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		InputProcessor {
 
 	private GL10 gl;
-
+	private Handler windowHandler;
 	private OrthographicCamera camera;
 	private Box2DDebugRenderer renderer;
 
@@ -54,48 +46,49 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 	private Mesh board_mesh2;
 
 	private SpriteBatch batch;
-	private Texture texture;
 	private Texture texture2;
-	private ImageButton Btn_A_OK;
-	private ImageButton Btn_B_Cancel;
-	private Stage stage;
-	private BitmapFont font;
-	private Window dialogWindow;
-	
-	private float board_x=0;
-	private float board_y=0;
 
+	private float board_x = 0;
+	private float board_y = 0;
+	private float board1_x = 0;
+	private float board1_y = 0;
+	private float board2_x = 0;
+	private float board2_y = 0;
+	private float ball_x = 0;
+	private float ball_y = circle_radius + board_halfheight;
+
+	private int type = 1;
 
 	float board_halfwidth = SCREEN_WIDTH * boardrate;
+
+	SendData send = null;
+	private float old_board_x = 0;
+
+	public ThreeModeClient(Handler h) {
+		this.windowHandler = h;
+	}
 
 	@Override
 	public void create() {
 		Log.d("debug", "create");
 
+		send = new SendData();
+		board_halfheight = board_halfwidth * 1 / 5;
+
 		// 镜头下的世界
 		camera = new OrthographicCamera(SCREEN_WIDTH, SCREEN_HEIGHT);
 		camera.position.set(0, 10, 0);
-		
+
 		gl = Gdx.graphics.getGL10();
 
 		setBoundColor();
 		setBallBoardColor();
 
-		// 弹窗
-		stage = new Stage();
 		batch = new SpriteBatch();
-		font = new BitmapFont(Gdx.files.internal("data/potato.fnt"),
-				Gdx.files.internal("data/potato.png"), false);
 		texture2 = new Texture(Gdx.files.internal("data/ball.png"));
-		
-		//失败弹窗
-		setButton();
-		setWindow();
-		setBtnListener();
 
 		// 设置输入监听
 		InputMultiplexer inputmultiplexer = new InputMultiplexer();
-		inputmultiplexer.addProcessor(stage);
 		inputmultiplexer.addProcessor(this);
 		Gdx.input.setInputProcessor(inputmultiplexer);
 
@@ -106,7 +99,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		float halfheight = SCREEN_WIDTH / 2;
 
 		float x = 0;
-		float y = -board_halfheight+SCREEN_WIDTH- bound_width / 2;
+		float y = -board_halfheight + SCREEN_WIDTH - bound_width / 2;
 
 		if (bound_one == null) {
 			bound_one = new Mesh(true, 4, 4, new VertexAttribute(
@@ -121,7 +114,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 			bound_one.setIndices(new short[] { 0, 1, 2, 3 });
 		}
 
-		x = -SCREEN_WIDTH / 2; 
+		x = -SCREEN_WIDTH / 2;
 		y = -board_halfheight + SCREEN_WIDTH / 2;
 
 		if (bound_two == null) {
@@ -138,7 +131,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		}
 
 		x = SCREEN_WIDTH / 2;
-		y =  -board_halfheight + SCREEN_WIDTH / 2;
+		y = -board_halfheight + SCREEN_WIDTH / 2;
 
 		if (bound_three == null) {
 			bound_three = new Mesh(true, 4, 4, new VertexAttribute(
@@ -155,7 +148,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		}
 
 		x = 0;
-		y =-board_halfheight + bound_width / 2;
+		y = -board_halfheight + bound_width / 2;
 
 		if (bound_four == null) {
 			bound_four = new Mesh(true, 4, 4, new VertexAttribute(
@@ -173,9 +166,9 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 	}
 
 	private void setBallBoardColor() {
-		float x=board_x;
-		float y=board_y;
-		
+		float x = board_x;
+		float y = board_y;
+
 		board_mesh = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
 				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
 				"a_color"));
@@ -187,144 +180,109 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 				x + board_halfwidth, y - board_halfheight, 0,
 				Color.toFloatBits(0, 0, 0, 255) });
 		board_mesh.setIndices(new short[] { 0, 1, 2, 3 });
-		
-		board_mesh1 = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
-				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
-				"a_color"));
-		board_mesh1.setVertices(new float[] { - board_halfwidth,
-				SCREEN_WIDTH-board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
-				 - board_halfwidth, SCREEN_WIDTH-3*board_halfheight, 0,
-				Color.toFloatBits(0, 0, 0, 255), board_halfwidth,
-				SCREEN_WIDTH-board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
-				board_halfwidth,SCREEN_WIDTH-3*board_halfheight, 0,
-				Color.toFloatBits(0, 0, 0, 255) });
-		board_mesh1.setIndices(new short[] { 0, 1, 2, 3 });
-		
-		board_mesh2 = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
-				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
-				"a_color"));
-		board_mesh2.setVertices(new float[] { -SCREEN_WIDTH/2,
-				-board_halfheight+SCREEN_WIDTH / 2 + board_halfwidth, 0, Color.toFloatBits(0, 0, 0, 255),
-				-SCREEN_WIDTH/2, -board_halfheight+SCREEN_WIDTH / 2 - board_halfwidth, 0,
-				Color.toFloatBits(0, 0, 0, 255), -SCREEN_WIDTH/2+2*board_halfheight,
-				-board_halfheight+SCREEN_WIDTH / 2+ board_halfwidth, 0, Color.toFloatBits(0, 0, 0, 255),
-				-SCREEN_WIDTH/2+2*board_halfheight, -board_halfheight+SCREEN_WIDTH / 2 - board_halfwidth, 0,
-				Color.toFloatBits(0, 0, 0, 255) });
-		board_mesh2.setIndices(new short[] { 0, 1, 2, 3 });
 
+		if (Data.myID == 1) {
+			type = 1;
+			board1_x = Data.location.get(0) * SCREEN_WIDTH / 2;
+			board1_y = SCREEN_WIDTH - 2 * board_halfheight;
 
-	}
+			board2_x = SCREEN_WIDTH / 2 - board_halfheight;
+			board2_y = SCREEN_WIDTH / 2 - board_halfheight
+					- Data.location.get(2) * SCREEN_WIDTH / 2;
 
-	public void setButton() {
-		texture = new Texture(Gdx.files.internal("data/control.png"));
+			board_mesh1 = new Mesh(false, 4, 4, new VertexAttribute(
+					Usage.Position, 3, "a_position"), new VertexAttribute(
+					Usage.ColorPacked, 4, "a_color"));
+			board_mesh1.setVertices(new float[] { board1_x - board_halfwidth,
+					board1_y + board_halfheight, 0,
+					Color.toFloatBits(0, 0, 0, 255),
+					board1_x - board_halfwidth, board1_y - board_halfheight, 0,
+					Color.toFloatBits(0, 0, 0, 255),
+					board1_x + board_halfwidth, board1_y + board_halfheight, 0,
+					Color.toFloatBits(0, 0, 0, 255),
+					board1_x + board_halfwidth, board1_y - board_halfheight, 0,
+					Color.toFloatBits(0, 0, 0, 255) });
+			board_mesh1.setIndices(new short[] { 0, 1, 2, 3 });
 
-		TextureRegion[][] spilt = TextureRegion.split(texture, 64, 64);
+			board_mesh2 = new Mesh(false, 4, 4, new VertexAttribute(
+					Usage.Position, 3, "a_position"), new VertexAttribute(
+					Usage.ColorPacked, 4, "a_color"));
+			board_mesh2.setVertices(new float[] { board2_x - board_halfheight,
+					board2_y + board_halfwidth, 0,
+					Color.toFloatBits(0, 0, 0, 255),
+					board2_x - board_halfheight, board2_y - board_halfwidth, 0,
+					Color.toFloatBits(0, 0, 0, 255),
+					board2_x + board_halfheight, board2_y + board_halfwidth, 0,
+					Color.toFloatBits(0, 0, 0, 255),
+					board2_x + board_halfheight, board2_y - board_halfwidth, 0,
+					Color.toFloatBits(0, 0, 0, 255) });
+			board_mesh2.setIndices(new short[] { 0, 1, 2, 3 });
+		} else {
+			type = 2;
+			board1_x = -SCREEN_WIDTH / 2 + board_halfheight;
+			board1_y = SCREEN_WIDTH / 2 - board_halfheight
+					- Data.location.get(1) * SCREEN_WIDTH / 2;
 
-		TextureRegion[] regionBtn = new TextureRegion[6];
-		// 显示
-		regionBtn[0] = spilt[0][0];
-		regionBtn[1] = spilt[0][1];
-		// 确认
-		regionBtn[2] = spilt[0][2];
-		regionBtn[3] = spilt[0][3];
-		// 取消
-		regionBtn[4] = spilt[1][0];
-		regionBtn[5] = spilt[1][1];
+			board2_x = SCREEN_WIDTH / 2 - board_halfheight;
+			board2_y = SCREEN_WIDTH / 2 - board_halfheight
+					- Data.location.get(0) * SCREEN_WIDTH / 2;
 
+			board_mesh1 = new Mesh(false, 4, 4, new VertexAttribute(
+					Usage.Position, 3, "a_position"), new VertexAttribute(
+					Usage.ColorPacked, 4, "a_color"));
+			board_mesh1.setVertices(new float[] { board1_x - board_halfheight,
+					board1_y + board_halfwidth, 0,
+					Color.toFloatBits(0, 0, 0, 255),
+					board1_x - board_halfheight, board1_y - board_halfwidth, 0,
+					Color.toFloatBits(0, 0, 0, 255),
+					board1_x + board_halfheight, board1_y + board_halfwidth, 0,
+					Color.toFloatBits(0, 0, 0, 255),
+					board1_x + board_halfheight, board1_y - board_halfwidth, 0,
+					Color.toFloatBits(0, 0, 0, 255) });
+			board_mesh1.setIndices(new short[] { 0, 1, 2, 3 });
 
-		TextureRegionDrawable Btn_A_UP = new TextureRegionDrawable(regionBtn[2]);
-		TextureRegionDrawable Btn_A_DOWN = new TextureRegionDrawable(
-				regionBtn[3]);
+			board_mesh2 = new Mesh(false, 4, 4, new VertexAttribute(
+					Usage.Position, 3, "a_position"), new VertexAttribute(
+					Usage.ColorPacked, 4, "a_color"));
+			board_mesh2.setVertices(new float[] { board2_x - board_halfheight,
+					board2_y + board_halfwidth, 0,
+					Color.toFloatBits(0, 0, 0, 255),
+					board2_x - board_halfheight, board2_y - board_halfwidth, 0,
+					Color.toFloatBits(0, 0, 0, 255),
+					board2_x + board_halfheight, board2_y + board_halfwidth, 0,
+					Color.toFloatBits(0, 0, 0, 255),
+					board2_x + board_halfheight, board2_y - board_halfwidth, 0,
+					Color.toFloatBits(0, 0, 0, 255) });
+			board_mesh2.setIndices(new short[] { 0, 1, 2, 3 });
+		}
 
-		TextureRegionDrawable Btn_B_UP = new TextureRegionDrawable(regionBtn[4]);
-		TextureRegionDrawable Btn_B_DOWN = new TextureRegionDrawable(
-				regionBtn[5]);
-
-
-		Btn_A_OK = new ImageButton(Btn_A_UP, Btn_A_DOWN);
-
-		Btn_B_Cancel = new ImageButton(Btn_B_UP, Btn_B_DOWN);
-
-	}
-
-	public void setWindow() {
-		TextureRegionDrawable WindowDrable = new TextureRegionDrawable(
-				new TextureRegion(new Texture(
-						Gdx.files.internal("data/dialog.png"))));
-
-		WindowStyle style = new WindowStyle(font, Color.RED, WindowDrable);
-
-		dialogWindow = new Window("Game", style);
-
-		dialogWindow.setWidth(Gdx.graphics.getWidth() / 1.5f);
-		dialogWindow.setHeight(Gdx.graphics.getHeight() / 4f);
-
-		dialogWindow.setPosition(Gdx.graphics.getWidth() / 6f,
-				3 * Gdx.graphics.getWidth() / 8f);
-
-		dialogWindow.setMovable(true);
-
-		Btn_A_OK.setPosition(Gdx.graphics.getWidth() / 10, 0);
-
-		Btn_B_Cancel.setPosition(Gdx.graphics.getWidth() / 3, 0);
-
-		dialogWindow.addActor(Btn_A_OK);
-
-		dialogWindow.addActor(Btn_B_Cancel);
-
-	}
-
-	public void setBtnListener() {
-
-		Btn_A_OK.addListener(new InputListener() {
-
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				Gdx.app.exit();
-
-				return true;
-			}
-
-		});
-
-		Btn_B_Cancel.addListener(new InputListener() {
-
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-
-				dialogWindow.remove();
-				return super.touchDown(event, x, y, pointer, button);
-			}
-
-		});
 	}
 
 	@Override
 	public void render() {
-		
-		if (Data.mRemoteUser.size() != 0)
-		{	
-    	GameUserInfo remoteUser = Data.mRemoteUser.get(0);
-    	
-    	JSONObject json = new JSONObject();
-    	try {
-			json.put("board_x", board_x);
-			json.put("board_y", board_y);
-		} catch (JSONException e) {
-			
-			e.printStackTrace();
+		// if() //dead
+		// windowHandler.sendMessage(windowHandler.obtainMessage());
+
+		if (Data.mRemoteUser.size() != 0) {
+			GameUserInfo remoteUser = Data.mRemoteUser.get(0);
+
+			JSONObject json = new JSONObject();
+			try {
+				json.put("board_x", board_x);
+				json.put("board_y", board_y);
+			} catch (JSONException e) {
+
+				e.printStackTrace();
+			}
+
+			RemoteLocationMessage helloMsg = new RemoteLocationMessage(
+					Data.mLocalUser.id, remoteUser.id, json.toString());
+			// convert to interface message
+			GameMessage gameMsg = helloMsg.toGameMessage();
+			if (gameMsg != null)
+				Data.mGameShare.sendMessage(gameMsg);
+
 		}
-    	
-    	RemoteLocationMessage helloMsg = new RemoteLocationMessage(Data.mLocalUser.id, remoteUser.id, json.toString());
-    	// convert to interface message
-    	GameMessage gameMsg = helloMsg.toGameMessage();
-    	if (gameMsg != null)
-    	Data.mGameShare.sendMessage(gameMsg);
-    	
-		}
-		
 
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glClearColor(1f, 1f, 1f, 0f);
@@ -338,22 +296,31 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		board_mesh1.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		board_mesh2.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		
+
 		batch.begin();
-		float x=0;
-		float y=circle_radius+board_halfheight;
-	    batch.draw(texture2,set_x-20f+x*10,set_y-120f+y*10,40f,40f);
-	    batch.end();
-		
-		stage.act();
-		stage.draw();
+		if (type == 1) {
+			ball_x = Data.ball.get(0) * SCREEN_WIDTH / 2;
+			ball_y = SCREEN_WIDTH - 2 * board_halfheight - Data.ball.get(1)
+					* SCREEN_WIDTH / 2;
+			batch.draw(texture2, set_x - 20f + ball_x * 10, set_y - 120f
+					+ ball_y * 10, 40f, 40f);
+		} else {
+			ball_x = (SCREEN_WIDTH / 2) * (1 - Data.ball.get(1));
+			ball_y = (SCREEN_WIDTH / 2) * (1 - Data.ball.get(0))
+					- board_halfheight;
+			batch.draw(texture2, set_x - 20f + ball_x * 10, set_y - 120f
+					+ ball_y * 10, 40f, 40f);
+		}
+		batch.end();
 
 		camera.update();
-		camera.apply(gl);	
+		camera.apply(gl);
 
+		if (old_board_x != board_x) {
+			send.myboard();
+			old_board_x = board_x;
+		}
 	}
-
-	
 
 	@Override
 	public boolean touchDown(int arg0, int arg1, int arg2, int arg3) {
@@ -369,7 +336,8 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		Vector3 touchV = new Vector3(arg0, arg1, 0);
 		camera.unproject(touchV);
 
-		board_x=touchV.x;
+		board_x = touchV.x;
+		Data.location.set(Data.myID, 2 * board_x / SCREEN_WIDTH);
 		System.out.println("touch drag");
 
 		return false;
@@ -382,10 +350,6 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		if (renderer != null) {
 			renderer.dispose();
 			renderer = null;
-		}
-		if (texture != null) {
-			texture.dispose();
-			texture = null;
 		}
 		if (batch != null) {
 			batch.dispose();
@@ -443,7 +407,6 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 
 	}
 
-	
 	@Override
 	public void preSolve(Contact arg0, Manifold arg1) {
 		// TODO Auto-generated method stub
@@ -459,7 +422,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 	@Override
 	public void postSolve(Contact arg0, ContactImpulse arg1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

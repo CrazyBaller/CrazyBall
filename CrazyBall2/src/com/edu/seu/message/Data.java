@@ -13,6 +13,7 @@ public class Data {
 	public static int mode=1;
 	public static boolean inviter=false;
 	public static GameShare mGameShare;
+
     public static GameUserInfo mLocalUser;
     public static List<GameUserInfo> mRemoteUser;
     
@@ -20,7 +21,7 @@ public class Data {
     public static ArrayList<Float> location = new ArrayList<Float>();
 	public static ArrayList<Integer> state = new ArrayList<Integer>();
 	public static ArrayList<Float> ball = new ArrayList<Float>();
-	public static int myID = 1;
+	public static int myID = 0;
 	public static String hostID = null;
     
     
@@ -28,8 +29,7 @@ public class Data {
     public static float board2_y=SCREEN_WIDTH-2*board_halfheight;
     
     
-    public void def()
-    {
+    public Data(){
     	if(flag==0){
     		flag=1;
    		 float def = 0;
@@ -44,8 +44,19 @@ public class Data {
    		ball.add(def);
        	}
     }
+   
     
-	
+	public void initstate()
+	{
+		float def = 0;
+		for(int i=0;i<4;i++)
+			{
+			state.set(i, 0);
+			location.set(i,def);
+			}
+		ball.set(0, def);
+		ball.set(1, def);
+	}
 	public  void setMode (int mode)
 	{
 		this.mode=mode;
