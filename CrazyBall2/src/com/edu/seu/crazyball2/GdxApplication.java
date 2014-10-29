@@ -33,14 +33,14 @@ public class GdxApplication extends AndroidApplication {
 
 	private boolean f = false;
 
-	private static final int MSG_RECEIVED_MESSAGE = 1;
-	private static final int MSG_RECEIVED_TWO = 2;
 	private static final int RECEIVED_Remote_Location = 3;
 	private static final int RECEIVED_BALL = 4;
 	private static final int RECEIVED_BOARD = 5;
 	private static final int RECEIVED_STATE = 6;
 	private static final int RECEIVED_UNFITY_ID = 7;
 	private static final int RECEIVED_GAME_RESULT = 8;
+	private static final int RECEIVED_BOARD_SIZE = 9;
+	private static final int RECEIVED_BALL_SIZE = 10;
 	
 
 	private Handler mHandler = new Handler() {
@@ -68,6 +68,21 @@ public class GdxApplication extends AndroidApplication {
 				}
 
 				break;
+				
+			case RECEIVED_BALL_SIZE:
+				if (Data.inviter == false) {
+					
+					try {
+						json = new JSONObject((String) msg.obj);
+						Data.ballsize=json.getInt("size");
+
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
+				break;
 			case RECEIVED_BOARD:
 				
 				try {
@@ -76,6 +91,22 @@ public class GdxApplication extends AndroidApplication {
 					json = new JSONObject((String) msg.obj);
 					float f = (float) json.getDouble("x");
 					Data.location.set(json.getInt("id"), f);
+					// System.out.println("222222222222"+Data.ball.get(json.getInt("id")));
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				break;
+				
+			case RECEIVED_BOARD_SIZE:
+				
+				try {
+
+					System.out.println("8888888888888" + (String) msg.obj);
+					json = new JSONObject((String) msg.obj);
+					
+					Data.boardsize.set(json.getInt("id"),json.getInt("size"));
 					// System.out.println("222222222222"+Data.ball.get(json.getInt("id")));
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -166,6 +197,8 @@ public class GdxApplication extends AndroidApplication {
 					e.printStackTrace();
 				}
 				break;
+			case SHOW_TOAST:
+				Toast.makeText(getApplicationContext(), "×²À²", 1000).show();
 				
 			}
 		
@@ -329,6 +362,14 @@ public class GdxApplication extends AndroidApplication {
 				} else if (message.getType().equals(GameMessages.TYPE_GAME_RESULT)) {
 
 					mHandler.sendMessage(mHandler.obtainMessage(RECEIVED_GAME_RESULT,
+							message.getMessage()));
+				}else if (message.getType().equals(GameMessages.TYPE_BOARD_SIZE)) {
+
+					mHandler.sendMessage(mHandler.obtainMessage(RECEIVED_BOARD_SIZE,
+							message.getMessage()));
+				}else if (message.getType().equals(GameMessages.TYPE_BALL_SIZE)) {
+
+					mHandler.sendMessage(mHandler.obtainMessage(RECEIVED_BALL_SIZE,
 							message.getMessage()));
 				}
 

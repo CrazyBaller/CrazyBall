@@ -149,6 +149,14 @@ public class TwoMode implements ApplicationListener, ContactListener,
 	public void render() {
 		tboard1_x = Data.location.get(1) * SCREEN_WIDTH / 2;
 		tBoard1.setTransform(tboard1_x, tBoard1.getWorldCenter().y, 0);
+		if(Data.boardsize.get(0)==1){
+			ChangeBlock tT = new ChangeBlock(tBoard0);
+			tT.start(((BodyData) tBoard0.getUserData()).getchangeType());
+		}		
+		if(Data.boardsize.get(1)==1){
+			ChangeBlock tT = new ChangeBlock(tBoard1);
+			tT.start(((BodyData) tBoard1.getUserData()).getchangeType());
+		}		
 
 		mworld.step(Gdx.graphics.getDeltaTime(), 10, 8);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -201,7 +209,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		camera.unproject(touchV);
 		if (firstTouch) {
 			firstTouch = false;
-			tBall.setLinearVelocity(60f, 80f);
+			tBall.setLinearVelocity(40f, 60f);
 		}
 
 		return false;

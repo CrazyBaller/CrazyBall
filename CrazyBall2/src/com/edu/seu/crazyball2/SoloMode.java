@@ -60,7 +60,7 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		camera.position.set(0, 10, 0);
 
 		gl = Gdx.graphics.getGL10();
-		// renderer = new Box2DDebugRenderer();
+		 renderer = new Box2DDebugRenderer();
 
 		// 创建背景世界
 		mCreateWorld = new CreateWorld();
@@ -111,7 +111,7 @@ public class SoloMode implements ApplicationListener, ContactListener,
 
 	@Override
 	public void render() {
-		mworld.step(Gdx.graphics.getDeltaTime(), 10, 8);
+		mworld.step(Gdx.graphics.getDeltaTime(), 6, 2);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glClearColor(1f, 1f, 1f, 0f);
 
@@ -134,7 +134,7 @@ public class SoloMode implements ApplicationListener, ContactListener,
 
 		camera.update();
 		camera.apply(gl);
-		// renderer.render(mworld, camera.combined);
+		renderer.render(mworld, camera.combined);
 
 	}
 
@@ -144,7 +144,7 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		camera.unproject(touchV);
 		if (firstTouch) {
 			firstTouch = false;
-			tBall.setLinearVelocity(60f, 80f);
+			tBall.setLinearVelocity(40f, 60f);
 		}
 
 		return false;

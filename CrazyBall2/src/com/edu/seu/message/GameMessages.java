@@ -14,7 +14,11 @@ public class GameMessages {
     
     public static final String TYPE_BOARD_LOCATION = "board_location";
     
+    public static final String TYPE_BOARD_SIZE = "board_size";
+    
     public static final String TYPE_BALL_LOCATION = "ball_location";
+    
+    public static final String TYPE_BALL_SIZE = "ball_size";
     
     public static final String TYPE_UNIFY_ID = "unify_id";
     

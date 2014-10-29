@@ -78,7 +78,8 @@ public class CreateWorld {
 
 		setBoundColor();
 		batch = new SpriteBatch();
-		texture2 = new Texture(Gdx.files.internal("data/ball.png"));
+//		texture2 = new Texture(Gdx.files.internal("data/ball.png"));
+		texture2 = new Texture(Gdx.files.internal("Ball.jpg"));
 
 	}
 
@@ -99,7 +100,6 @@ public class CreateWorld {
 					x + halfheight, y + halfwidth, 0,
 					Color.toFloatBits(192, 0, 0, 255), x + halfheight,
 					y - halfwidth, 0, Color.toFloatBits(192, 0, 0, 255) });
-			bound_one.setIndices(new short[] { 0, 1, 2, 3 });
 		}
 
 		x = tBound2.getPosition().x;
@@ -115,7 +115,6 @@ public class CreateWorld {
 					x + halfwidth, y + halfheight, 0,
 					Color.toFloatBits(192, 0, 0, 255), x + halfwidth,
 					y - halfheight, 0, Color.toFloatBits(192, 0, 0, 255) });
-			bound_two.setIndices(new short[] { 0, 1, 2, 3 });
 		}
 
 		x = tBound3.getPosition().x;
@@ -132,7 +131,6 @@ public class CreateWorld {
 					y + halfheight, 0, Color.toFloatBits(192, 0, 0, 255),
 					x + halfwidth, y - halfheight, 0,
 					Color.toFloatBits(192, 0, 0, 255) });
-			bound_three.setIndices(new short[] { 0, 1, 2, 3 });
 		}
 
 		x = tBound4.getPosition().x;
@@ -148,7 +146,6 @@ public class CreateWorld {
 					x + halfheight, y + halfwidth, 0,
 					Color.toFloatBits(192, 0, 0, 255), x + halfheight,
 					y - halfwidth, 0, Color.toFloatBits(192, 0, 0, 255) });
-			bound_four.setIndices(new short[] { 0, 1, 2, 3 });
 		}
 
 	}
