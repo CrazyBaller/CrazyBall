@@ -20,7 +20,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -40,20 +39,16 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 	private Handler windowHandler;
 	private OrthographicCamera camera;
 	private Box2DDebugRenderer renderer;
-	private World world;
-	private Body ball;
+	private CreateWorld mCreateWorld;
+	private World mworld;
+	private Body tBoard0;
+	private Body tBoard1;
+	private Body tBall;
 	private Body lastboard;  //ÉÏÒ»¸öÅöµÄ°å
 	Body tB;
 
-	private Mesh bound_one;
-	private Mesh bound_two;
-	private Mesh bound_three;
-	private Mesh bound_four;
 	private Mesh board_mesh;
 	private Mesh board_mesh1;
-
-	private SpriteBatch batch;
-	private Texture texture2;
 
 	private float board_x = 0;
 	private float board_y = 0;
@@ -76,6 +71,10 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 	}
 	@Override
 	public void create() {
+		Message m=new Message();
+		m.what=SHOW_TOAST;
+		windowHandler.sendMessage(m);
+		
 		Log.d("debug", "create");
 		send = new SendData();
 
@@ -88,6 +87,10 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 		gl = Gdx.graphics.getGL10();
 		renderer = new Box2DDebugRenderer();
 		
+		// ´´½¨±³¾°ÊÀ½ç
+		mCreateWorld = new CreateWorld();
+		mworld = mCreateWorld.getWorld();
+		
 		board_mesh = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
 				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
 				"a_color"));
@@ -95,13 +98,9 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
 				"a_color"));
 		
-		createBody();
-		setBoundColor();
+		createBallBoard();
 		setBallBoardColor();
 		
-		batch = new SpriteBatch();
-		texture2 = new Texture(Gdx.files.internal("data/ball.png"));
-
 		// ÉèÖÃÊäÈë¼àÌý
 		InputMultiplexer inputmultiplexer = new InputMultiplexer();
 		inputmultiplexer.addProcessor(this);
@@ -110,85 +109,24 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 		initBlock();
 		
 		// ÉèÖÃÅö×²¼àÌý
-		world.setContactListener(this);
+		mworld.setContactListener(this);
 	}
-	private void createBody(){
-		world = new World(new Vector2(0, 0f), true);
-		ball = B2Util.createCircle(world, circle_radius, 0, board_halfheight
+	
+	private void createBallBoard() {
+		// ´´½¨Çò
+		tBall = B2Util.createCircle(mworld, circle_radius, 0, board_halfheight
 				+ circle_radius, BodyType.DynamicBody, 0, 2, 1, 0,
 				new BodyData(BodyData.BODY_BALL), null);
-	}
-	private void setBoundColor() {
-		float halfwidth = bound_width / 2;
-		float halfheight = SCREEN_WIDTH / 2;
-
-		float x = 0;
-		float y = -board_halfheight + SCREEN_WIDTH - bound_width / 2;
-
-		if (bound_one == null) {
-			bound_one = new Mesh(true, 4, 4, new VertexAttribute(
-					Usage.Position, 3, "a_position"), new VertexAttribute(
-					Usage.ColorPacked, 4, "a_color"));
-			bound_one.setVertices(new float[] { x - halfheight, y + halfwidth,
-					0, Color.toFloatBits(192, 0, 0, 255), x - halfheight,
-					y - halfwidth, 0, Color.toFloatBits(192, 0, 0, 255),
-					x + halfheight, y + halfwidth, 0,
-					Color.toFloatBits(192, 0, 0, 255), x + halfheight,
-					y - halfwidth, 0, Color.toFloatBits(192, 0, 0, 255) });
-			bound_one.setIndices(new short[] { 0, 1, 2, 3 });
-		}
-
-		x = -SCREEN_WIDTH / 2;
-		y = -board_halfheight + SCREEN_WIDTH / 2;
-
-		if (bound_two == null) {
-			bound_two = new Mesh(true, 4, 4, new VertexAttribute(
-					Usage.Position, 3, "a_position"), new VertexAttribute(
-					Usage.ColorPacked, 4, "a_color"));
-			bound_two.setVertices(new float[] { x - halfwidth, y + halfheight,
-					0, Color.toFloatBits(192, 0, 0, 255), x - halfwidth,
-					y - halfheight, 0, Color.toFloatBits(192, 0, 0, 255),
-					x + halfwidth, y + halfheight, 0,
-					Color.toFloatBits(192, 0, 0, 255), x + halfwidth,
-					y - halfheight, 0, Color.toFloatBits(192, 0, 0, 255) });
-			bound_two.setIndices(new short[] { 0, 1, 2, 3 });
-		}
-
-		x = SCREEN_WIDTH / 2;
-		y = -board_halfheight + SCREEN_WIDTH / 2;
-
-		if (bound_three == null) {
-			bound_three = new Mesh(true, 4, 4, new VertexAttribute(
-					Usage.Position, 3, "a_position"), new VertexAttribute(
-					Usage.ColorPacked, 4, "a_color"));
-			bound_three.setVertices(new float[] { x - halfwidth,
-					y + halfheight, 0, Color.toFloatBits(192, 0, 0, 255),
-					x - halfwidth, y - halfheight, 0,
-					Color.toFloatBits(192, 0, 0, 255), x + halfwidth,
-					y + halfheight, 0, Color.toFloatBits(192, 0, 0, 255),
-					x + halfwidth, y - halfheight, 0,
-					Color.toFloatBits(192, 0, 0, 255) });
-			bound_three.setIndices(new short[] { 0, 1, 2, 3 });
-		}
-
-		x = 0;
-		y = -board_halfheight + bound_width / 2;
-
-		if (bound_four == null) {
-			bound_four = new Mesh(true, 4, 4, new VertexAttribute(
-					Usage.Position, 3, "a_position"), new VertexAttribute(
-					Usage.ColorPacked, 4, "a_color"));
-			bound_four.setVertices(new float[] { x - halfheight, y + halfwidth,
-					0, Color.toFloatBits(192, 0, 0, 255), x - halfheight,
-					y - halfwidth, 0, Color.toFloatBits(192, 0, 0, 255),
-					x + halfheight, y + halfwidth, 0,
-					Color.toFloatBits(192, 0, 0, 255), x + halfheight,
-					y - halfwidth, 0, Color.toFloatBits(192, 0, 0, 255) });
-			bound_four.setIndices(new short[] { 0, 1, 2, 3 });
-		}
+		// ´´½¨µ²°å
+		tBoard0 = B2Util.createRectangle(mworld, SCREEN_WIDTH * boardrate,
+				board_halfheight, 0, 0, BodyType.StaticBody, 0, 0, 0, 0,
+				new BodyData(BodyData.BODY_BOARD), null);
+		tBoard1 = B2Util.createRectangle(mworld, SCREEN_WIDTH * boardrate,
+				board_halfheight, 0, SCREEN_WIDTH - 2 * board_halfheight,
+				BodyType.StaticBody, 0, 0, 0, 0, new BodyData(
+						BodyData.BODY_BOARD), null);
 
 	}
-
 	private void setBallBoardColor() {
 		float x = board_x;
 		float y = board_y;
@@ -199,8 +137,7 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 			board_halfwidth0*=2;
 		if(Data.boardsize.get(1)==1)
 			board_halfwidth1*=2;
-
-		System.out.println("wwwwwwwwwwwwwwwwww"+board_halfwidth0);
+		
 		board_mesh.setVertices(new float[] { x - board_halfwidth0,
 				y + board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
 				x - board_halfwidth0, y - board_halfheight, 0,
@@ -210,6 +147,7 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 				Color.toFloatBits(0, 0, 0, 255) });
 
 		board1_x = Data.location.get(0) * SCREEN_WIDTH / 2;
+		tBoard1.setTransform(board1_x, tBoard1.getWorldCenter().y, 0);
 		
 		board_mesh1.setVertices(new float[] { board1_x - board_halfwidth1,
 						board1_y + board_halfheight, 0,
@@ -255,40 +193,53 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 //				blockList.add(tB);
 //			}
 //		}
-		tB = B2Util.createRectangle(world, 2, 1, 0,
+		tB = B2Util.createRectangle(mworld, 2, 1, 0,
 				SCREEN_WIDTH/2, BodyType.StaticBody, 0, 0, 0, 0,
 				new BodyData(BodyData.BODY_BLOCK,31), null);
 	}
 
 	
+	private float mLastTime = 0;
 	@Override
 	public void render() {
-		world.step(Gdx.graphics.getDeltaTime(), 8, 8);
+		float dt = Gdx.graphics.getDeltaTime();
+		mLastTime += dt;
+		if (mLastTime >= 1.0/60)
+		{
+			mLastTime = 0;
+		}
+		else return;
+
+		
+//		mworld.step(Gdx.graphics.getDeltaTime(), 1, 1);
+		mworld.step(1.0f/6.0f, 1, 1);
 
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glClearColor(1f, 1f, 1f, 0f);
 
-		bound_one.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		bound_two.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		bound_three.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		bound_four.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		mCreateWorld.getBound_one().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		mCreateWorld.getBound_two().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		mCreateWorld.getBound_three().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		mCreateWorld.getBound_four().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 
 		setBallBoardColor();
 		board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		board_mesh1.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		
+		SpriteBatch batch = mCreateWorld.getBatch();
 
 		batch.begin();
 		ball_x = Data.ball.get(0) * SCREEN_WIDTH / 2;
 		ball_y = SCREEN_WIDTH - 2 * board_halfheight - Data.ball.get(1)
 				* SCREEN_WIDTH / 2;
-		ball.setTransform(ball_x, ball_y, 0);
-		batch.draw(texture2, set_x - 20f + ball_x * 10, set_y - 120f + ball_y
+		tBall.setTransform(ball_x, ball_y, 0);
+		batch.draw(mCreateWorld.getTexture2(), set_x - 20f + ball_x * 10, set_y - 120f + ball_y
 				* 10, 40f, 40f);
 		batch.end();
 
 		camera.update();
 		camera.apply(gl);
-		renderer.render(world, camera.combined);
+		renderer.render(mworld, camera.combined);
 
 		if (old_board_x != board_x) {
 			send.myboard();
@@ -337,8 +288,15 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 		Vector3 touchV = new Vector3(arg0, arg1, 0);
 		camera.unproject(touchV);
 
-		board_x = touchV.x;
-		Data.location.set(Data.myID, 2 * board_x / SCREEN_WIDTH);
+		if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
+				- board_halfwidth
+				&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
+						+ board_halfwidth) {
+			board_x=touchV.x;
+			tBoard0.setTransform(touchV.x, 0, 0);
+			Data.location.set(Data.myID, 2 *board_x
+					/ SCREEN_WIDTH);
+		}
 		System.out.println("touch drag");
 
 		return false;
@@ -347,14 +305,19 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 	@Override
 	public void dispose() {
 		Log.d("debug", "dispose");
-
+		if (mworld != null) {
+			mworld.dispose();
+			mworld = null;
+		}
 		if (renderer != null) {
 			renderer.dispose();
 			renderer = null;
 		}
-		if (batch != null) {
-			batch.dispose();
-			batch = null;
+		if (mCreateWorld.getTexture2() != null) {
+			mCreateWorld.getTexture2().dispose();
+		}
+		if (mCreateWorld.getBatch() != null) {
+			mCreateWorld.getBatch().dispose();
 		}
 	}
 
@@ -435,7 +398,7 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 				Message m=new Message();
 				m.what=SHOW_TOAST;
 				windowHandler.sendMessage(m);
-				if(ball.getLinearVelocity().y<0){    //1ºÅ°åÅöµÄ
+				if(tBall.getLinearVelocity().y<0){    //1ºÅ°åÅöµÄ
 				//	send.ballsize(size)
 				}else{								//0ºÅ°åÅöµÄ
 					
@@ -448,7 +411,7 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 				Message m=new Message();
 				m.what=SHOW_TOAST;
 				windowHandler.sendMessage(m);
-				if(ball.getLinearVelocity().y<0){    //1ºÅ°åÅöµÄ
+				if(tBall.getLinearVelocity().y<0){    //1ºÅ°åÅöµÄ
 					send.boardsize(1,1);
 				}else{								//0ºÅ°åÅöµÄ
 					send.boardsize(0,1);
@@ -464,7 +427,7 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 				Message m=new Message();
 				m.what=SHOW_TOAST;
 				windowHandler.sendMessage(m);
-				if(ball.getLinearVelocity().y<0){    //0ºÅ°åÅöµÄ
+				if(tBall.getLinearVelocity().y<0){    //0ºÅ°åÅöµÄ
 					
 				}else{								//1ºÅ°åÅöµÄ
 					
@@ -477,7 +440,7 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 				Message m=new Message();
 				m.what=SHOW_TOAST;
 				windowHandler.sendMessage(m);
-				if(ball.getLinearVelocity().y<0){    //1ºÅ°åÅöµÄ
+				if(tBall.getLinearVelocity().y<0){    //1ºÅ°åÅöµÄ
 					send.boardsize(1,1);
 				}else{								//0ºÅ°åÅöµÄ
 					send.boardsize(0,1);

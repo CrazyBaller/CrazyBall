@@ -66,6 +66,10 @@ public class TwoMode implements ApplicationListener, ContactListener,
 	}
 
 	public void create() {
+		Message m=new Message();
+		m.what=SHOW_TOAST;
+		windowHandler.sendMessage(m);
+		
 		Log.d("debug", "create");
 		send = new SendData();
 
@@ -145,8 +149,18 @@ public class TwoMode implements ApplicationListener, ContactListener,
 
 	}
 
+	private float mLastTime = 0;
 	@Override
 	public void render() {
+		float dt = Gdx.graphics.getDeltaTime();
+		mLastTime += dt;
+		if (mLastTime >= 1.0/60)
+		{
+			mLastTime = 0;
+		}
+		else return;
+
+		
 		tboard1_x = Data.location.get(1) * SCREEN_WIDTH / 2;
 		tBoard1.setTransform(tboard1_x, tBoard1.getWorldCenter().y, 0);
 		if(Data.boardsize.get(0)==1){
@@ -158,7 +172,8 @@ public class TwoMode implements ApplicationListener, ContactListener,
 			tT.start(((BodyData) tBoard1.getUserData()).getchangeType());
 		}		
 
-		mworld.step(Gdx.graphics.getDeltaTime(), 10, 8);
+//		mworld.step(Gdx.graphics.getDeltaTime(), 1, 1);
+		mworld.step(1.0f/6.0f, 1, 1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glClearColor(1f, 1f, 1f, 0f);
 
@@ -224,7 +239,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 				- board_halfwidth
 				&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
 						+ board_halfwidth) {
-			tBoard0.setTransform(touchV.x, tBoard0.getWorldCenter().y, 0);
+			tBoard0.setTransform(touchV.x,0, 0);
 			Data.location.set(Data.myID, 2 * tBoard0.getWorldCenter().x
 					/ SCREEN_WIDTH);
 		}

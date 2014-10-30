@@ -111,7 +111,7 @@ public class SoloMode implements ApplicationListener, ContactListener,
 
 	@Override
 	public void render() {
-		mworld.step(Gdx.graphics.getDeltaTime(), 6, 2);
+		mworld.step(Gdx.graphics.getDeltaTime(),1,1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glClearColor(1f, 1f, 1f, 0f);
 

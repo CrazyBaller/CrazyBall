@@ -198,7 +198,7 @@ public class GdxApplication extends AndroidApplication {
 				}
 				break;
 			case SHOW_TOAST:
-				Toast.makeText(getApplicationContext(), "×²À²", 1000).show();
+				Toast.makeText(getApplicationContext(),"ftp:"+ 1.0/Gdx.graphics.getDeltaTime(), 10000).show();
 				
 			}
 		
