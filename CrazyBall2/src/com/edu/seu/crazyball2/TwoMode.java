@@ -31,6 +31,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.edu.seu.message.Data;
 import com.edu.seu.message.SendData;
+import com.edu.seu.props.PropsObservable;
 import com.edu.seu.tool.Tool;
 
 public class TwoMode implements ApplicationListener, ContactListener,
@@ -44,10 +45,6 @@ public class TwoMode implements ApplicationListener, ContactListener,
 	private OrthographicCamera camera;
 	private Box2DDebugRenderer renderer;
 
-	private Body tBoard0;
-	private Body tBoard1;
-	private Body tBall;
-
 	private Mesh board_mesh;
 	private Mesh board_mesh1;
 
@@ -60,9 +57,11 @@ public class TwoMode implements ApplicationListener, ContactListener,
 	float old_ball_y = 0;
 
 	SendData send;
-
-	public TwoMode(Handler h) {
+	PropsObservable po;
+	
+	public TwoMode(Handler h,PropsObservable po) {
 		this.windowHandler = h;
+		this.po=po;
 	}
 
 	public void create() {
@@ -72,7 +71,9 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		
 		Log.d("debug", "create");
 		send = new SendData();
-
+		
+		board_halfwidth0 = SCREEN_WIDTH * boardrate;
+		board_halfwidth1 = SCREEN_WIDTH * boardrate;
 		board_halfwidth = SCREEN_WIDTH * boardrate;
 		board_halfheight = board_halfwidth / 5;
 
@@ -86,7 +87,14 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		// 创建背景世界
 		mCreateWorld = new CreateWorld();
 		mworld = mCreateWorld.getWorld();
-
+		
+		board_mesh = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
+				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
+				"a_color"));
+		board_mesh1 = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
+				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
+				"a_color"));
+		
 		// 创建球和板
 		createBallBoard();
 		setBallBoardColor();
@@ -106,10 +114,10 @@ public class TwoMode implements ApplicationListener, ContactListener,
 				+ circle_radius, BodyType.DynamicBody, 0, 2, 1, 0,
 				new BodyData(BodyData.BODY_BALL), null);
 		// 创建挡板
-		tBoard0 = B2Util.createRectangle(mworld, SCREEN_WIDTH * boardrate,
+		tBoard0 = B2Util.createRectangle(mworld, board_halfwidth0,
 				board_halfheight, 0, 0, BodyType.StaticBody, 0, 0, 0, 0,
 				new BodyData(BodyData.BODY_BOARD), null);
-		tBoard1 = B2Util.createRectangle(mworld, SCREEN_WIDTH * boardrate,
+		tBoard1 = B2Util.createRectangle(mworld, board_halfwidth0,
 				board_halfheight, 0, SCREEN_WIDTH - 2 * board_halfheight,
 				BodyType.StaticBody, 0, 0, 0, 0, new BodyData(
 						BodyData.BODY_BOARD), null);
@@ -120,32 +128,25 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		float x = tBoard0.getPosition().x;
 		float y = tBoard0.getPosition().y;
 
-		board_mesh = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
-				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
-				"a_color"));
-		board_mesh.setVertices(new float[] { x - board_halfwidth,
+
+		board_mesh.setVertices(new float[] { x - board_halfwidth0,
 				y + board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
-				x - board_halfwidth, y - board_halfheight, 0,
-				Color.toFloatBits(0, 0, 0, 255), x + board_halfwidth,
+				x - board_halfwidth0, y - board_halfheight, 0,
+				Color.toFloatBits(0, 0, 0, 255), x + board_halfwidth0,
 				y + board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
-				x + board_halfwidth, y - board_halfheight, 0,
+				x + board_halfwidth0, y - board_halfheight, 0,
 				Color.toFloatBits(0, 0, 0, 255) });
-		board_mesh.setIndices(new short[] { 0, 1, 2, 3 });
 
 		x = tBoard1.getPosition().x;
 		y = tBoard1.getPosition().y;
-
-		board_mesh1 = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
-				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
-				"a_color"));
-		board_mesh1.setVertices(new float[] { x - board_halfwidth,
+	
+		board_mesh1.setVertices(new float[] { x - board_halfwidth1,
 				y + board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
-				x - board_halfwidth, y - board_halfheight, 0,
-				Color.toFloatBits(0, 0, 0, 255), x + board_halfwidth,
+				x - board_halfwidth1, y - board_halfheight, 0,
+				Color.toFloatBits(0, 0, 0, 255), x + board_halfwidth1,
 				y + board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
-				x + board_halfwidth, y - board_halfheight, 0,
+				x + board_halfwidth1, y - board_halfheight, 0,
 				Color.toFloatBits(0, 0, 0, 255) });
-		board_mesh1.setIndices(new short[] { 0, 1, 2, 3 });
 
 	}
 
@@ -163,14 +164,6 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		
 		tboard1_x = Data.location.get(1) * SCREEN_WIDTH / 2;
 		tBoard1.setTransform(tboard1_x, tBoard1.getWorldCenter().y, 0);
-		if(Data.boardsize.get(0)==1){
-			ChangeBlock tT = new ChangeBlock(tBoard0);
-			tT.start(((BodyData) tBoard0.getUserData()).getchangeType());
-		}		
-		if(Data.boardsize.get(1)==1){
-			ChangeBlock tT = new ChangeBlock(tBoard1);
-			tT.start(((BodyData) tBoard1.getUserData()).getchangeType());
-		}		
 
 //		mworld.step(Gdx.graphics.getDeltaTime(), 1, 1);
 		mworld.step(1.0f/6.0f, 1, 1);
@@ -224,7 +217,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		camera.unproject(touchV);
 		if (firstTouch) {
 			firstTouch = false;
-			tBall.setLinearVelocity(40f, 60f);
+			tBall.setLinearVelocity(10f, 30f);
 		}
 
 		return false;
@@ -236,9 +229,9 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		camera.unproject(touchV);
 		// 设置移动坐标
 		if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
-				- board_halfwidth
+				- board_halfwidth0
 				&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
-						+ board_halfwidth) {
+						+ board_halfwidth0) {
 			tBoard0.setTransform(touchV.x,0, 0);
 			Data.location.set(Data.myID, 2 * tBoard0.getWorldCenter().x
 					/ SCREEN_WIDTH);
@@ -262,7 +255,6 @@ public class TwoMode implements ApplicationListener, ContactListener,
 			
 			SendData send = new SendData();
 			send.sendresult(0, result);
-			
 			
 			JSONObject json = new JSONObject();
 	    	try {

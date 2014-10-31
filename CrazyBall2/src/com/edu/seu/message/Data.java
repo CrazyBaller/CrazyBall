@@ -34,8 +34,7 @@ public class Data {
     public static float board2_x=0;
     public static float board2_y=SCREEN_WIDTH-2*board_halfheight;
     
-    
-    public Data(){
+	public Data(){
     	if(flag==0){
     		flag=1;
    		 float def = 0;

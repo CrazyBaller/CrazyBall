@@ -28,6 +28,8 @@ public class GameMessages {
     
     public static final String TYPE_GAME_RESULT = "game_result";
     
+    public static final String TYPE_PROPS = "props";
+    
     public static final String TYPR_STRING = "string";
     
     public static abstract class AbstractGameMessage {

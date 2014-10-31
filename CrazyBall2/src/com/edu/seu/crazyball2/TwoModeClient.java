@@ -31,6 +31,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.edu.seu.message.Data;
 import com.edu.seu.message.SendData;
+import com.edu.seu.props.PropsObservable;
 
 public class TwoModeClient implements ApplicationListener, ContactListener,
 		InputProcessor {
@@ -41,33 +42,29 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 	private Box2DDebugRenderer renderer;
 	private CreateWorld mCreateWorld;
 	private World mworld;
-	private Body tBoard0;
-	private Body tBoard1;
-	private Body tBall;
+
 	private Body lastboard;  //ÉÏÒ»¸öÅöµÄ°å
 	Body tB;
 
 	private Mesh board_mesh;
 	private Mesh board_mesh1;
 
-	private float board_x = 0;
-	private float board_y = 0;
-
 	private float board1_x = 0;
-	private float board1_y = SCREEN_WIDTH - 2 * board_halfheight;
+	private float board1_y = 0;
+
+	private float board_x = 0;
+	private float board_y = SCREEN_WIDTH - 2 * board_halfheight;
 	private float ball_x = 0;
 	private float ball_y = circle_radius + board_halfheight;
-
-	float board_halfwidth = SCREEN_WIDTH * boardrate;
-	float board_halfwidth0;
-	float board_halfwidth1;
-
+	
 	SendData send = null;
 	private float old_board_x = 0;
 	
+	PropsObservable po;
 	
-	public TwoModeClient(Handler h){
-		this.windowHandler=h;
+	public TwoModeClient(Handler h,PropsObservable po) {
+		this.windowHandler = h;
+		this.po=po;
 	}
 	@Override
 	public void create() {
@@ -77,8 +74,11 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 		
 		Log.d("debug", "create");
 		send = new SendData();
-
-		board_halfheight = board_halfwidth * 1 / 5;
+		
+		board_halfwidth0 = SCREEN_WIDTH * boardrate;
+		board_halfwidth1 = SCREEN_WIDTH * boardrate;
+		board_halfwidth = SCREEN_WIDTH * boardrate;
+		board_halfheight = board_halfwidth / 5;
 
 		// ¾µÍ·ÏÂµÄÊÀ½ç
 		camera = new OrthographicCamera(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -118,37 +118,28 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 				+ circle_radius, BodyType.DynamicBody, 0, 2, 1, 0,
 				new BodyData(BodyData.BODY_BALL), null);
 		// ´´½¨µ²°å
-		tBoard0 = B2Util.createRectangle(mworld, SCREEN_WIDTH * boardrate,
+		tBoard1 = B2Util.createRectangle(mworld, board_halfwidth1,
 				board_halfheight, 0, 0, BodyType.StaticBody, 0, 0, 0, 0,
 				new BodyData(BodyData.BODY_BOARD), null);
-		tBoard1 = B2Util.createRectangle(mworld, SCREEN_WIDTH * boardrate,
+		tBoard0 = B2Util.createRectangle(mworld, board_halfwidth0,
 				board_halfheight, 0, SCREEN_WIDTH - 2 * board_halfheight,
 				BodyType.StaticBody, 0, 0, 0, 0, new BodyData(
 						BodyData.BODY_BOARD), null);
 
 	}
 	private void setBallBoardColor() {
-		float x = board_x;
-		float y = board_y;
 		
-		board_halfwidth0=board_halfwidth;
-		board_halfwidth1=board_halfwidth;
-		if(Data.boardsize.get(0)==1)
-			board_halfwidth0*=2;
-		if(Data.boardsize.get(1)==1)
-			board_halfwidth1*=2;
+		board_x = Data.location.get(0) * SCREEN_WIDTH / 2;
+		tBoard0.setTransform(board_x, tBoard0.getWorldCenter().y, 0);
 		
-		board_mesh.setVertices(new float[] { x - board_halfwidth0,
-				y + board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
-				x - board_halfwidth0, y - board_halfheight, 0,
-				Color.toFloatBits(0, 0, 0, 255), x + board_halfwidth0,
-				y + board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
-				x + board_halfwidth0, y - board_halfheight, 0,
+		board_mesh.setVertices(new float[] { board_x - board_halfwidth0,
+				board_y + board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
+				board_x - board_halfwidth0, board_y - board_halfheight, 0,
+				Color.toFloatBits(0, 0, 0, 255), board_x + board_halfwidth0,
+				board_y + board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
+				board_x + board_halfwidth0, board_y - board_halfheight, 0,
 				Color.toFloatBits(0, 0, 0, 255) });
-
-		board1_x = Data.location.get(0) * SCREEN_WIDTH / 2;
-		tBoard1.setTransform(board1_x, tBoard1.getWorldCenter().y, 0);
-		
+				
 		board_mesh1.setVertices(new float[] { board1_x - board_halfwidth1,
 						board1_y + board_halfheight, 0,
 						Color.toFloatBits(0, 0, 0, 255),
@@ -241,9 +232,9 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 		camera.apply(gl);
 		renderer.render(mworld, camera.combined);
 
-		if (old_board_x != board_x) {
+		if (old_board_x != board1_x) {
 			send.myboard();
-			old_board_x = board_x;
+			old_board_x = board1_x;
 		}
 		
 	
@@ -271,6 +262,9 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 //				i--;
 //			}
 //		}
+		BodyData bd=(BodyData)tB.getUserData();
+		if(bd.health==0)
+			mworld.destroyBody(tB);
 		
 	}	
 
@@ -289,12 +283,12 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 		camera.unproject(touchV);
 
 		if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
-				- board_halfwidth
+				- board_halfwidth1
 				&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
-						+ board_halfwidth) {
-			board_x=touchV.x;
-			tBoard0.setTransform(touchV.x, 0, 0);
-			Data.location.set(Data.myID, 2 *board_x
+						+ board_halfwidth1) {
+			board1_x=touchV.x;
+			tBoard1.setTransform(touchV.x, 0, 0);
+			Data.location.set(Data.myID, 2 *board1_x
 					/ SCREEN_WIDTH);
 		}
 		System.out.println("touch drag");
@@ -393,47 +387,47 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 		BodyData dB = (BodyData) cB.getUserData();
 		if (dA.getType() == BodyData.BODY_BLOCK) {
 			dA.health = 0;
-			if(dA.getchangeType()<30){
-				System.out.println(dA.getchangeType());
-				Message m=new Message();
-				m.what=SHOW_TOAST;
-				windowHandler.sendMessage(m);
-				if(tBall.getLinearVelocity().y<0){    //1ºÅ°åÅöµÄ
-				//	send.ballsize(size)
-				}else{								//0ºÅ°åÅöµÄ
-					
-				}
-				/*ChangeBall tT = new ChangeBall(tBall);
-				tT.start(dA.getchangeType());*/
-			}
-			else{
-				System.out.println(dA.getchangeType());
-				Message m=new Message();
-				m.what=SHOW_TOAST;
-				windowHandler.sendMessage(m);
-				if(tBall.getLinearVelocity().y<0){    //1ºÅ°åÅöµÄ
-					send.boardsize(1,1);
-				}else{								//0ºÅ°åÅöµÄ
-					send.boardsize(0,1);
-				}
-				/*ChangeBlock tT = new ChangeBlock(tBlock);
-				tT.start(dA.getchangeType());*/
-			}
-		}
-		if (dB.getType() == BodyData.BODY_BLOCK) {
-			dB.health = 0;
-			if(dA.getchangeType()<30){
-				System.out.println(dA.getchangeType());
+			int i=dA.getchangeType();
+			if(i<30){
 				Message m=new Message();
 				m.what=SHOW_TOAST;
 				windowHandler.sendMessage(m);
 				if(tBall.getLinearVelocity().y<0){    //0ºÅ°åÅöµÄ
-					
-				}else{								//1ºÅ°åÅöµÄ
-					
+					send.props(i,0);
+					po.setChange(i,0);
+				}else{
+					send.props(i,1);			//1ºÅ°åÅöµÄ
+					po.setChange(i,1);
 				}
-				/*ChangeBall tT = new ChangeBall(tBall);
-				tT.start(dA.getchangeType());*/
+			}
+			else{
+				Message m=new Message();
+				m.what=SHOW_TOAST;
+				windowHandler.sendMessage(m);
+				if(tBall.getLinearVelocity().y<0){    //0ºÅ°åÅöµÄ
+					send.props(i,0);
+					po.setChange(i,0);
+				}else{								//1ºÅ°åÅöµÄ
+					send.props(i,1);
+					po.setChange(i,1);
+				}
+			}
+		}
+		if (dB.getType() == BodyData.BODY_BLOCK) {
+			dB.health = 0;
+			int i=dA.getchangeType();
+			if(i<30){
+				System.out.println(dA.getchangeType());
+				Message m=new Message();
+				m.what=SHOW_TOAST;
+				windowHandler.sendMessage(m);
+				if(tBall.getLinearVelocity().y<0){    //1ºÅ°åÅöµÄ
+					send.props(i,1);
+					po.setChange(i,1);
+				}else{								//0ºÅ°åÅöµÄ
+					send.props(i,0);
+					po.setChange(i,0);
+				}
 			}
 			else{
 				System.out.println(dA.getchangeType());
@@ -441,12 +435,12 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 				m.what=SHOW_TOAST;
 				windowHandler.sendMessage(m);
 				if(tBall.getLinearVelocity().y<0){    //1ºÅ°åÅöµÄ
-					send.boardsize(1,1);
+					send.props(i,1);
+					po.setChange(i,1);
 				}else{								//0ºÅ°åÅöµÄ
-					send.boardsize(0,1);
+					send.props(i,0);
+					po.setChange(i,0);
 				}
-				/*ChangeBlock tT = new ChangeBlock(tBlock);
-				tT.start(dA.getchangeType());*/
 			}
 		}
 	}

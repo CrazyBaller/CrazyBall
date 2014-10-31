@@ -249,7 +249,32 @@ public void sendresult(int id,int result)
 }
 
 
+public void props(int type,int id)
+{
+	if (Data.mRemoteUser.size() == 0)
+		return;
 
+	for(int i=0;i<Data.mRemoteUser.size();i++)
+	{	JSONObject json = new JSONObject();
+    	try {
+			
+			json.put("type", type);
+			json.put("id", id);
+			
+		} catch (JSONException e) {
+			
+			e.printStackTrace();
+		}	
+	StringMessage helloMsg = new StringMessage(GameMessages.TYPE_PROPS,Data.mLocalUser.id,Data.mRemoteUser.get(i).id, json.toString());
+	// convert to interface message
+	GameMessage gameMsg = helloMsg.toGameMessage();
+	if (gameMsg == null)
+		return;
+	
+	// send message
+	Data.mGameShare.sendMessage(gameMsg);
+	}
+}
 
 
 }

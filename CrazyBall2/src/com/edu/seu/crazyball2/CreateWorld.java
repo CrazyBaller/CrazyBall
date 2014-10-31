@@ -78,8 +78,7 @@ public class CreateWorld {
 
 		setBoundColor();
 		batch = new SpriteBatch();
-//		texture2 = new Texture(Gdx.files.internal("data/ball.png"));
-		texture2 = new Texture(Gdx.files.internal("Ball.jpg"));
+		texture2 = new Texture(Gdx.files.internal("ball.png"));
 
 	}
 
