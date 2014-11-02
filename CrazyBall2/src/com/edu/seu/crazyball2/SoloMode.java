@@ -1,14 +1,5 @@
 package com.edu.seu.crazyball2;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -48,10 +39,6 @@ public class SoloMode implements ApplicationListener, ContactListener,
 
 	private Body tBoard0;
 	private Body tBall;
-	
-	//生成的方块
-	private List<Body> ballList = new ArrayList<Body>();
-	private List<Body> blockList = new ArrayList<Body>();
 
 	private Mesh board_mesh;
 
@@ -73,7 +60,7 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		camera.position.set(0, 10, 0);
 
 		gl = Gdx.graphics.getGL10();
-		renderer = new Box2DDebugRenderer();
+		 renderer = new Box2DDebugRenderer();
 
 		// 创建背景世界
 		mCreateWorld = new CreateWorld();
@@ -94,67 +81,8 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		InputMultiplexer inputmultiplexer = new InputMultiplexer();
 		inputmultiplexer.addProcessor(this);
 		Gdx.input.setInputProcessor(inputmultiplexer);
-		
-		// 创建砖块
-		initBlock();
-/*  		final Timer ts = new Timer();
-		TimerTask bt = new TimerTask(){
-			@Override
-
-            public void run() {
-				while(true)
-            	initBlock();
-            	//ts.cancel();
-            	}                
-		};
-		ts.schedule(bt, 60000,60000);  */
-		
-		// 设置碰撞监听
-		mworld.setContactListener(this);
 	}
 
-	
-
-	//创建砖块
-	private void initBlock() {
-		//获取随机的十个坐标点
-		Set<Integer> nums = new HashSet<Integer>();
-		Random rd = new Random();
-		while(nums.size()<6){
-			//利用nextFloat()生成[0，99)范围内的随机整数序列
-			nums.add((int) (rd.nextFloat()*100));
-		}
-		
-		Iterator<Integer> iter = nums.iterator();
-		
-		//设置具有被动属性的砖块(改变板的状态的属性)
-		blockList.clear();
-		for(int i=0 ;i<3;i++){
-			Integer temp  = iter.next();
-			float x = (temp%10-5)*(block_width*2.4f);
-			float y = (10+(temp/10)*block_width*2.4f);
-			System.out.println("x:"+x+" y:"+y);
-			int type = rd.nextInt(4)+31;
-			Body tB = B2Util.createRectangle(mworld, block_width, block_width, x,
-					y, BodyType.StaticBody, 0, 0, 0, 0,
-					new BodyData(BodyData.BODY_BLOCK,type), null);
-			blockList.add(tB);
-		}
-		//设置具有主动属性的砖块(改变板的状态的属性)
-		ballList.clear();
-		while(iter.hasNext()){
-			Integer temp  = iter.next();
-			float x = (temp%10-5)*(block_width*2.4f);
-			float y = (10+(temp/10)*block_width*2.4f);
-			int type = rd.nextInt(4)+21;
-			Body tB = B2Util.createRectangle(mworld, block_width, block_width, x,
-					y, BodyType.StaticBody, 0, 0, 0, 0,
-					new BodyData(BodyData.BODY_BLOCK,type), null);
-			System.out.println("x:"+x+" y:"+y);
-			ballList.add(tB);
-		}
-	}
-	
 	private void createBallBoard() {
 		// 创建球
 		tBall = B2Util.createCircle(mworld, circle_radius, 0, board_halfheight
@@ -167,8 +95,6 @@ public class SoloMode implements ApplicationListener, ContactListener,
 
 	}
 
-/*	绘制图片、上色*/
-	//绘制球的图片和板的图片
 	private void setBallBoardColor() {
 		float x = tBoard0.getPosition().x;
 		float y = tBoard0.getPosition().y;
@@ -182,10 +108,10 @@ public class SoloMode implements ApplicationListener, ContactListener,
 				Color.toFloatBits(0, 0, 0, 255) });
 
 	}
-	//绘制砖块的图片
+
 	@Override
 	public void render() {
-		mworld.step(Gdx.graphics.getDeltaTime(), 10, 8);
+		mworld.step(Gdx.graphics.getDeltaTime(),1,1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glClearColor(1f, 1f, 1f, 0f);
 
@@ -196,49 +122,20 @@ public class SoloMode implements ApplicationListener, ContactListener,
 
 		setBallBoardColor();
 		board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		
+
 		SpriteBatch batch = mCreateWorld.getBatch();
 
 		batch.begin();
 		float x = tBall.getPosition().x;
 		float y = tBall.getPosition().y;
-		System.out.println("draw x:"+x+"  draw y:"+y);
 		batch.draw(mCreateWorld.getTexture2(), set_x - 20f + x * 10, set_y
 				- 120f + y * 10, 40f, 40f);
-		// 销毁处理
-		for (int i = 0; i < ballList.size(); i++) {
-			Body b = ballList.get(i);
-			BodyData bd = (BodyData) b.getUserData();
-			if (bd.health == 0) {
-				mworld.destroyBody(b);
-				ballList.remove(i);
-				i--;
-			}
-			else{
-				System.out.println("draw x:"+b.getPosition().x+"  draw y:"+b.getPosition().y);
-				batch.draw(mCreateWorld.getBlockTexture(12),i*20f,i*20f, 20f,20f);
-			}
-		}
-		for (int i = 0; i < blockList.size(); i++) {
-			Body b = blockList.get(i);
-			BodyData bd = (BodyData) b.getUserData();
-			if (bd.health == 0) {
-				mworld.destroyBody(b);
-				blockList.remove(i);
-				i--;
-			}
-			else{
-				System.out.println("succeed in the draw method1");
-				batch.draw(mCreateWorld.getBlockTexture(12),i*20f,i*20f, 20f,20f);
-			}
-		}
-		if(ballList.size()==0&&blockList.size()==0){
-			initBlock();
-		}
 		batch.end();
+
 		camera.update();
 		camera.apply(gl);
 		renderer.render(mworld, camera.combined);
+
 	}
 
 	@Override
@@ -247,7 +144,7 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		camera.unproject(touchV);
 		if (firstTouch) {
 			firstTouch = false;
-			tBall.setLinearVelocity(60f, 80f);
+			tBall.setLinearVelocity(40f, 60f);
 		}
 
 		return false;
@@ -278,36 +175,10 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		BodyData dB = (BodyData) cB.getUserData();
 		if ((dA.getType() == BodyData.BODY_BALL && dB.getType() == BodyData.BODY_BORDER_BOTTOM)
 				|| (dA.getType() == BodyData.BODY_BORDER_BOTTOM && dB.getType() == BodyData.BODY_BALL)) {
-			/*tBall.setLinearVelocity(0, 0);
+			tBall.setLinearVelocity(0, 0);
 			Message m=new Message();
 			m.what=SHOW_DIALOG;
-			windowHandler.sendMessage(m);*/
-		}
-		if (dA.getType() == BodyData.BODY_BLOCK) {
-			dA.health = 0;
-			if(dA.getchangeType()<30){
-				System.out.println("bump! "+dA.getchangeType());
-				ChangeBall tT = new ChangeBall(tBall);
-				tT.start(dA.getchangeType());
-			}
-			else{
-				System.out.println("bump! "+dA.getchangeType());
-				ChangeBoard tT = new ChangeBoard(tBoard0);
-				tT.start(dA.getchangeType());
-			}
-		}
-		if (dB.getType() == BodyData.BODY_BLOCK) {
-			dB.health = 0;
-			if(dA.getchangeType()<30){
-				System.out.println("bump! "+dA.getchangeType());
-				ChangeBall tT = new ChangeBall(tBall);
-				tT.start(dA.getchangeType());
-			}
-			else{
-				System.out.println("bump! "+dA.getchangeType());
-				ChangeBoard tT = new ChangeBoard(tBoard0);
-				tT.start(dA.getchangeType());
-			}
+			windowHandler.sendMessage(m);
 		}
 	}
 
@@ -390,4 +261,5 @@ public class SoloMode implements ApplicationListener, ContactListener,
 	public boolean mouseMoved(int arg0, int arg1) {
 		return false;
 	}
+
 }

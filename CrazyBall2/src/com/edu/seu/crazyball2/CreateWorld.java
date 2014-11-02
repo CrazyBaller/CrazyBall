@@ -4,22 +4,16 @@ import static com.edu.seu.crazyball2.Constant.SCREEN_WIDTH;
 import static com.edu.seu.crazyball2.Constant.board_halfheight;
 import static com.edu.seu.crazyball2.Constant.boardrate;
 import static com.edu.seu.crazyball2.Constant.bound_width;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import android.content.Context;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -51,12 +45,7 @@ public class CreateWorld {
 
 	private SpriteBatch batch;
 	private Texture texture2;
-	private Texture textureBlock;
-	private TextureAtlas atlas;
-	private TextureRegion blockRegion;
-/*	private Texture texture3;
-	private Map<Integer,Texture> blockTexturemap= new HashMap<Integer,Texture>();
-*/
+
 	float board_halfwidth = SCREEN_WIDTH * boardrate;
 
 	public CreateWorld() {
@@ -89,11 +78,7 @@ public class CreateWorld {
 
 		setBoundColor();
 		batch = new SpriteBatch();
-		texture2 = new Texture(Gdx.files.internal("data/ball.png"));
-		
-		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
-		//…Ë÷√≈‰÷√∫Ø ˝
-		blockRegion= new TextureRegion(atlas.findRegion("11"));
+		texture2 = new Texture(Gdx.files.internal("ball.png"));
 
 	}
 
@@ -114,7 +99,6 @@ public class CreateWorld {
 					x + halfheight, y + halfwidth, 0,
 					Color.toFloatBits(192, 0, 0, 255), x + halfheight,
 					y - halfwidth, 0, Color.toFloatBits(192, 0, 0, 255) });
-			bound_one.setIndices(new short[] { 0, 1, 2, 3 });
 		}
 
 		x = tBound2.getPosition().x;
@@ -130,7 +114,6 @@ public class CreateWorld {
 					x + halfwidth, y + halfheight, 0,
 					Color.toFloatBits(192, 0, 0, 255), x + halfwidth,
 					y - halfheight, 0, Color.toFloatBits(192, 0, 0, 255) });
-			bound_two.setIndices(new short[] { 0, 1, 2, 3 });
 		}
 
 		x = tBound3.getPosition().x;
@@ -147,7 +130,6 @@ public class CreateWorld {
 					y + halfheight, 0, Color.toFloatBits(192, 0, 0, 255),
 					x + halfwidth, y - halfheight, 0,
 					Color.toFloatBits(192, 0, 0, 255) });
-			bound_three.setIndices(new short[] { 0, 1, 2, 3 });
 		}
 
 		x = tBound4.getPosition().x;
@@ -163,7 +145,6 @@ public class CreateWorld {
 					x + halfheight, y + halfwidth, 0,
 					Color.toFloatBits(192, 0, 0, 255), x + halfheight,
 					y - halfwidth, 0, Color.toFloatBits(192, 0, 0, 255) });
-			bound_four.setIndices(new short[] { 0, 1, 2, 3 });
 		}
 
 	}
@@ -193,9 +174,6 @@ public class CreateWorld {
 	}
 	public Texture getTexture2() {
 		return texture2;
-	}
-	public TextureRegion getBlockTexture(int type){
-		return blockRegion;
 	}
 
 }
