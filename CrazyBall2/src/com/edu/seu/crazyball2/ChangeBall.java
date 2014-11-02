@@ -3,14 +3,20 @@ package com.edu.seu.crazyball2;
 import static com.edu.seu.crazyball2.Constant.*;
 import java.util.Timer;
 import java.util.TimerTask;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.edu.seu.message.Data;
 
 
 public class ChangeBall {
 	/*private Fixture fdDef = new Fixture(null, 0);*/
-	private CircleShape shapeCircle;
+	private CircleShape shapeCircle = new CircleShape();
+		
 	
+	ChangeBall(Body tBall){
+		/*fdDef = tBall.getFixtureList().get(0);*/
+		//获得小球shape
+		shapeCircle = (CircleShape) tBall.getFixtureList().get(0).getShape();
+	}
 	//执行change
     public void start(int changeType) { 
     	if(changeType==21){
@@ -24,6 +30,9 @@ public class ChangeBall {
     	}
     	else if(changeType==24){
     		this.toSlower();
+    	}
+    	else{
+    		System.out.println(changeType);
     	}
     	   	timeVoid();
 
@@ -56,51 +65,31 @@ public class ChangeBall {
 	//属性改变函数
 	//主动性能改变（改变小球的属性）
 	public void toBigger(){
-		shapeCircle = (CircleShape) tBall.getFixtureList().get(0).getShape();
 		float OriRadius = shapeCircle.getRadius();
 		if(OriRadius>circle_radius){
 			shapeCircle.setRadius((float) (OriRadius*1.2));
-			circle_radius=(float) (OriRadius*1.2);
 		}
 		else{
 			shapeCircle.setRadius((float) (circle_radius*1.2));
-			circle_radius=(float) (circle_radius*1.2);
-		}	
+		}
+		
 	}
 	public void toSmaller(){
-		shapeCircle = (CircleShape) tBall.getFixtureList().get(0).getShape();
 		float OriRadius = shapeCircle.getRadius();
 		if(OriRadius<circle_radius){
-			shapeCircle.setRadius((float) (OriRadius/1.1));
-			circle_radius=(float) (OriRadius/1.1);
+			shapeCircle.setRadius((float) (OriRadius/1.2));
 		}
 		else{
-			shapeCircle.setRadius((float) (circle_radius/1.1));
-			circle_radius=(float) (circle_radius/1.1);
+			shapeCircle.setRadius((float) (circle_radius/1.2));
 		}
 	}
   	public void toFaster(){
-  		if(Data.myID==0){
-  			float x=tBall.getLinearVelocity().x;
-  			float y=tBall.getLinearVelocity().y;
-  			tBall.setLinearVelocity(x*1.2f, y*1.2f);			
-  		}
+
 	}
 	public void toSlower(){
-		if(Data.myID==0){
-  			float x=tBall.getLinearVelocity().x;
-  			float y=tBall.getLinearVelocity().y;
-  			tBall.setLinearVelocity(x/1.2f, y/1.2f);			
-  		}
 		
 	}  
 	public void toNormal(){
-		shapeCircle = (CircleShape) tBall.getFixtureList().get(0).getShape();
-		shapeCircle.setRadius(2*board_halfheight);
-		if(Data.myID==0){
-  			float x=tBall.getLinearVelocity().x;
-  			float y=tBall.getLinearVelocity().y;
-  			tBall.setLinearVelocity(20f, 20f*y/x);			
-  		}
+		shapeCircle.setRadius((float) (circle_radius/1.2));
 	}
 }

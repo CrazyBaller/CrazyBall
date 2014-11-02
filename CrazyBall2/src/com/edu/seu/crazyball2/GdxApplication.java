@@ -11,8 +11,6 @@ import com.edu.seu.message.GameMessages;
 import com.edu.seu.message.GameMessages.AbstractGameMessage;
 import com.edu.seu.message.GameMessages.HelloMessage;
 import com.edu.seu.message.GameMessages.RemoteLocationMessage;
-import com.edu.seu.props.PropsObservable;
-import com.edu.seu.props.PropsObserver;
 import com.lenovo.game.GameMessage;
 import com.lenovo.game.GameMessageListener;
 import com.lenovo.game.GameUserInfo;
@@ -35,17 +33,15 @@ public class GdxApplication extends AndroidApplication {
 
 	private boolean f = false;
 
+	private static final int MSG_RECEIVED_MESSAGE = 1;
+	private static final int MSG_RECEIVED_TWO = 2;
 	private static final int RECEIVED_Remote_Location = 3;
 	private static final int RECEIVED_BALL = 4;
 	private static final int RECEIVED_BOARD = 5;
 	private static final int RECEIVED_STATE = 6;
 	private static final int RECEIVED_UNFITY_ID = 7;
 	private static final int RECEIVED_GAME_RESULT = 8;
-	private static final int RECEIVED_BOARD_SIZE = 9;
-	private static final int RECEIVED_BALL_SIZE = 10;
-	private static final int RECEIVED_PROPS = 11;
 	
-	private PropsObservable po;
 
 	private Handler mHandler = new Handler() {
 
@@ -72,21 +68,6 @@ public class GdxApplication extends AndroidApplication {
 				}
 
 				break;
-				
-			case RECEIVED_BALL_SIZE:
-				if (Data.inviter == false) {
-					
-					try {
-						json = new JSONObject((String) msg.obj);
-						Data.ballsize=json.getInt("size");
-
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-				break;
 			case RECEIVED_BOARD:
 				
 				try {
@@ -95,22 +76,6 @@ public class GdxApplication extends AndroidApplication {
 					json = new JSONObject((String) msg.obj);
 					float f = (float) json.getDouble("x");
 					Data.location.set(json.getInt("id"), f);
-					// System.out.println("222222222222"+Data.ball.get(json.getInt("id")));
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				break;
-				
-			case RECEIVED_BOARD_SIZE:
-				
-				try {
-
-					System.out.println("8888888888888" + (String) msg.obj);
-					json = new JSONObject((String) msg.obj);
-					
-					Data.boardsize.set(json.getInt("id"),json.getInt("size"));
 					// System.out.println("222222222222"+Data.ball.get(json.getInt("id")));
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -152,22 +117,6 @@ public class GdxApplication extends AndroidApplication {
 				}
 
 				break;	
-				
-			case RECEIVED_PROPS:
-				
-				try {
-
-					
-					json = new JSONObject((String) msg.obj);
-					po.setChange(json.getInt("type"), json.getInt("id"));
-					
-					// System.out.println("222222222222"+Data.ball.get(json.getInt("id")));
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				break;
 
 			}
 		}
@@ -217,8 +166,6 @@ public class GdxApplication extends AndroidApplication {
 					e.printStackTrace();
 				}
 				break;
-			case SHOW_TOAST:
-				Toast.makeText(getApplicationContext(),"ftp:"+ 1.0/Gdx.graphics.getDeltaTime(), 10000).show();
 				
 			}
 		
@@ -265,12 +212,6 @@ public class GdxApplication extends AndroidApplication {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		
-		
-		//µÀ¾ß¼àÌý
-		po = new PropsObservable();
-	    po.addObserver(new PropsObserver());
 
 		Data.mGameShare = new GameShare(getApplicationContext());
 		Data.mGameShare.bind(mBindlistener);
@@ -299,9 +240,9 @@ public class GdxApplication extends AndroidApplication {
 			break;
 		case 2:
 			if (inviter)
-				initialize(new TwoMode(windowHandler,po), false);
+				initialize(new TwoMode(windowHandler), false);
 			else
-				initialize(new TwoModeClient(windowHandler,po), false);
+				initialize(new TwoModeClient(windowHandler), false);
 			break;
 		case 3:
 			if (inviter)
@@ -388,18 +329,6 @@ public class GdxApplication extends AndroidApplication {
 				} else if (message.getType().equals(GameMessages.TYPE_GAME_RESULT)) {
 
 					mHandler.sendMessage(mHandler.obtainMessage(RECEIVED_GAME_RESULT,
-							message.getMessage()));
-				}else if (message.getType().equals(GameMessages.TYPE_BOARD_SIZE)) {
-
-					mHandler.sendMessage(mHandler.obtainMessage(RECEIVED_BOARD_SIZE,
-							message.getMessage()));
-				}else if (message.getType().equals(GameMessages.TYPE_BALL_SIZE)) {
-
-					mHandler.sendMessage(mHandler.obtainMessage(RECEIVED_BALL_SIZE,
-							message.getMessage()));
-				}else if (message.getType().equals(GameMessages.TYPE_PROPS)) {
-
-					mHandler.sendMessage(mHandler.obtainMessage(RECEIVED_PROPS,
 							message.getMessage()));
 				}
 
