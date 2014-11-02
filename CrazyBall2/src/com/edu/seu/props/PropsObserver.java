@@ -3,7 +3,9 @@ package com.edu.seu.props;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-import com.edu.seu.crazyball2.ChangeBlock;
+
+import com.edu.seu.crazyball2.ChangeBall;
+import com.edu.seu.crazyball2.ChangeBoard;
 
 public class PropsObserver implements Observer {
 	@SuppressWarnings("unchecked")
@@ -16,9 +18,13 @@ public class PropsObserver implements Observer {
 		int type=((ArrayList<Integer>) data).get(0);
 		int id=((ArrayList<Integer>) data).get(1);
 		if(type>30&&type<35){	
-				ChangeBlock cb = new ChangeBlock(id);
+				ChangeBoard cb = new ChangeBoard(id);
 				cb.start(type);			
 		}
+		if(type>20&&type<25){	
+			ChangeBall cbl = new ChangeBall();
+			cbl.start(type);			
+	}
 	}
 	
 
