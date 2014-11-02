@@ -53,43 +53,12 @@ public void myboard()
     	try {
 			json.put("id",Data.myID);
 			json.put("x", Data.location.get(Data.myID));
-			
 
 		} catch (JSONException e) {
 			
 			e.printStackTrace();
 		}	
 	StringMessage helloMsg = new StringMessage(GameMessages.TYPE_BOARD_LOCATION,Data.mLocalUser.id,Data.mRemoteUser.get(i).id, json.toString());
-	// convert to interface message
-	GameMessage gameMsg = helloMsg.toGameMessage();
-	if (gameMsg == null)
-		return;
-	
-	// send message
-	Data.mGameShare.sendMessage(gameMsg);
-	}
-	
-}
-
-public void boardsize(int id,int size)
-{
-    Data.boardsize.set(id, size);	
-	
-    if (Data.mRemoteUser.size() == 0)
-		return;
-
-	for(int i=0;i<Data.mRemoteUser.size();i++)
-	{	JSONObject json = new JSONObject();
-    	try {
-			json.put("id",id);
-			json.put("size", size);
-			
-
-		} catch (JSONException e) {
-			
-			e.printStackTrace();
-		}	
-	StringMessage helloMsg = new StringMessage(GameMessages.TYPE_BOARD_SIZE,Data.mLocalUser.id,Data.mRemoteUser.get(i).id, json.toString());
 	// convert to interface message
 	GameMessage gameMsg = helloMsg.toGameMessage();
 	if (gameMsg == null)
@@ -118,36 +87,6 @@ public void ball()
 			e.printStackTrace();
 		}	
 	StringMessage helloMsg = new StringMessage(GameMessages.TYPE_BALL_LOCATION,Data.mLocalUser.id,Data.mRemoteUser.get(i).id, json.toString());
-	// convert to interface message
-	GameMessage gameMsg = helloMsg.toGameMessage();
-	if (gameMsg == null)
-		return;
-	
-	// send message
-	Data.mGameShare.sendMessage(gameMsg);
-	}
-	
-}
-
-
-public void ballsize(int size)
-{
-	Data.ballsize=size;
-	
-	if (Data.mRemoteUser.size() == 0)
-		return;
-
-	for(int i=0;i<Data.mRemoteUser.size();i++)
-	{	JSONObject json = new JSONObject();
-    	try {
-			
-			json.put("size", size);
-			
-		} catch (JSONException e) {
-			
-			e.printStackTrace();
-		}	
-	StringMessage helloMsg = new StringMessage(GameMessages.TYPE_BALL_SIZE,Data.mLocalUser.id,Data.mRemoteUser.get(i).id, json.toString());
 	// convert to interface message
 	GameMessage gameMsg = helloMsg.toGameMessage();
 	if (gameMsg == null)
@@ -249,32 +188,7 @@ public void sendresult(int id,int result)
 }
 
 
-public void props(int type,int id)
-{
-	if (Data.mRemoteUser.size() == 0)
-		return;
 
-	for(int i=0;i<Data.mRemoteUser.size();i++)
-	{	JSONObject json = new JSONObject();
-    	try {
-			
-			json.put("type", type);
-			json.put("id", id);
-			
-		} catch (JSONException e) {
-			
-			e.printStackTrace();
-		}	
-	StringMessage helloMsg = new StringMessage(GameMessages.TYPE_PROPS,Data.mLocalUser.id,Data.mRemoteUser.get(i).id, json.toString());
-	// convert to interface message
-	GameMessage gameMsg = helloMsg.toGameMessage();
-	if (gameMsg == null)
-		return;
-	
-	// send message
-	Data.mGameShare.sendMessage(gameMsg);
-	}
-}
 
 
 }
