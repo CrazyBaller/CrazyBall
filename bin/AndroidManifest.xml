@@ -30,7 +30,7 @@
 
         <meta-data
             android:name="SHAREIT_SUPPORTED_PLAYER_NUM"
-            android:value="1,2" >
+            android:value="1,2,3,4" >
         </meta-data>
 
         <activity

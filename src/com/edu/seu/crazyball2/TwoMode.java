@@ -44,7 +44,6 @@ public class TwoMode implements ApplicationListener, ContactListener,
 
 	private OrthographicCamera camera;
 
-
 	private Body[] mB = new Body[4];
 	private Body[] slipe = new Body[2];
 	private Fixture m_sensor;

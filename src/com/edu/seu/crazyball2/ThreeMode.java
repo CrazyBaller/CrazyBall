@@ -2,13 +2,9 @@ package com.edu.seu.crazyball2;
 
 import static com.edu.seu.crazyball2.Constant.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -28,14 +24,16 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.edu.seu.message.Data;
 import com.edu.seu.message.SendData;
+import com.edu.seu.props.PropsObservable;
 import com.edu.seu.tool.Tool;
 
 public class ThreeMode implements ApplicationListener, ContactListener,
@@ -43,22 +41,28 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 
 	private Handler windowHandler;
 	private CreateWorld mCreateWorld;
-	private World mworld;
 	private GL10 gl;
 
 	private OrthographicCamera camera;
 	private Box2DDebugRenderer renderer;
 
-	private List<Body> blockList = new ArrayList<Body>();
+	private Body[] mB = new Body[4];
+	private Body[] slipe = new Body[2];
+	private Fixture m_sensor;
+
+	private PropsObservable po;
 
 	private Mesh board_mesh;
 	private Mesh board_mesh1;
 	private Mesh board_mesh2;
 
 	private boolean firstTouch = true;
+	private boolean touchingSensor = false;
 
 	float tboard1_x;
 	float tboard2_y;
+	float x;
+	float y;
 
 	float old_board_x = 0;
 	float old_ball_x = 0;
@@ -67,12 +71,17 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 	SendData send;
 	private float mLastTime = 0;
 	private SpriteBatch batch;
-	
-	private boolean backReleased=false;
+
+	int flagend0 = 0;
+	int flagend1 = 0;
+	int flagend2 = 0;
+
+	private boolean backReleased = false;
 	private Vector2 oldVector;
 
-	public ThreeMode(Handler h) {
+	public ThreeMode(Handler h, PropsObservable po) {
 		this.windowHandler = h;
+		this.po = po;
 	}
 
 	@Override
@@ -89,9 +98,13 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 		block_width = circle_radius;
 
 		send = new SendData();
+
+		// init color
+		initColor();
+
 		// 镜头下的世界
 		camera = new OrthographicCamera(SCREEN_WIDTH, SCREEN_HEIGHT);
-		camera.position.set(0, 10, 0);
+		camera.position.set(0, 12, 0);
 
 		gl = Gdx.graphics.getGL10();
 		renderer = new Box2DDebugRenderer();
@@ -115,7 +128,12 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 		setBallBoardColor();
 
 		initBlock();
+		initMyblock();
 
+		// 创建感应区
+		tSensor = B2Util.createSensor(mworld, base_width * 2, m_sensor, 0f,
+				SCREEN_WIDTH / 2, new BodyData(BodyData.BODY_SENSOR), null);
+		m_sensor = tSensor.getFixtureList().get(0);
 		// 设置碰撞监听
 		mworld.setContactListener(this);
 
@@ -123,21 +141,66 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 		InputMultiplexer inputmultiplexer = new InputMultiplexer();
 		inputmultiplexer.addProcessor(this);
 		Gdx.input.setInputProcessor(inputmultiplexer);
-		Gdx.input.setCatchBackKey(true); 
+		Gdx.input.setCatchBackKey(true);
 	}
 
 	private void initBlock() {
-		blockList.clear();
+		Data.blockList.clear();
+		// Data.blockliststate.clear();
 		for (int i = 0; i < Data.propsimageid.size(); i++) {
 			int type = Data.propsimageid.get(i);
-			float x=Data.propsimagex.get(i)*SCREEN_WIDTH/2;
+			float x = -Data.propsimagex.get(i) * SCREEN_WIDTH / 2;
 			float y = SCREEN_WIDTH - 2 * board_halfheight
-					- Data.propsimagey.get(i)* SCREEN_WIDTH / 2;
+					- Data.propsimagey.get(i) * SCREEN_WIDTH / 2;
 			Body t = B2Util.createRectangle(mworld, block_width / 1.6f,
 					block_width / 1.6f, x, y, BodyType.StaticBody, 0, 0, 0, 0,
-					new BodyData(BodyData.BODY_BLOCK, type), null);
-			blockList.add(t);
+					new BodyData(BodyData.BODY_BLOCK, type, i), null);
+			Data.blockList.add(t);
+			// Data.blockliststate.add(1);
+
 		}
+		Data.propsimageid.clear();
+		Data.propsimagex.clear();
+		Data.propsimagey.clear();
+	}
+
+	private void initColor() {
+		colors[0] = Color.valueOf("4db6af");
+		colors[1] = Color.valueOf("f26d6e");
+		colors[2] = Color.valueOf("6fcda8");
+		colors[3] = Color.valueOf("fd987a");
+		bgcolor = Color.valueOf("34495E");
+
+	}
+
+	private void initMyblock() {
+		for (int i = 0; i < 4; i++) {
+			myBlock[i] = 0;
+		}
+		mB[0] = B2Util.createRectangle(mworld, base_width, base_width,
+				(-SCREEN_WIDTH / 2 + base_width * 1.5f),
+				-(board_halfheight + base_width * 1.5f), BodyType.StaticBody,
+				0, 0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 31), null);
+		mB[1] = B2Util.createRectangle(mworld, base_width, base_width,
+				(-SCREEN_WIDTH / 2 + base_width * 3.5f),
+				-(board_halfheight + base_width * 1.5f), BodyType.StaticBody,
+				0, 0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 32), null);
+		mB[2] = B2Util.createRectangle(mworld, base_width, base_width,
+				(-SCREEN_WIDTH / 2 + base_width * 5.5f),
+				-(board_halfheight + base_width * 1.5f), BodyType.StaticBody,
+				0, 0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 33), null);
+		mB[3] = B2Util.createRectangle(mworld, base_width, base_width,
+				(-SCREEN_WIDTH / 2 + base_width * 7.5f),
+				-(board_halfheight + base_width * 1.5f), BodyType.StaticBody,
+				0, 0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 34), null);
+		slipe[0] = B2Util.createRectangle(mworld, base_width, base_width,
+				(-SCREEN_WIDTH / 2 + base_width * 2.5f),
+				-(board_halfheight + base_width * 4f), BodyType.StaticBody, 0,
+				0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 10), null);
+		slipe[1] = B2Util.createRectangle(mworld, base_width, base_width,
+				(-SCREEN_WIDTH / 2 + base_width * 6.5f),
+				-(board_halfheight + base_width * 4f), BodyType.StaticBody, 0,
+				0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 11), null);
 	}
 
 	private void createBallBoard() {
@@ -148,20 +211,21 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 		// 创建挡板
 		tBoard0 = B2Util.createRectangle(mworld, board_halfwidth0,
 				board_halfheight, 0, 0, BodyType.StaticBody, 0, 0, 0, 0,
-				new BodyData(BodyData.BODY_BOARD), null);
+				new BodyData(BodyData.BODY_BOARD0), null);
 		tBoard1 = B2Util.createRectangle(mworld, board_halfwidth1,
 				board_halfheight, 0, SCREEN_WIDTH - 2 * board_halfheight,
 				BodyType.StaticBody, 0, 0, 0, 0, new BodyData(
-						BodyData.BODY_BOARD), null);
+						BodyData.BODY_BOARD1), null);
 		tBoard2 = B2Util.createRectangle(mworld, board_halfheight,
 				board_halfwidth2, -SCREEN_WIDTH / 2 + board_halfheight,
 				-board_halfheight + SCREEN_WIDTH / 2, BodyType.StaticBody, 0,
-				0, 0, 0, new BodyData(BodyData.BODY_BOARD), null);
+				0, 0, 0, new BodyData(BodyData.BODY_BOARD2), null);
 	}
 
 	private void setBallBoardColor() {
-		float x = tBoard0.getPosition().x;
-		float y = tBoard0.getPosition().y;
+
+		x = tBoard0.getPosition().x;
+		y = tBoard0.getPosition().y;
 
 		board_mesh.setVertices(new float[] { x - board_halfwidth0,
 				y + board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
@@ -192,34 +256,56 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 				y + board_halfwidth2, 0, Color.toFloatBits(0, 0, 0, 255),
 				x + board_halfheight, y - board_halfwidth2, 0,
 				Color.toFloatBits(0, 0, 0, 255) });
-
 	}
 
 	@Override
 	public void render() {
 		float dt = Gdx.graphics.getDeltaTime();
 		mLastTime += dt;
-		if (mLastTime >= 1.0/60)
-		{
+		if (mLastTime >= 1.0 / 60) {
 			mLastTime = 0;
-		}
-		else return;
-	
-		mworld.step(1.0f/6.0f, 1, 1);
+		} else
+			return;
+
+		mworld.step(1.0f / 6.0f, 1, 1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glClearColor(1f, 1f, 1f, 0f);
 
+		mCreateWorld.getHead().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		mCreateWorld.getBackground().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_one().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_two().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_three().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_four().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		
-		tBoard1.setTransform(Data.location.get(1) * SCREEN_WIDTH / 2, tBoard1.getWorldCenter().y, 0);
+		mCreateWorld.getControlBackground()
+				.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		mCreateWorld.getSlipeBackground().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+
+		tBoard1.setTransform(-Data.location.get(1) * SCREEN_WIDTH / 2,
+				tBoard1.getWorldCenter().y, 0);
+
 		tboard2_y = SCREEN_WIDTH / 2 - board_halfheight - Data.location.get(2)
 				* SCREEN_WIDTH / 2;
 		tBoard2.setTransform(tBoard2.getWorldCenter().x, tboard2_y, 0);
 
+		// 反力场处理
+		if (touchingSensor == true) {
+
+			if (canTouching == true) {
+				m_sensor = tSensor.getFixtureList().get(0);
+				Body ground = m_sensor.getBody();
+				CircleShape circle = (CircleShape) m_sensor.getShape();
+				Vector2 center = ground.getWorldPoint(circle.getPosition());
+				Vector2 position = tBall.getPosition();
+				Vector2 d = center.sub(position);
+				// d.notifyAll();
+				Vector2 F = d.mul(200.0f);
+				tBall.applyForce(F, position);
+			}
+		}
+
 		setBallBoardColor();
+
 		board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		board_mesh1.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		board_mesh2.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
@@ -227,43 +313,80 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 		batch.begin();
 		float x = tBall.getPosition().x;
 		float y = tBall.getPosition().y;
-		circle_radius=tBall.getFixtureList().get(0).getShape().getRadius();
-		batch.draw(mCreateWorld.getTexture2(), set_x +( x-circle_radius )* 10, set_y
-				-100f + (y- circle_radius )* 10, 20*circle_radius, 20*circle_radius);
-		for (int i = 0; i < blockList.size(); i++) {
-			Body b = blockList.get(i);
+		circle_radius = tBall.getFixtureList().get(0).getShape().getRadius();
+		// 画柱子
+		mCreateWorld.setBoundCircle();
+
+		// 画反力场黑洞
+		if (canTouching == true) {
+			batch.draw(mCreateWorld.getBlockTexture(541), set_x
+					+ (0 - base_width * 2) * 10f, set_y - 120f
+					+ (SCREEN_WIDTH / 2 - base_width * 2) * 10f,
+					40 * base_width, 40 * base_width);
+		}
+		batch.draw(mCreateWorld.getTexture2(),
+				set_x + (x - circle_radius) * 10, set_y - 120f
+						+ (y - circle_radius) * 10, 20 * circle_radius,
+				20 * circle_radius);
+
+		for (int i = 0; i < Data.blockList.size(); i++) {
+			Body b = Data.blockList.get(i);
 			BodyData bd = (BodyData) b.getUserData();
 			if (bd.health == 0) {
 				mworld.destroyBody(b);
-				blockList.remove(i);
+				Data.blockList.remove(i);
 				i--;
 			} else {
-				x=b.getPosition().x;
-				y=b.getPosition().y;
-				batch.draw(mCreateWorld.getBlockTexture(12), set_x +( x-block_width/2 )* 10, set_y
-						-100f + (y- block_width/2 )* 10, 10*block_width/0.8f, 10*block_width/0.8f);
+				x = b.getPosition().x;
+				y = b.getPosition().y;
+				batch.draw(
+						mCreateWorld.getBlockTexture(400 + bd.getchangeType()),
+						set_x + (x - block_width / 1.2f) * 10, set_y - 120f
+								+ (y - block_width / 1.2f) * 10,
+						10 * block_width / 0.6f, 10 * block_width / 0.6f);
 			}
 		}
+		if (Data.blockList.size() == 0) {
+			initBlock();
+		}
+
+		// 画道具框
+		for (int i = 0; i < 4; i++) {
+			Body b = mB[i];
+			float mBx = b.getPosition().x;
+			float mBy = b.getPosition().y;
+			if (myBlock[i] == 0) {
+				batch.draw(mCreateWorld.getBlockTexture(0), set_x
+						+ (mBx - base_width) * 10f, set_y - 120f
+						+ (mBy - base_width / 2) * 10.6f,
+						10 * base_width / 0.6f, 10 * base_width / 0.6f);
+			} else {
+				batch.draw(
+						mCreateWorld.getBlockTexture(Data.myID * 100 + 21 + i),
+						set_x + (mBx - base_width) * 10f, set_y - 120f
+								+ (mBy - base_width / 2) * 10.6f,
+						10 * base_width / 0.6f, 10 * base_width / 0.6f);
+			}
+		}
+		// 画滑动提示
+		for (int i = 0; i < 2; i++) {
+			Body b = slipe[i];
+			float mBx = b.getPosition().x;
+			float mBy = b.getPosition().y;
+			batch.draw(mCreateWorld.getBlockTexture(10 + i), set_x
+					+ (mBx - base_width) * 10f, set_y - 120f
+					+ (mBy - base_width / 2) * 10.6f, 10 * base_width / 0.6f,
+					10 * base_width / 0.6f);
+		}
 		batch.end();
-		
-		if (Gdx.input.isKeyPressed(Keys.BACK)&&!backReleased) 
-		{   
-			backReleased=true;
-			Message m=new Message();
-		    m.what=SHOW_DIALOG2;
-	     	windowHandler.sendMessage(m);
-		    pause();
-		} 
-		
-		
-		if (Gdx.input.isKeyPressed(Keys.BACK)&&!backReleased) 
-		{   
-			backReleased=true;
-			Message m=new Message();
-		    m.what=SHOW_DIALOG2;
-	     	windowHandler.sendMessage(m);
-		    pause();
-		} 
+
+		if (Gdx.input.isKeyPressed(Keys.BACK) && !backReleased) {
+			backReleased = true;
+			Message m = new Message();
+			m.what = SHOW_DIALOG2;
+			windowHandler.sendMessage(m);
+			pause();
+		}
 
 		camera.update();
 		camera.apply(gl);
@@ -293,17 +416,51 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 		Vector3 touchV = new Vector3(arg0, arg1, 0);
 		camera.unproject(touchV);
 		if (firstTouch) {
-			Random r=new Random();
-			float xv=r.nextFloat()*20;
-			float yv=40-xv;
-			if(r.nextInt(2)==0)
-				xv=-xv;
-			if(r.nextInt(2)==0)
-				yv=-yv;
+			Random r = new Random();
+			float xv = r.nextFloat() * 20;
+			float yv = 40 - xv;
+			if (r.nextInt(2) == 0)
+				xv = -xv;
+			if (r.nextInt(2) == 0)
+				yv = -yv;
 			firstTouch = false;
 			tBall.setLinearVelocity(xv, yv);
 		}
-
+		arg1 = SCREEN_HEIGHT * 5 - arg1;
+		arg0 = arg0 - SCREEN_WIDTH * 5;
+		if (arg1 > 10 * (mB[0].getPosition().y - base_width - 12)
+				&& arg1 < 10 * (mB[0].getPosition().y + base_width - 12)) {
+			System.out.println("right");
+			if (arg0 > 10 * (mB[0].getPosition().x - base_width)
+					&& arg0 < 10 * (mB[0].getPosition().x + base_width)) {
+				if (myBlock[0] != 0) {
+					send.propsactivity(21);
+					po.setChange(21, 0);
+					myBlock[0]--;
+				}
+			} else if (arg0 > 10 * (mB[1].getPosition().x - base_width)
+					&& arg0 < 10 * (mB[1].getPosition().x + base_width)) {
+				if (myBlock[1] != 0) {
+					send.propsactivity(22);
+					po.setChange(22, 0);
+					myBlock[1]--;
+				}
+			} else if (arg0 > 10 * (mB[2].getPosition().x - base_width)
+					&& arg0 < 10 * (mB[2].getPosition().x + base_width)) {
+				if (myBlock[2] != 0) {
+					send.propsactivity(23);
+					po.setChange(23, 0);
+					myBlock[2]--;
+				}
+			} else if (arg0 > 10 * (mB[3].getPosition().x - base_width)
+					&& arg0 < 10 * (mB[3].getPosition().x + base_width)) {
+				if (myBlock[3] != 0) {
+					send.propsactivity(24);
+					po.setChange(24, 0);
+					myBlock[3]--;
+				}
+			}
+		}
 		return false;
 	}
 
@@ -334,52 +491,63 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 		if ((dA.getType() == BodyData.BODY_BALL && dB.getType() == BodyData.BODY_BORDER_BOTTOM) // 0号死
 				|| (dA.getType() == BodyData.BODY_BORDER_BOTTOM && dB.getType() == BodyData.BODY_BALL)) {
 			tBall.setLinearVelocity(0, 0);
-			int result = new Tool().judge(0);
+			
+			if (flagend0 == 0)
 
-			SendData send = new SendData();
-			send.sendresult(0, result);
+			{
+				flagend0 = 1;
 
-			JSONObject json = new JSONObject();
-			try {
+				int result = new Tool().judge(0);
 
-				json.put("id", 0);
-				json.put("result", result);
+				SendData send = new SendData();
+				send.sendresult(0, result);
 
-			} catch (JSONException e) {
+				JSONObject json = new JSONObject();
+				try {
 
-				e.printStackTrace();
+					json.put("id", 0);
+					json.put("result", result);
+
+				} catch (JSONException e) {
+
+					e.printStackTrace();
+				}
+
+				Message m = new Message();
+				m.what = SHOW_MYDEAD_DIALOG;
+				m.obj = json.toString();
+				windowHandler.sendMessage(m);
 			}
-
-			Message m = new Message();
-			m.what = SHOW_MYDEAD_DIALOG;
-			m.obj = json.toString();
-			windowHandler.sendMessage(m);
 
 		} else if ((dA.getType() == BodyData.BODY_BALL && dB.getType() == BodyData.BODY_BORDER_UP) // 1号死
 				|| (dA.getType() == BodyData.BODY_BORDER_UP && dB.getType() == BodyData.BODY_BALL)) {
-			int result = new Tool().judge(1);
+			if (flagend1 == 0) {
+				flagend1 = 1;
+				int result = new Tool().judge(1);
+				SendData send = new SendData();
+				send.sendresult(1, result);
 
-			SendData send = new SendData();
-			send.sendresult(1, result);
+				JSONObject json = new JSONObject();
+				try {
 
-			JSONObject json = new JSONObject();
-			try {
+					json.put("id", 1);
+					json.put("result", result);
 
-				json.put("id", 1);
-				json.put("result", result);
+				} catch (JSONException e) {
 
-			} catch (JSONException e) {
+					e.printStackTrace();
+				}
 
-				e.printStackTrace();
+				Message m = new Message();
+				m.what = SHOW_MYDEAD_DIALOG;
+				m.obj = json.toString();
+				windowHandler.sendMessage(m);
 			}
-
-			Message m = new Message();
-			m.what = SHOW_MYDEAD_DIALOG;
-			m.obj = json.toString();
-			windowHandler.sendMessage(m);
 		} else if ((dA.getType() == BodyData.BODY_BALL && dB.getType() == BodyData.BODY_BORDER_LEFT) // 2号死
 				|| (dA.getType() == BodyData.BODY_BORDER_LEFT && dB.getType() == BodyData.BODY_BALL)) {
 
+			if(flagend2 == 0){
+				flagend2 = 1;
 			int result = new Tool().judge(2);
 
 			SendData send = new SendData();
@@ -400,6 +568,7 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 			m.what = SHOW_MYDEAD_DIALOG;
 			m.obj = json;
 			windowHandler.sendMessage(m);
+			}
 		}
 	}
 
@@ -426,8 +595,8 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 	@Override
 	public void pause() {
 		Log.d("debug", "pause");
-		oldVector=tBall.getLinearVelocity();
-		tBall.setLinearVelocity(0,0);
+		oldVector = tBall.getLinearVelocity();
+		tBall.setLinearVelocity(0, 0);
 	}
 
 	@Override
@@ -453,7 +622,7 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 
 	@Override
 	public boolean keyUp(int arg0) {
-		backReleased=false;
+		backReleased = false;
 		return false;
 	}
 
@@ -469,17 +638,128 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 
 	@Override
 	public void beginContact(Contact arg0) {
+		Fixture fixtureA = arg0.getFixtureA();
+		Fixture fixtureB = arg0.getFixtureB();
+		/* System.out.println(m_sensor); */
+		if (fixtureA == m_sensor) {
+			/*
+			 * System.out.println((fixtureB.getBody().getUserData().toString()));
+			 */
+			if (fixtureB.getBody().getUserData() != null) {
+				touchingSensor = true;
 
+			}
+
+		}
+		// System.out.println(fixtureB);
+
+		if (fixtureB == m_sensor) {
+			/*
+			 * System.out.println((fixtureA.getBody().getUserData().toString()));
+			 */
+			if (fixtureA.getBody().getUserData() != null) {
+				touchingSensor = true;
+			}
+
+		}
 	}
 
 	@Override
 	public void endContact(Contact arg0) {
-
+		// m_sensor = tSensor.getFixtureList().get(0);
+		Fixture fixtureA = arg0.getFixtureA();
+		Fixture fixtureB = arg0.getFixtureB();
+		if (fixtureA == m_sensor) {
+			if (fixtureB.getBody().getUserData() != null) {
+				touchingSensor = false;
+			}
+		}
+		if (fixtureB == m_sensor) {
+			if (fixtureA.getBody().getUserData() != null) {
+				touchingSensor = false;
+			}
+		}
 	}
 
 	@Override
 	public void preSolve(Contact arg0, Manifold arg1) {
+		Body cA = arg0.getFixtureA().getBody();
+		Body cB = arg0.getFixtureB().getBody();
 
+		BodyData dA = (BodyData) cA.getUserData();
+		BodyData dB = (BodyData) cB.getUserData();
+		if ((dA.getType() == BodyData.BODY_BALL && dB.getType() == BodyData.BODY_BOARD0) // 0号碰
+				|| (dA.getType() == BodyData.BODY_BOARD0 && dB.getType() == BodyData.BODY_BALL)) {
+			CONTROL_ID = 0;
+			send.controlId();
+		} else if ((dA.getType() == BodyData.BODY_BALL && dB.getType() == BodyData.BODY_BOARD1) // 1号碰
+				|| (dA.getType() == BodyData.BODY_BOARD1 && dB.getType() == BodyData.BODY_BALL)) {
+			CONTROL_ID = 1;
+			send.controlId();
+		} else if ((dA.getType() == BodyData.BODY_BALL && dB.getType() == BodyData.BODY_BOARD2) // 2号碰
+				|| (dA.getType() == BodyData.BODY_BOARD2 && dB.getType() == BodyData.BODY_BALL)) {
+			CONTROL_ID = 2;
+			send.controlId();
+		}
+		if (dA.getType() == BodyData.BODY_BLOCK) {
+			dA.health = 0;
+			int i = dA.getchangeType();
+			// if (tBall.getLinearVelocity().y < 0) {
+			if (CONTROL_ID == 0) {
+				send.eatblock(dA.getId());
+				send.props(i, 0);
+				if (i > 20 && i < 30) {
+					myBlock[i - 21]++;
+				} else {
+					po.setChange(i, 0);
+				}
+			} else if (CONTROL_ID == 1) {
+				send.eatblock(dA.getId());
+				send.props(i, 1);
+				if (i > 20 && i < 30) {
+
+				} else {
+					po.setChange(i, 1);
+				}
+			} else if (CONTROL_ID == 2) {
+				send.eatblock(dA.getId());
+				send.props(i, 2);
+				if (i > 20 && i < 30) {
+
+				} else {
+					po.setChange(i, 2);
+				}
+			}
+		}
+		if (dB.getType() == BodyData.BODY_BLOCK) {
+			dB.health = 0;
+			int i = dA.getchangeType();
+			if (CONTROL_ID == 0) {
+				send.eatblock(dA.getId());
+				send.props(i, 0);
+				if (i > 20 && i < 30) {
+					myBlock[i - 21]++;
+				} else {
+					po.setChange(i, 0);
+				}
+			} else if (CONTROL_ID == 1) {
+				send.eatblock(dA.getId());
+				send.props(i, 1);
+				if (i > 20 && i < 30) {
+
+				} else {
+					po.setChange(i, 1);
+				}
+			} else if (CONTROL_ID == 2) {
+				send.eatblock(dA.getId());
+				send.props(i, 2);
+				if (i > 20 && i < 30) {
+
+				} else {
+					po.setChange(i, 2);
+				}
+			}
+		}
 	}
 
 	@Override

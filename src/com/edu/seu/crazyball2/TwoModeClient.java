@@ -43,7 +43,6 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 	private Handler windowHandler;
 	private OrthographicCamera camera;
 	private CreateWorld mCreateWorld;
-	private List<Body> blockList = new ArrayList<Body>();
 	private Body[] mB = new Body[4];
 	private Body[] slipe = new Body[2];
 	private Fixture m_sensor;

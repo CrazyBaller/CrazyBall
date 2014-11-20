@@ -34,6 +34,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -52,16 +53,20 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 	private OrthographicCamera camera;
 	private Box2DDebugRenderer renderer;
 	private CreateWorld mCreateWorld;
-	private World mworld;
 
-	private List<Body> blockList = new ArrayList<Body>();
+	private Body[] mB = new Body[4];
+	private Body[] slipe = new Body[2];
+	private Fixture m_sensor;
+
+	private boolean touchingSensor = false;
+
 	private PropsObservable po;
+	Body tB;
 	private Mesh board_mesh;
 	private Mesh board_mesh1;
 	private Mesh board_mesh2;
 
 	private SpriteBatch batch;
-	private Texture texture2;
 
 	private float board_x = 0;
 	private float board_y = 0;
@@ -75,13 +80,14 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 	private int type = 1;
 	float x;
 	float y;
-	private int lasttouch=0;
-	
+	private boolean firstTouch = true;
+	private int lasttouch = 0;
+
 	SendData send = null;
 	private float old_board_x = 0;
 	private float mLastTime = 0;
-	
-	private boolean backReleased=false;
+
+	private boolean backReleased = false;
 	private Vector2 oldVector;
 
 	public ThreeModeClient(Handler h, PropsObservable po) {
@@ -104,15 +110,19 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 
 		send = new SendData();
 
+		// init color
+		initColor();
 		// 镜头下的世界
 		camera = new OrthographicCamera(SCREEN_WIDTH, SCREEN_HEIGHT);
-		camera.position.set(0, 10, 0);
+		camera.position.set(0, 12, 0);
 
 		gl = Gdx.graphics.getGL10();
 
 		// 创建背景世界
 		mCreateWorld = new CreateWorld();
 		mworld = mCreateWorld.getWorld();
+		batch = mCreateWorld.getBatch();
+
 		board_mesh = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
 				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
 				"a_color"));
@@ -130,6 +140,12 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		else {
 			initBlockClient();
 		}
+		initMyblock();
+
+		// 创建感应区
+		tSensor = B2Util.createSensor(mworld, base_width * 2, m_sensor, 0f,
+				SCREEN_WIDTH / 2, new BodyData(BodyData.BODY_SENSOR), null);
+		m_sensor = tSensor.getFixtureList().get(0);
 
 		mworld.setContactListener(this);
 
@@ -153,21 +169,37 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		Data.propsimageid.clear();
 		Data.propsimagex.clear();
 		Data.propsimagey.clear();
-		blockList.clear();
-		int id=0;
-		for (int i = 0; i < 6; i++) {
+		Data.blockList.clear();
+		int id = 0;
+		for (int i = 0; i < 5; i++) {
 			Integer temp = iter.next();
 			float x = (temp % 10 - 5) * (block_width * 2.4f);
 			float y = (3 + (temp / 10)) * block_width * 2.4f;
 			int type = rd.nextInt(4) + 31;
 			Body tB = B2Util.createRectangle(mworld, block_width / 1.6f,
 					block_width / 1.6f, x, y, BodyType.StaticBody, 0, 0, 0, 0,
-					new BodyData(BodyData.BODY_BLOCK, type,id), null);
-			blockList.add(tB);
+					new BodyData(BodyData.BODY_BLOCK, type, id), null);
+			Data.blockList.add(tB);
 			id++;
 			Data.propsimageid.add(type);
-			Data.propsimagex.add(x/(SCREEN_WIDTH/2));
-			Data.propsimagey.add(y/(SCREEN_WIDTH/2));
+			Data.propsimagex.add(x / (SCREEN_WIDTH / 2));
+			Data.propsimagey.add(y / (SCREEN_WIDTH / 2));
+
+		}
+		for (int i = 0; i < 2; i++) {
+			Integer temp = iter.next();
+			float x = (temp % 10 - 5) * (block_width * 2.4f);
+			float y = (3 + (temp / 10)) * block_width * 2.4f;
+			int type = 41;
+			Body tB = B2Util.createRectangle(mworld, block_width / 1.6f,
+					block_width / 1.6f, x, y, BodyType.StaticBody, 0, 0, 0, 0,
+					new BodyData(BodyData.BODY_BLOCK, type, id), null);
+			Data.blockList.add(tB);
+			id++;
+			Data.propsimageid.add(type);
+			Data.propsimagex.add(x / (SCREEN_WIDTH / 2));
+			Data.propsimagey.add(y / (SCREEN_WIDTH / 2));
+
 		}
 		while (iter.hasNext()) {
 			Integer temp = iter.next();
@@ -176,30 +208,72 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 			int type = rd.nextInt(4) + 21;
 			Body tB = B2Util.createRectangle(mworld, block_width / 1.6f,
 					block_width / 1.6f, x, y, BodyType.StaticBody, 0, 0, 0, 0,
-					new BodyData(BodyData.BODY_BLOCK, type,id), null);
-			blockList.add(tB);
+					new BodyData(BodyData.BODY_BLOCK, type, id), null);
+			Data.blockList.add(tB);
 			id++;
 			Data.propsimageid.add(type);
-			Data.propsimagex.add(x/(SCREEN_WIDTH/2));
-			Data.propsimagey.add(y/(SCREEN_WIDTH/2));
+			Data.propsimagex.add(x / (SCREEN_WIDTH / 2));
+			Data.propsimagey.add(y / (SCREEN_WIDTH / 2));
 		}
-
 		send.propsimage(); // /发送道具位置
 
 	}
 
+	private void initColor() {
+		colors[0] = Color.valueOf("4db6af");
+		colors[1] = Color.valueOf("f26d6e");
+		colors[2] = Color.valueOf("6fcda8");
+		colors[3] = Color.valueOf("fd987a");
+		bgcolor = Color.valueOf("34495E");
+	}
+
+	private void initMyblock() {
+		for (int i = 0; i < 4; i++) {
+			myBlock[i] = 0;
+		}
+		mB[0] = B2Util.createRectangle(mworld, base_width, base_width,
+				(-SCREEN_WIDTH / 2 + base_width * 1.5f),
+				-(board_halfheight + base_width * 1.5f), BodyType.StaticBody,
+				0, 0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 31), null);
+		mB[1] = B2Util.createRectangle(mworld, base_width, base_width,
+				(-SCREEN_WIDTH / 2 + base_width * 3.5f),
+				-(board_halfheight + base_width * 1.5f), BodyType.StaticBody,
+				0, 0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 32), null);
+		mB[2] = B2Util.createRectangle(mworld, base_width, base_width,
+				(-SCREEN_WIDTH / 2 + base_width * 5.5f),
+				-(board_halfheight + base_width * 1.5f), BodyType.StaticBody,
+				0, 0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 33), null);
+		mB[3] = B2Util.createRectangle(mworld, base_width, base_width,
+				(-SCREEN_WIDTH / 2 + base_width * 7.5f),
+				-(board_halfheight + base_width * 1.5f), BodyType.StaticBody,
+				0, 0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 34), null);
+		slipe[0] = B2Util.createRectangle(mworld, base_width, base_width,
+				(-SCREEN_WIDTH / 2 + base_width * 2.5f),
+				-(board_halfheight + base_width * 4f), BodyType.StaticBody, 0,
+				0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 10), null);
+		slipe[1] = B2Util.createRectangle(mworld, base_width, base_width,
+				(-SCREEN_WIDTH / 2 + base_width * 6.5f),
+				-(board_halfheight + base_width * 4f), BodyType.StaticBody, 0,
+				0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 11), null);
+	}
+
 	private void initBlockClient() {
-		blockList.clear();
+		Data.blockList.clear();
+		// Data.blockliststate.clear();
 		for (int i = 0; i < Data.propsimageid.size(); i++) {
 			int type = Data.propsimageid.get(i);
-			float x = Data.propsimagex.get(i)* SCREEN_WIDTH / 2;
-			float y = SCREEN_WIDTH - 2 * board_halfheight
-					- Data.propsimagey.get(i) * SCREEN_WIDTH / 2;
+			float x = (Data.propsimagey.get(i) - 1) * SCREEN_WIDTH / 2
+					+ board_halfheight;
+			float y = (1 - Data.propsimagex.get(i)) * SCREEN_WIDTH / 2
+					- board_halfheight;
 			Body t = B2Util.createRectangle(mworld, block_width / 1.6f,
 					block_width / 1.6f, x, y, BodyType.StaticBody, 0, 0, 0, 0,
-					new BodyData(BodyData.BODY_BLOCK, type), null);
-			blockList.add(t);
+					new BodyData(BodyData.BODY_BLOCK, type, i), null);
+			Data.blockList.add(t);
 		}
+		Data.propsimageid.clear();
+		Data.propsimagex.clear();
+		Data.propsimagey.clear();
 	}
 
 	private void createBallBoard() {
@@ -242,8 +316,10 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 	private void setBallBoardColor() {
 		board_x = tBoard0.getPosition().x;
 		board_y = tBoard0.getPosition().y;
+
 		board1_x = tBoard1.getPosition().x;
 		board1_y = tBoard1.getPosition().y;
+
 		board2_x = tBoard2.getPosition().x;
 		board2_y = tBoard2.getPosition().y;
 		if (type == 1) {
@@ -304,6 +380,8 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 					0, Color.toFloatBits(0, 0, 0, 255) });
 		}
 
+		
+
 	}
 
 	@Override
@@ -319,10 +397,15 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glClearColor(1f, 1f, 1f, 0f);
 
+		mCreateWorld.getHead().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		mCreateWorld.getBackground().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_one().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_two().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_three().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_four().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		mCreateWorld.getControlBackground()
+				.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		mCreateWorld.getSlipeBackground().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 
 		setBallBoardColor();
 		board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
@@ -330,81 +413,173 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		board_mesh2.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 
 		batch.begin();
+		// 画柱子
+		mCreateWorld.setBoundCircle();
+		renderer = new Box2DDebugRenderer();
+		// 画反力场黑洞
+		if (canTouching) {
+			batch.draw(mCreateWorld.getBlockTexture(541), set_x
+					+ (0 - base_width * 2) * 10f, set_y - 120f
+					+ (SCREEN_WIDTH / 2 - base_width * 2) * 10f,
+					40 * base_width, 40 * base_width);
+		}
 		if (type == 1) {
-			tBoard0.setTransform(Data.location.get(0) * SCREEN_WIDTH / 2,
+
+			tBoard0.setTransform(-Data.location.get(0) * SCREEN_WIDTH / 2,
 					tBoard0.getWorldCenter().y, 0);
+
 			tBoard2.setTransform(tBoard2.getWorldCenter().x, SCREEN_WIDTH / 2
-					- board_halfheight - Data.location.get(2) * SCREEN_WIDTH
+					- board_halfheight + Data.location.get(2) * SCREEN_WIDTH
 					/ 2, 0);
+
 			ball_x = Data.ball.get(0) * SCREEN_WIDTH / 2;
-			ball_y = SCREEN_WIDTH - 2 * board_halfheight - Data.ball.get(1)
+
+			ball_y = SCREEN_WIDTH / 2 - board_halfheight + Data.ball.get(1) // /
 					* SCREEN_WIDTH / 2;
-			circle_radius=tBall.getFixtureList().get(0).getShape().getRadius();
-			batch.draw(mCreateWorld.getTexture2(), set_x +( ball_x-circle_radius )* 10, set_y
-					-100f + (ball_y- circle_radius )* 10, 20*circle_radius, 20*circle_radius);
+
+			circle_radius = tBall.getFixtureList().get(0).getShape()
+					.getRadius();
+			batch.draw(mCreateWorld.getTexture2(), set_x
+					+ (ball_x - circle_radius) * 10, set_y - 120f
+					+ (ball_y - circle_radius) * 10, 20 * circle_radius,
+					20 * circle_radius);
 		} else {
+
 			tBoard0.setTransform(tBoard0.getWorldCenter().x, SCREEN_WIDTH / 2
-					- board_halfheight - Data.location.get(0) * SCREEN_WIDTH
+					- board_halfheight + Data.location.get(0) * SCREEN_WIDTH
 					/ 2, 0);
+
 			tBoard1.setTransform(tBoard1.getWorldCenter().x, SCREEN_WIDTH / 2
 					- board_halfheight - Data.location.get(1) * SCREEN_WIDTH
 					/ 2, 0);
+
 			ball_x = (SCREEN_WIDTH / 2) * (1 - Data.ball.get(1));
 			ball_y = (SCREEN_WIDTH / 2) * (1 - Data.ball.get(0))
 					- board_halfheight;
-			circle_radius=tBall.getFixtureList().get(0).getShape().getRadius();
-			batch.draw(mCreateWorld.getTexture2(), set_x +( ball_x-circle_radius )* 10, set_y
-					-100f + (ball_y- circle_radius )* 10, 20*circle_radius, 20*circle_radius);
+			circle_radius = tBall.getFixtureList().get(0).getShape()
+					.getRadius();
+			batch.draw(mCreateWorld.getTexture2(), set_x
+					+ (ball_x - circle_radius) * 10, set_y - 120f
+					+ (ball_y - circle_radius) * 10, 20 * circle_radius,
+					20 * circle_radius);
 		}
-		
-		for (int i = 0; i < blockList.size(); i++) {
-			Body b = blockList.get(i);
+
+		for (int i = 0; i < Data.blockList.size(); i++) {
+			Body b = Data.blockList.get(i);
 			BodyData bd = (BodyData) b.getUserData();
 			if (bd.health == 0) {
 				mworld.destroyBody(b);
-				blockList.remove(i);
+				Data.blockList.remove(i);
 				i--;
 			} else {
 				x = b.getPosition().x;
 				y = b.getPosition().y;
-				batch.draw(mCreateWorld.getBlockTexture(12), set_x
-						+ (x - block_width / 2) * 10, set_y - 100f
-						+ (y - block_width / 2) * 10, 10 * block_width / 0.8f,
-						10 * block_width / 0.8f);
+				batch.draw(
+						mCreateWorld.getBlockTexture(400 + bd.getchangeType()),
+						set_x + (x - block_width / 1.2f) * 10, set_y - 120f
+								+ (y - block_width / 1.2f) * 10,
+						10 * block_width / 0.6f, 10 * block_width / 0.6f);
 			}
 		}
-		if (blockList.size() == 0 && type == 1) {
+		if (Data.blockList.size() == 0 && type == 1) {
 			initBlock();
+		} else if (Data.blockList.size() == 0 && type != 1) {
+			initBlockClient();
+		}
+
+		for (int i = 0; i < 4; i++) {
+			Body b = mB[i];
+			float mBx = b.getPosition().x;
+			float mBy = b.getPosition().y;
+			if (myBlock[i] == 0) {
+				batch.draw(mCreateWorld.getBlockTexture(0), set_x
+						+ (mBx - base_width) * 10f, set_y - 120f
+						+ (mBy - base_width / 2) * 10.6f,
+						10 * base_width / 0.6f, 10 * base_width / 0.6f);
+			} else {
+				batch.draw(
+						mCreateWorld.getBlockTexture(Data.myID * 100 + 21 + i),
+						set_x + (mBx - base_width) * 10f, set_y - 120f
+								+ (mBy - base_width / 2) * 10.6f,
+						10 * base_width / 0.6f, 10 * base_width / 0.6f);
+			}
+		}
+		// 画滑动提示
+		for (int i = 0; i < 2; i++) {
+			Body b = slipe[i];
+			float mBx = b.getPosition().x;
+			float mBy = b.getPosition().y;
+			batch.draw(mCreateWorld.getBlockTexture(10 + i), set_x
+					+ (mBx - base_width) * 10f, set_y - 120f
+					+ (mBy - base_width / 2) * 10.6f, 10 * base_width / 0.6f,
+					10 * base_width / 0.6f);
 		}
 		batch.end();
-		
-		if (Gdx.input.isKeyPressed(Keys.BACK)&&!backReleased) 
-		{   
-			backReleased=true;
-			Message m=new Message();
-		    m.what=SHOW_DIALOG2;
-	     	windowHandler.sendMessage(m);
-		    pause();
-		} 
+
+		if (Gdx.input.isKeyPressed(Keys.BACK) && !backReleased) {
+			backReleased = true;
+			Message m = new Message();
+			m.what = SHOW_DIALOG2;
+			windowHandler.sendMessage(m);
+			pause();
+		}
 		camera.update();
 		camera.apply(gl);
+		renderer.render(mworld, camera.combined);
 
-		if ((old_board_x != tBoard1.getPosition().x)&&type==1) {
+		if ((old_board_x != tBoard1.getPosition().x) && type == 1) {
 			send.myboard();
 			old_board_x = tBoard1.getPosition().x;
 		}
-		if ((old_board_x != tBoard2.getPosition().x)&&type==2) {
+
+		if ((old_board_x != tBoard2.getPosition().x) && type == 2) {
 			send.myboard();
 			old_board_x = tBoard2.getPosition().x;
 		}
+
 	}
 
 	@Override
 	public boolean touchDown(int arg0, int arg1, int arg2, int arg3) {
-//		Vector3 vTouch = new Vector3(arg0, arg1, 0);
-//		// 像素坐标转换为world坐标
-//		camera.unproject(vTouch);
-
+		if (firstTouch) {
+			firstTouch = false;
+			send.propsimage();
+		}
+		arg1 = SCREEN_HEIGHT * 5 - arg1;
+		arg0 = arg0 - SCREEN_WIDTH * 5;
+		if (arg1 > 10 * (mB[0].getPosition().y - base_width - 12)
+				&& arg1 < 10 * (mB[0].getPosition().y + base_width - 12)) {
+			System.out.println("right");
+			if (arg0 > 10 * (mB[0].getPosition().x - base_width)
+					&& arg0 < 10 * (mB[0].getPosition().x + base_width)) {
+				if (myBlock[0] != 0) {
+					send.propsactivity(21);
+					po.setChange(21, 0);
+					myBlock[0]--;
+				}
+			} else if (arg0 > 10 * (mB[1].getPosition().x - base_width)
+					&& arg0 < 10 * (mB[1].getPosition().x + base_width)) {
+				if (myBlock[1] != 0) {
+					send.propsactivity(22);
+					po.setChange(22, 0);
+					myBlock[1]--;
+				}
+			} else if (arg0 > 10 * (mB[2].getPosition().x - base_width)
+					&& arg0 < 10 * (mB[2].getPosition().x + base_width)) {
+				if (myBlock[2] != 0) {
+					send.propsactivity(23);
+					po.setChange(23, 0);
+					myBlock[2]--;
+				}
+			} else if (arg0 > 10 * (mB[3].getPosition().x - base_width)
+					&& arg0 < 10 * (mB[3].getPosition().x + base_width)) {
+				if (myBlock[3] != 0) {
+					send.propsactivity(24);
+					po.setChange(24, 0);
+					myBlock[3]--;
+				}
+			}
+		}
 		return false;
 	}
 
@@ -412,7 +587,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 	public boolean touchDragged(int arg0, int arg1, int arg2) {
 		Vector3 touchV = new Vector3(arg0, arg1, 0);
 		camera.unproject(touchV);
-		if(type==1){
+		if (type == 1) {
 			if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
 					- board_halfwidth1
 					&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
@@ -420,7 +595,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 				tBoard1.setTransform(touchV.x, 0, 0);
 				Data.location.set(Data.myID, 2 * touchV.x / SCREEN_WIDTH);
 			}
-		}else{
+		} else {
 			if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
 					- board_halfwidth2
 					&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
@@ -429,7 +604,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 				Data.location.set(Data.myID, 2 * touchV.x / SCREEN_WIDTH);
 			}
 		}
-	
+
 		System.out.println("touch drag");
 
 		return false;
@@ -458,8 +633,8 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 	@Override
 	public void pause() {
 		Log.d("debug", "pause");
-		oldVector=tBall.getLinearVelocity();
-		tBall.setLinearVelocity(0,0);
+		oldVector = tBall.getLinearVelocity();
+		tBall.setLinearVelocity(0, 0);
 	}
 
 	@Override
@@ -485,7 +660,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 
 	@Override
 	public boolean keyUp(int arg0) {
-		backReleased=false;
+		backReleased = false;
 		return false;
 	}
 
@@ -500,13 +675,51 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 	}
 
 	@Override
-	public void beginContact(Contact arg0) {
+	public void beginContact(Contact contact) {
 
+		// m_sensor = tSensor.getFixtureList().get(0);
+		Fixture fixtureA = contact.getFixtureA();
+		Fixture fixtureB = contact.getFixtureB();
+		/* System.out.println(m_sensor); */
+		if (fixtureA == m_sensor) {
+			/*
+			 * System.out.println((fixtureB.getBody().getUserData().toString()));
+			 */
+			if (fixtureB.getBody().getUserData() != null) {
+				touchingSensor = true;
+
+			}
+
+		}
+		// System.out.println(fixtureB);
+
+		if (fixtureB == m_sensor) {
+			/*
+			 * System.out.println((fixtureA.getBody().getUserData().toString()));
+			 */
+			if (fixtureA.getBody().getUserData() != null) {
+				touchingSensor = true;
+			}
+
+		}
 	}
 
 	@Override
-	public void endContact(Contact arg0) {
+	public void endContact(Contact contact) {
 
+		// m_sensor = tSensor.getFixtureList().get(0);
+		Fixture fixtureA = contact.getFixtureA();
+		Fixture fixtureB = contact.getFixtureB();
+		if (fixtureA == m_sensor) {
+			if (fixtureB.getBody().getUserData() != null) {
+				touchingSensor = false;
+			}
+		}
+		if (fixtureB == m_sensor) {
+			if (fixtureA.getBody().getUserData() != null) {
+				touchingSensor = false;
+			}
+		}
 	}
 
 	@Override
@@ -519,15 +732,9 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		BodyData dB = (BodyData) cB.getUserData();
 		if (dA.getType() == BodyData.BODY_BLOCK) {
 			dA.health = 0;
-			int i = dA.getchangeType();
-				send.props(i, lasttouch);
-				po.setChange(i, lasttouch);
 		}
 		if (dB.getType() == BodyData.BODY_BLOCK) {
 			dB.health = 0;
-			int i = dA.getchangeType();
-				send.props(i, lasttouch);
-				po.setChange(i, lasttouch);
 		}
 	}
 
@@ -540,22 +747,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 	@Override
 	public void postSolve(Contact arg0, ContactImpulse arg1) {
 		// TODO Auto-generated method stub
-		Body cA = arg0.getFixtureA().getBody();
-		Body cB = arg0.getFixtureB().getBody();
 
-		BodyData dA = (BodyData) cA.getUserData();
-		BodyData dB = (BodyData) cB.getUserData();
-		
-		if ((dA.getType() == BodyData.BODY_BALL && dB.getType() == BodyData.BODY_BOARD0)       //0号碰
-				|| (dA.getType() == BodyData.BODY_BOARD0 && dB.getType() == BodyData.BODY_BALL)){
-			lasttouch=0;
-		}else if((dA.getType() == BodyData.BODY_BALL && dB.getType() == BodyData.BODY_BOARD1)       //1号碰
-				|| (dA.getType() == BodyData.BODY_BOARD1 && dB.getType() == BodyData.BODY_BALL)){
-			lasttouch=1;
-		}else if((dA.getType() == BodyData.BODY_BALL && dB.getType() == BodyData.BODY_BOARD2)       //2号碰
-				|| (dA.getType() == BodyData.BODY_BOARD2 && dB.getType() == BodyData.BODY_BALL)){
-			lasttouch=2;
-		}
 	}
 
 }

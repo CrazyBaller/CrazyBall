@@ -273,35 +273,41 @@ public class GdxApplication extends AndroidApplication {
 					json = new JSONObject((String) msg.obj);
 					Data.state.set(json.getInt("id"), json.getInt("state"));
 					if (json.getInt("state") == 3) {
-						PolygonShape shapeRect;
+						//PolygonShape shapeRect;
 						switch (json.getInt("id")) {
 						case 0:
-							shapeRect = (PolygonShape) tBoard0.getFixtureList()
-									.get(0).getShape();
-							shapeRect.setAsBox(SCREEN_WIDTH - 2
-									* board_halfheight, board_halfheight);
-							board_halfwidth0 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+//							shapeRect = (PolygonShape) tBoard0.getFixtureList()
+//									.get(0).getShape();
+//							//board_halfwidth0 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+//							board_halfwidth0 = 10f;
+//							shapeRect.setAsBox(board_halfwidth0, board_halfheight);
+//							board_halfwidth0 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+							tBoard0.setTransform(250.0f, 0, 0);
 							break;
 						case 1:
-							shapeRect = (PolygonShape) tBoard1.getFixtureList()
-									.get(0).getShape();
-							shapeRect.setAsBox(SCREEN_WIDTH - 2
-									* board_halfheight, board_halfheight);
-							board_halfwidth1 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+//							shapeRect = (PolygonShape) tBoard1.getFixtureList()
+//									.get(0).getShape();
+//							//board_halfwidth1 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+//							board_halfwidth1 = 10f;
+//							shapeRect.setAsBox(board_halfwidth1, board_halfheight);
+							tBoard1.setTransform(250.0f, 0, 0);
 							break;
 						case 2:
-							shapeRect = (PolygonShape) tBoard2.getFixtureList()
-									.get(0).getShape();
-							shapeRect.setAsBox(SCREEN_WIDTH - 2
-									* board_halfheight, board_halfheight);
-							board_halfwidth2 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+//							shapeRect = (PolygonShape) tBoard2.getFixtureList()
+//									.get(0).getShape();
+//							//board_halfwidth2 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+//							board_halfwidth2 = 10f;
+//							shapeRect.setAsBox(board_halfwidth2, board_halfheight);
+							tBoard2.setTransform(250.0f, 0, 0);
 							break;
 						case 3:
-							shapeRect = (PolygonShape) tBoard3.getFixtureList()
-									.get(0).getShape();
-							shapeRect.setAsBox(SCREEN_WIDTH - 2
-									* board_halfheight, board_halfheight);
-							board_halfwidth3 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+//							shapeRect = (PolygonShape) tBoard3.getFixtureList()
+//									.get(0).getShape();
+//							//board_halfwidth3 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+//							board_halfwidth3 = 10f;
+//							shapeRect.setAsBox(board_halfwidth3, board_halfheight);
+//							System.out.println("aaaaaaaaaaaaaaaaaa  dead3"+board_halfwidth3+" sw :"+SCREEN_WIDTH);
+							tBoard3.setTransform(500.0f, 0, 0);
 							break;
 						default:
 						}
@@ -320,35 +326,39 @@ public class GdxApplication extends AndroidApplication {
 					json = new JSONObject((String) msg.obj);
 					Data.state.set(json.getInt("id"), json.getInt("state"));
 					if (json.getInt("state") == 3) {
-						PolygonShape shapeRect;
+						//PolygonShape shapeRect;
 						switch (json.getInt("id")) {
 						case 0:
-							shapeRect = (PolygonShape) tBoard0.getFixtureList()
-									.get(0).getShape();
-							shapeRect.setAsBox(SCREEN_WIDTH - 2
-									* board_halfheight, board_halfheight);
-							board_halfwidth0 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+//							shapeRect = (PolygonShape) tBoard0.getFixtureList()
+//									.get(0).getShape();
+//							shapeRect.setAsBox(SCREEN_WIDTH - 2
+//									* board_halfheight, board_halfheight);
+//							board_halfwidth0 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+							tBoard0.setTransform(250.0f, 0, 0);
 							break;
 						case 1:
-							shapeRect = (PolygonShape) tBoard1.getFixtureList()
-									.get(0).getShape();
-							shapeRect.setAsBox(SCREEN_WIDTH - 2
-									* board_halfheight, board_halfheight);
-							board_halfwidth1 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+//							shapeRect = (PolygonShape) tBoard1.getFixtureList()
+//									.get(0).getShape();
+//							shapeRect.setAsBox(SCREEN_WIDTH - 2
+//									* board_halfheight, board_halfheight);
+//							board_halfwidth1 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+							tBoard1.setTransform(250.0f, 0, 0);
 							break;
 						case 2:
-							shapeRect = (PolygonShape) tBoard2.getFixtureList()
-									.get(0).getShape();
-							shapeRect.setAsBox(SCREEN_WIDTH - 2
-									* board_halfheight, board_halfheight);
-							board_halfwidth2 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+//							shapeRect = (PolygonShape) tBoard2.getFixtureList()
+//									.get(0).getShape();
+//							shapeRect.setAsBox(SCREEN_WIDTH - 2
+//									* board_halfheight, board_halfheight);
+//							board_halfwidth2 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+							tBoard2.setTransform(250.0f, 0, 0);
 							break;
 						case 3:
-							shapeRect = (PolygonShape) tBoard3.getFixtureList()
-									.get(0).getShape();
-							shapeRect.setAsBox(SCREEN_WIDTH - 2
-									* board_halfheight, board_halfheight);
-							board_halfwidth3 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+//							shapeRect = (PolygonShape) tBoard3.getFixtureList()
+//									.get(0).getShape();
+//							shapeRect.setAsBox(SCREEN_WIDTH - 2
+//									* board_halfheight, board_halfheight);
+//							board_halfwidth3 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+							tBoard3.setTransform(250.0f, 0, 0);
 							break;
 						default:
 						}
@@ -587,7 +597,7 @@ public class GdxApplication extends AndroidApplication {
 			break;
 		case 3:
 			if (inviter)
-				initialize(new ThreeMode(windowHandler), false);
+				initialize(new ThreeMode(windowHandler,po), false);
 			else
 				initialize(new ThreeModeClient(windowHandler, po), false);
 			break;
