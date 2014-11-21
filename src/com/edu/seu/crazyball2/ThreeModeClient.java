@@ -1,16 +1,10 @@
 package com.edu.seu.crazyball2;
 
 import static com.edu.seu.crazyball2.Constant.*;
-
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -23,7 +17,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -36,14 +29,11 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.edu.seu.message.Data;
-import com.edu.seu.message.GameMessages.RemoteLocationMessage;
 import com.edu.seu.message.SendData;
 import com.edu.seu.props.PropsObservable;
-import com.lenovo.game.GameMessage;
-import com.lenovo.game.GameUserInfo;
+
 
 public class ThreeModeClient implements ApplicationListener, ContactListener,
 		InputProcessor {
@@ -432,9 +422,9 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 					- board_halfheight + Data.location.get(2) * SCREEN_WIDTH
 					/ 2, 0);
 
-			ball_x = Data.ball.get(0) * SCREEN_WIDTH / 2;
+			ball_x = -Data.ball.get(0) * SCREEN_WIDTH / 2;
 
-			ball_y = SCREEN_WIDTH / 2 - board_halfheight + Data.ball.get(1) // /
+			ball_y = SCREEN_WIDTH - 2*board_halfheight - Data.ball.get(1) 
 					* SCREEN_WIDTH / 2;
 
 			circle_radius = tBall.getFixtureList().get(0).getShape()
@@ -453,8 +443,8 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 					- board_halfheight - Data.location.get(1) * SCREEN_WIDTH
 					/ 2, 0);
 
-			ball_x = (SCREEN_WIDTH / 2) * (1 - Data.ball.get(1));
-			ball_y = (SCREEN_WIDTH / 2) * (1 - Data.ball.get(0))
+			ball_x =  (1-Data.ball.get(1))* SCREEN_WIDTH/2-board_halfheight;
+			ball_y = (SCREEN_WIDTH / 2) * (1 + Data.ball.get(0))
 					- board_halfheight;
 			circle_radius = tBall.getFixtureList().get(0).getShape()
 					.getRadius();

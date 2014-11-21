@@ -1,7 +1,6 @@
 package com.edu.seu.crazyball2;
 
 import static com.edu.seu.crazyball2.Constant.*;
-
 import java.util.Random;
 import org.json.JSONException;
 import org.json.JSONObject;

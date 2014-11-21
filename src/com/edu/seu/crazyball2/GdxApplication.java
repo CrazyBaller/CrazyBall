@@ -603,7 +603,7 @@ public class GdxApplication extends AndroidApplication {
 			break;
 		case 4:
 			if (inviter)
-				initialize(new FourMode(windowHandler), false);
+				initialize(new FourMode(windowHandler,po), false);
 			else
 				initialize(new FourModeClient(windowHandler, po), false);
 			break;
