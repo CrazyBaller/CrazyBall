@@ -12,6 +12,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
@@ -55,6 +57,10 @@ public class TwoMode implements ApplicationListener, ContactListener,
 
 	private boolean firstTouch = true;
 	private boolean touchingSensor = false;
+	
+	Music music;
+	Music backmusic;
+	Sound sound;
 
 	float tboard1_x;
 
@@ -95,6 +101,12 @@ public class TwoMode implements ApplicationListener, ContactListener,
 
 		// init color
 		initColor();
+		
+		//初始化声音
+		initSound();
+		music.play();
+		music.setLooping(true);
+		music.setVolume(15);		
 
 		// 镜头下的世界
 		camera = new OrthographicCamera(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -143,6 +155,12 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		colors[3] = Color.valueOf("fd987a");
 		bgcolor = Color.valueOf("34495E");
 
+	}
+	
+	private void initSound(){
+		music = Gdx.audio.newMusic(Gdx.files.internal("sound/2ways.mp3"));
+		//backmusic = Gdx.audio.newMusic(Gdx.files.internal("data/"));
+		sound = Gdx.audio.newSound(Gdx.files.internal("sound/CountDown.mp3"));
 	}
 
 	private void initMyblock() {
@@ -414,6 +432,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 			if (arg0 > 10 * (mB[0].getPosition().x - base_width)
 					&& arg0 < 10 * (mB[0].getPosition().x + base_width)) {
 				if (myBlock[0] != 0) {
+					sound.play(30);
 					send.propsactivity(21);
 					po.setChange(21, 0);
 					myBlock[0]--;
@@ -421,6 +440,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 			} else if (arg0 > 10 * (mB[1].getPosition().x - base_width)
 					&& arg0 < 10 * (mB[1].getPosition().x + base_width)) {
 				if (myBlock[1] != 0) {
+					sound.play(30);
 					send.propsactivity(22);
 					po.setChange(22, 0);
 					myBlock[1]--;
@@ -428,6 +448,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 			} else if (arg0 > 10 * (mB[2].getPosition().x - base_width)
 					&& arg0 < 10 * (mB[2].getPosition().x + base_width)) {
 				if (myBlock[2] != 0) {
+					sound.play(30);
 					send.propsactivity(23);
 					po.setChange(23, 0);
 					myBlock[2]--;
@@ -435,6 +456,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 			} else if (arg0 > 10 * (mB[3].getPosition().x - base_width)
 					&& arg0 < 10 * (mB[3].getPosition().x + base_width)) {
 				if (myBlock[3] != 0) {
+					sound.play(30);
 					send.propsactivity(24);
 					po.setChange(24, 0);
 					myBlock[3]--;
@@ -658,6 +680,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 			send.controlId();
 		}
 		if (dA.getType() == BodyData.BODY_BLOCK) {
+			sound.play(30);
 			dA.health = 0;
 			int i = dA.getchangeType();
 			// if (tBall.getLinearVelocity().y < 0) {
@@ -680,6 +703,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 			}
 		}
 		if (dB.getType() == BodyData.BODY_BLOCK) {
+			sound.play(30);
 			dB.health = 0;
 			int i = dA.getchangeType();
 			if (CONTROL_ID == 0) {
