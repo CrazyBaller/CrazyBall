@@ -174,9 +174,10 @@ public class ReadyActivity extends Activity {
 			if (success) {
 
 				SendData send = new SendData();
-				Data.state.set(Data.myID, 0);
-				send.myState();
-
+				if(Data.state.size()!=0){
+					Data.state.set(Data.myID, 0);
+					send.myState();
+				}
 			} else {
 
 				Toast.makeText(getApplicationContext(), "Bind Service failed.",

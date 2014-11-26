@@ -6,6 +6,7 @@ import java.util.TimerTask;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.edu.seu.message.Data;
 
 public class ChangeBoard {
 	private PolygonShape shapeRect;
@@ -16,21 +17,28 @@ public class ChangeBoard {
 	public ChangeBoard(int num) {
 		this.id = num;
 	}
+	public boolean ifvalidate(int n){
+		if(Data.state.get(n)!=3)
+			return true;
+		else 
+			return false;
+	}
 
 	// Ö´ÐÐchange
 	public void start(int changeType) {
-		if (changeType == 31) {
-			this.toLonger();
-		} else if (changeType == 32) {
-			this.toShorter();
-		} else if (changeType == 33) {
-			this.toSpring();
-		} else if (changeType == 34) {
-			this.toWood();
-		} else {
+		if(ifvalidate(this.id)){
+			if (changeType == 31) {
+				this.toLonger();
+			} else if (changeType == 32) {
+				this.toShorter();
+			} else if (changeType == 33) {
+				this.toSpring();
+			} else if (changeType == 34) {
+				this.toWood();
+			} else {
+			}
+			timeVoid();
 		}
-		timeVoid();
-
 	}
 
 	public void timeVoid() {

@@ -305,8 +305,17 @@ public class CreateWorld {
 			blockRegion = new TextureRegion(atlas.findRegion(String
 					.valueOf(type)));
 		} else if (type < 450 && type > 430) {
+			System.out.println(CONTROL_ID);
+			System.out.println(CONTROL_ID * 100 + type - 400);
+			if((CONTROL_ID * 100 + type - 400)==241){
+				blockRegion = new TextureRegion(atlas.findRegion(String
+						.valueOf(100 + type - 400)));
+			}
+			else{
 			blockRegion = new TextureRegion(atlas.findRegion(String
 					.valueOf(CONTROL_ID * 100 + type - 400)));
+			}
+			
 		} else {
 			blockRegion = new TextureRegion(atlas.findRegion(String
 					.valueOf(type)));

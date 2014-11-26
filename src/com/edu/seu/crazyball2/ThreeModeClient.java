@@ -1,6 +1,7 @@
 package com.edu.seu.crazyball2;
 
 import static com.edu.seu.crazyball2.Constant.*;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
@@ -97,6 +98,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		circle_radius_standard = board_halfheight;
 		circle_radius = circle_radius_standard;
 		block_width = 1f * circle_radius;
+		Data.ball.set(1, SCREEN_WIDTH / 2 - board_halfheight);
 
 		send = new SendData();
 
@@ -315,59 +317,59 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		if (type == 1) {
 			board_mesh.setVertices(new float[] { board_x - board_halfwidth0,
 					board_y + board_halfheight, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[0].toFloatBits(),
 					board_x - board_halfwidth0, board_y - board_halfheight, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[0].toFloatBits(),
 					board_x + board_halfwidth0, board_y + board_halfheight, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[0].toFloatBits(),
 					board_x + board_halfwidth0, board_y - board_halfheight, 0,
-					Color.toFloatBits(0, 0, 0, 255) });
+					colors[0].toFloatBits() });
 			board_mesh1.setVertices(new float[] { board1_x - board_halfwidth1,
 					board1_y + board_halfheight, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[1].toFloatBits(),
 					board1_x - board_halfwidth1, board1_y - board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[1].toFloatBits(),
 					board1_x + board_halfwidth1, board1_y + board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[1].toFloatBits(),
 					board1_x + board_halfwidth1, board1_y - board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255) });
+					0, colors[1].toFloatBits() });
 			board_mesh2.setVertices(new float[] { board2_x - board_halfheight,
 					board2_y + board_halfwidth2, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[2].toFloatBits(),
 					board2_x - board_halfheight, board2_y - board_halfwidth2,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[2].toFloatBits(),
 					board2_x + board_halfheight, board2_y + board_halfwidth2,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[2].toFloatBits(),
 					board2_x + board_halfheight, board2_y - board_halfwidth2,
-					0, Color.toFloatBits(0, 0, 0, 255) });
+					0, colors[2].toFloatBits() });
 		} else if (type == 2) {
 			board_mesh.setVertices(new float[] { board_x - board_halfheight,
 					board_y + board_halfwidth0, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[0].toFloatBits(),
 					board_x - board_halfheight, board_y - board_halfwidth0, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[0].toFloatBits(),
 					board_x + board_halfheight, board_y + board_halfwidth0, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[0].toFloatBits(),
 					board_x + board_halfheight, board_y - board_halfwidth0, 0,
-					Color.toFloatBits(0, 0, 0, 255) });
+					colors[0].toFloatBits() });
 			board_mesh1.setVertices(new float[] { board1_x - board_halfheight,
 					board1_y + board_halfwidth1, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[1].toFloatBits(),
 					board1_x - board_halfheight, board1_y - board_halfwidth1,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[1].toFloatBits(),
 					board1_x + board_halfheight, board1_y + board_halfwidth1,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[1].toFloatBits(),
 					board1_x + board_halfheight, board1_y - board_halfwidth1,
-					0, Color.toFloatBits(0, 0, 0, 255) });
+					0, colors[1].toFloatBits() });
 			board_mesh2.setVertices(new float[] { board2_x - board_halfwidth2,
 					board2_y + board_halfheight, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[2].toFloatBits(),
 					board2_x - board_halfwidth2, board2_y - board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[2].toFloatBits(),
 					board2_x + board_halfwidth2, board2_y + board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[2].toFloatBits(),
 					board2_x + board_halfwidth2, board2_y - board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255) });
+					0, colors[2].toFloatBits() });
 		}
 
 		
@@ -426,7 +428,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 
 			ball_y = SCREEN_WIDTH - 2*board_halfheight - Data.ball.get(1) 
 					* SCREEN_WIDTH / 2;
-
+			tBall.setTransform(ball_x, ball_y, 0);
 			circle_radius = tBall.getFixtureList().get(0).getShape()
 					.getRadius();
 			batch.draw(mCreateWorld.getTexture2(), set_x
@@ -446,6 +448,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 			ball_x =  (1-Data.ball.get(1))* SCREEN_WIDTH/2-board_halfheight;
 			ball_y = (SCREEN_WIDTH / 2) * (1 + Data.ball.get(0))
 					- board_halfheight;
+			tBall.setTransform(ball_x, ball_y, 0);
 			circle_radius = tBall.getFixtureList().get(0).getShape()
 					.getRadius();
 			batch.draw(mCreateWorld.getTexture2(), set_x

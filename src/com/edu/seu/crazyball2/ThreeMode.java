@@ -227,34 +227,34 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 		y = tBoard0.getPosition().y;
 
 		board_mesh.setVertices(new float[] { x - board_halfwidth0,
-				y + board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
+				y + board_halfheight, 0, colors[0].toFloatBits(),
 				x - board_halfwidth0, y - board_halfheight, 0,
-				Color.toFloatBits(0, 0, 0, 255), x + board_halfwidth0,
-				y + board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
+				colors[0].toFloatBits(), x + board_halfwidth0,
+				y + board_halfheight, 0, colors[0].toFloatBits(),
 				x + board_halfwidth0, y - board_halfheight, 0,
-				Color.toFloatBits(0, 0, 0, 255) });
+				colors[0].toFloatBits() });
 
 		x = tBoard1.getPosition().x;
 		y = tBoard1.getPosition().y;
 
 		board_mesh1.setVertices(new float[] { x - board_halfwidth1,
-				y + board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
+				y + board_halfheight, 0, colors[1].toFloatBits(),
 				x - board_halfwidth1, y - board_halfheight, 0,
-				Color.toFloatBits(0, 0, 0, 255), x + board_halfwidth1,
-				y + board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
+				colors[1].toFloatBits(), x + board_halfwidth1,
+				y + board_halfheight, 0, colors[1].toFloatBits(),
 				x + board_halfwidth1, y - board_halfheight, 0,
-				Color.toFloatBits(0, 0, 0, 255) });
+				colors[1].toFloatBits() });
 
 		x = tBoard2.getPosition().x;
 		y = tBoard2.getPosition().y;
 
 		board_mesh2.setVertices(new float[] { x - board_halfheight,
-				y + board_halfwidth2, 0, Color.toFloatBits(0, 0, 0, 255),
+				y + board_halfwidth2, 0, colors[2].toFloatBits(),
 				x - board_halfheight, y - board_halfwidth2, 0,
-				Color.toFloatBits(0, 0, 0, 255), x + board_halfheight,
-				y + board_halfwidth2, 0, Color.toFloatBits(0, 0, 0, 255),
+				colors[2].toFloatBits(), x + board_halfheight,
+				y + board_halfwidth2, 0, colors[2].toFloatBits(),
 				x + board_halfheight, y - board_halfwidth2, 0,
-				Color.toFloatBits(0, 0, 0, 255) });
+				colors[2].toFloatBits() });
 	}
 
 	@Override
@@ -489,7 +489,7 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 		BodyData dB = (BodyData) cB.getUserData();
 		if ((dA.getType() == BodyData.BODY_BALL && dB.getType() == BodyData.BODY_BORDER_BOTTOM) // 0∫≈À¿
 				|| (dA.getType() == BodyData.BODY_BORDER_BOTTOM && dB.getType() == BodyData.BODY_BALL)) {
-			tBall.setLinearVelocity(0, 0);
+			//tBall.setLinearVelocity(0, 0);
 			
 			if (flagend0 == 0)
 

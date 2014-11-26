@@ -137,8 +137,17 @@ public class GdxApplication extends AndroidApplication {
 								.set(json.getInt("id"), json.getInt("result"));
 
 						if (json.getInt("result") == 3) {
+							
+							if(Data.myID==1){
+								tBoard1.setTransform(250.0f, 1000.0f,0);
+							}else if(Data.myID==2){
+								tBoard2.setTransform(250.0f, 1000.0f,0);
+							}else if(Data.myID==3){
+								tBoard3.setTransform(250.0f, 1000.0f,0);
+							}
+							
 							if (json.getInt("id") == Data.myID) {
-
+							
 								dialog_mydead();
 							} else {
 								Toast.makeText(getApplicationContext(),
@@ -282,7 +291,7 @@ public class GdxApplication extends AndroidApplication {
 //							board_halfwidth0 = 10f;
 //							shapeRect.setAsBox(board_halfwidth0, board_halfheight);
 //							board_halfwidth0 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
-							tBoard0.setTransform(250.0f, 0, 0);
+							tBoard0.setTransform(250.0f, 1000.0f, 0);
 							break;
 						case 1:
 //							shapeRect = (PolygonShape) tBoard1.getFixtureList()
@@ -290,7 +299,7 @@ public class GdxApplication extends AndroidApplication {
 //							//board_halfwidth1 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
 //							board_halfwidth1 = 10f;
 //							shapeRect.setAsBox(board_halfwidth1, board_halfheight);
-							tBoard1.setTransform(250.0f, 0, 0);
+							tBoard1.setTransform(250.0f, 1000.0f, 0);
 							break;
 						case 2:
 //							shapeRect = (PolygonShape) tBoard2.getFixtureList()
@@ -298,7 +307,7 @@ public class GdxApplication extends AndroidApplication {
 //							//board_halfwidth2 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
 //							board_halfwidth2 = 10f;
 //							shapeRect.setAsBox(board_halfwidth2, board_halfheight);
-							tBoard2.setTransform(250.0f, 0, 0);
+							tBoard2.setTransform(250.0f, 1000.0f, 0);
 							break;
 						case 3:
 //							shapeRect = (PolygonShape) tBoard3.getFixtureList()
@@ -307,7 +316,7 @@ public class GdxApplication extends AndroidApplication {
 //							board_halfwidth3 = 10f;
 //							shapeRect.setAsBox(board_halfwidth3, board_halfheight);
 //							System.out.println("aaaaaaaaaaaaaaaaaa  dead3"+board_halfwidth3+" sw :"+SCREEN_WIDTH);
-							tBoard3.setTransform(500.0f, 0, 0);
+							tBoard3.setTransform(500.0f,1000.0f, 0);
 							break;
 						default:
 						}
@@ -334,7 +343,7 @@ public class GdxApplication extends AndroidApplication {
 //							shapeRect.setAsBox(SCREEN_WIDTH - 2
 //									* board_halfheight, board_halfheight);
 //							board_halfwidth0 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
-							tBoard0.setTransform(250.0f, 0, 0);
+							tBoard0.setTransform(250.0f, 1000.0f, 0);
 							break;
 						case 1:
 //							shapeRect = (PolygonShape) tBoard1.getFixtureList()
@@ -342,7 +351,7 @@ public class GdxApplication extends AndroidApplication {
 //							shapeRect.setAsBox(SCREEN_WIDTH - 2
 //									* board_halfheight, board_halfheight);
 //							board_halfwidth1 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
-							tBoard1.setTransform(250.0f, 0, 0);
+							tBoard1.setTransform(250.0f, 1000.0f, 0);
 							break;
 						case 2:
 //							shapeRect = (PolygonShape) tBoard2.getFixtureList()
@@ -350,7 +359,7 @@ public class GdxApplication extends AndroidApplication {
 //							shapeRect.setAsBox(SCREEN_WIDTH - 2
 //									* board_halfheight, board_halfheight);
 //							board_halfwidth2 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
-							tBoard2.setTransform(250.0f, 0, 0);
+							tBoard2.setTransform(250.0f, 1000.0f, 0);
 							break;
 						case 3:
 //							shapeRect = (PolygonShape) tBoard3.getFixtureList()
@@ -358,7 +367,7 @@ public class GdxApplication extends AndroidApplication {
 //							shapeRect.setAsBox(SCREEN_WIDTH - 2
 //									* board_halfheight, board_halfheight);
 //							board_halfwidth3 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
-							tBoard3.setTransform(250.0f, 0, 0);
+							tBoard3.setTransform(250.0f, 1000.0f, 0);
 							break;
 						default:
 						}
@@ -399,11 +408,15 @@ public class GdxApplication extends AndroidApplication {
 				break;
 			case SHOW_MYDEAD_DIALOG:
 				try {
-					JSONObject json = new JSONObject((String) msg.obj);
-
+					
+					System.out.println("SHOW_MYDEAD_DIALOG      "+msg.obj);
+					//JSONObject json = new JSONObject((String) msg.obj);
+					JSONObject json = new JSONObject(msg.obj.toString());
 					Data.state.set(json.getInt("id"), json.getInt("result"));
 
 					if (json.getInt("result") == 4) {
+						
+						tBall.setLinearVelocity(0, 0);
 						if (json.getInt("id") == 0) {
 							Data.time.set(0, time);
 							SendData send = new SendData();
@@ -419,9 +432,10 @@ public class GdxApplication extends AndroidApplication {
 						} else {
 							Data.time.set(json.getInt("id"), time);
 							SendData send = new SendData();
-							send.time();
+							
 							Data.state.set(json.getInt("id"), 4);
 							send.state(json.getInt("id"), 4);
+							send.time();
 							Toast.makeText(
 									getApplicationContext(),
 									Data.mRemoteUser.get(json.getInt("id") - 1).name
@@ -431,6 +445,8 @@ public class GdxApplication extends AndroidApplication {
 									ResultActivity.class);
 							startActivity(intent);
 						}
+						
+						
 					} else {
 						if (json.getInt("id") == 0) {
 							dialog_mydead();
@@ -438,12 +454,13 @@ public class GdxApplication extends AndroidApplication {
 							Data.state.set(0, 3);
 							SendData send = new SendData();
 							send.myState();
-
-							PolygonShape shapeRect = (PolygonShape) tBoard0
-									.getFixtureList().get(0).getShape();
-							shapeRect.setAsBox(SCREEN_WIDTH - 2
-									* board_halfheight, board_halfheight);
-							board_halfwidth0 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+							
+							tBoard0.setTransform(250.0f, 1000.0f, 0);
+//							PolygonShape shapeRect = (PolygonShape) tBoard0
+//									.getFixtureList().get(0).getShape();
+//							shapeRect.setAsBox(SCREEN_WIDTH - 2
+//									* board_halfheight, board_halfheight);
+//							board_halfwidth0 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
 
 							Toast.makeText(getApplicationContext(),
 									"you are dead ", Toast.LENGTH_LONG).show();
@@ -456,25 +473,29 @@ public class GdxApplication extends AndroidApplication {
 							PolygonShape shapeRect;
 							switch (id) {
 							case 1:
-								shapeRect = (PolygonShape) tBoard1
-										.getFixtureList().get(0).getShape();
-								shapeRect.setAsBox(SCREEN_WIDTH - 2
-										* board_halfheight, board_halfheight);
-								board_halfwidth1 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+								
+								tBoard1.setTransform(250.0f, 1000.0f, 0);
+//								shapeRect = (PolygonShape) tBoard1
+//										.getFixtureList().get(0).getShape();
+//								shapeRect.setAsBox(SCREEN_WIDTH - 2
+//										* board_halfheight, board_halfheight);
+//								board_halfwidth1 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
 								break;
 							case 2:
-								shapeRect = (PolygonShape) tBoard2
-										.getFixtureList().get(0).getShape();
-								shapeRect.setAsBox(SCREEN_WIDTH - 2
-										* board_halfheight, board_halfheight);
-								board_halfwidth2 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+								tBoard2.setTransform(250.0f,  1000.0f, 0);
+//								shapeRect = (PolygonShape) tBoard2
+//										.getFixtureList().get(0).getShape();
+//								shapeRect.setAsBox(SCREEN_WIDTH - 2
+//										* board_halfheight, board_halfheight);
+//								board_halfwidth2 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
 								break;
 							case 3:
-								shapeRect = (PolygonShape) tBoard3
-										.getFixtureList().get(0).getShape();
-								shapeRect.setAsBox(SCREEN_WIDTH - 2
-										* board_halfheight, board_halfheight);
-								board_halfwidth3 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
+								tBoard3.setTransform(250.0f,  1000.0f, 0);
+//								shapeRect = (PolygonShape) tBoard3
+//										.getFixtureList().get(0).getShape();
+//								shapeRect.setAsBox(SCREEN_WIDTH - 2
+//										* board_halfheight, board_halfheight);
+//								board_halfwidth3 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
 								break;
 							default:
 							}
@@ -578,6 +599,8 @@ public class GdxApplication extends AndroidApplication {
 		SCREEN_HEIGHT /= 10;
 		set_x = SCREEN_WIDTH * 5;
 		set_y = SCREEN_HEIGHT * 5;
+		
+		Toast.makeText(getApplicationContext(), Data.myID+"", 1000).show();
 
 		timer.schedule(task, 10, 10);
 

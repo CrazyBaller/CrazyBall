@@ -102,6 +102,7 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 		circle_radius_standard = board_halfheight;
 		circle_radius = circle_radius_standard;
 		block_width = 1f * circle_radius;
+		Data.ball.set(1, SCREEN_WIDTH / 2 - board_halfheight);
 
 		send = new SendData();
 
@@ -273,6 +274,24 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 		Data.propsimagex.clear();
 		Data.propsimagey.clear();
 	}
+	private void initBlockClient3() {
+		Data.blockList.clear();
+		// Data.blockliststate.clear();
+		for (int i = 0; i < Data.propsimageid.size(); i++) {
+			int type = Data.propsimageid.get(i);
+			float x = (Data.propsimagey.get(i) - 1) * SCREEN_WIDTH / 2
+					+ board_halfheight;
+			float y = (1 + Data.propsimagex.get(i)) * SCREEN_WIDTH / 2
+					- board_halfheight;
+			Body t = B2Util.createRectangle(mworld, block_width / 1.6f,
+					block_width / 1.6f, x, y, BodyType.StaticBody, 0, 0, 0, 0,
+					new BodyData(BodyData.BODY_BLOCK, type, i), null);
+			Data.blockList.add(t);
+		}
+		Data.propsimageid.clear();
+		Data.propsimagex.clear();
+		Data.propsimagey.clear();
+	}
 
 	private void createBallBoard() {
 		// 创建球
@@ -280,59 +299,61 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 				SCREEN_WIDTH / 2 - board_halfheight, BodyType.DynamicBody, 0,
 				2, 1, 0, new BodyData(BodyData.BODY_BALL), null);
 		// 创建挡板
-		if (Data.myID == 1) {
-			type = 1;
-			tBoard1 = B2Util.createRectangle(mworld, board_halfwidth1,
-					board_halfheight, 0, 0, BodyType.StaticBody, 0, 0, 0, 0,
-					new BodyData(BodyData.BODY_BOARD1), null);
-			tBoard0 = B2Util.createRectangle(mworld, board_halfwidth0,
-					board_halfheight, 0, SCREEN_WIDTH - 2 * board_halfheight,
-					BodyType.StaticBody, 0, 0, 0, 0, new BodyData(
-							BodyData.BODY_BOARD0), null);
-			tBoard2 = B2Util.createRectangle(mworld, board_halfheight,
-					board_halfwidth2, SCREEN_WIDTH / 2 - board_halfheight,
-					-board_halfheight + SCREEN_WIDTH / 2, BodyType.StaticBody,
-					0, 0, 0, 0, new BodyData(BodyData.BODY_BOARD2), null);
-			tBoard3 = B2Util.createRectangle(mworld, board_halfheight,
-					board_halfwidth3, -SCREEN_WIDTH / 2 + board_halfheight,
-					-board_halfheight + SCREEN_WIDTH / 2, BodyType.StaticBody,
-					0, 0, 0, 0, new BodyData(BodyData.BODY_BOARD3), null);
-		} else if (Data.myID == 2) {
-			type = 2;
-			tBoard1 = B2Util.createRectangle(mworld, board_halfheight,
-					board_halfwidth1, -SCREEN_WIDTH / 2 + board_halfheight,
-					-board_halfheight + SCREEN_WIDTH / 2, BodyType.StaticBody,
-					0, 0, 0, 0, new BodyData(BodyData.BODY_BOARD1), null);
-			tBoard0 = B2Util.createRectangle(mworld, board_halfheight,
-					board_halfwidth0, SCREEN_WIDTH / 2 - board_halfheight,
-					-board_halfheight + SCREEN_WIDTH / 2, BodyType.StaticBody,
-					0, 0, 0, 0, new BodyData(BodyData.BODY_BOARD0), null);
-			tBoard2 = B2Util.createRectangle(mworld, board_halfwidth2,
-					board_halfheight, 0, 0, BodyType.StaticBody, 0, 0, 0, 0,
-					new BodyData(BodyData.BODY_BOARD2), null);
-			tBoard3 = B2Util.createRectangle(mworld, board_halfwidth3,
-					board_halfheight, 0, SCREEN_WIDTH - 2 * board_halfheight,
-					BodyType.StaticBody, 0, 0, 0, 0, new BodyData(
-							BodyData.BODY_BOARD3), null);
+		// 创建挡板
+				if (Data.myID == 1) {
+					type = 1;
+					tBoard1 = B2Util.createRectangle(mworld, board_halfwidth1,
+							board_halfheight, 0, 0, BodyType.StaticBody, 0, 0, 0, 0,
+							new BodyData(BodyData.BODY_BOARD1), null);
+					tBoard0 = B2Util.createRectangle(mworld, board_halfwidth0,
+							board_halfheight, 0, SCREEN_WIDTH - 2 * board_halfheight,
+							BodyType.StaticBody, 0, 0, 0, 0, new BodyData(
+									BodyData.BODY_BOARD0), null);
+					tBoard2 = B2Util.createRectangle(mworld, board_halfheight,
+							board_halfwidth2, SCREEN_WIDTH / 2 - board_halfheight,
+							-board_halfheight + SCREEN_WIDTH / 2, BodyType.StaticBody,
+							0, 0, 0, 0, new BodyData(BodyData.BODY_BOARD2), null);
+					tBoard3 = B2Util.createRectangle(mworld, board_halfheight,
+							board_halfwidth3, -SCREEN_WIDTH / 2 + board_halfheight,
+							-board_halfheight + SCREEN_WIDTH / 2, BodyType.StaticBody,
+							0, 0, 0, 0, new BodyData(BodyData.BODY_BOARD3), null);
+				} else if (Data.myID == 2) {
+					type = 2;
+					tBoard1 = B2Util.createRectangle(mworld, board_halfheight,
+							board_halfwidth1, -SCREEN_WIDTH / 2 + board_halfheight,
+							-board_halfheight + SCREEN_WIDTH / 2, BodyType.StaticBody,
+							0, 0, 0, 0, new BodyData(BodyData.BODY_BOARD1), null);
+					tBoard0 = B2Util.createRectangle(mworld, board_halfheight,
+							board_halfwidth0, SCREEN_WIDTH / 2 - board_halfheight,
+							-board_halfheight + SCREEN_WIDTH / 2, BodyType.StaticBody,
+							0, 0, 0, 0, new BodyData(BodyData.BODY_BOARD0), null);
+					tBoard2 = B2Util.createRectangle(mworld, board_halfwidth2,
+							board_halfheight, 0, 0, BodyType.StaticBody, 0, 0, 0, 0,
+							new BodyData(BodyData.BODY_BOARD2), null);
+					tBoard3 = B2Util.createRectangle(mworld, board_halfwidth3,
+							board_halfheight, 0, SCREEN_WIDTH - 2 * board_halfheight,
+							BodyType.StaticBody, 0, 0, 0, 0, new BodyData(
+									BodyData.BODY_BOARD3), null);
 
-		}else if (Data.myID == 3) {
-			type = 3;
-			tBoard1 = B2Util.createRectangle(mworld, board_halfheight,
-					board_halfwidth1, SCREEN_WIDTH / 2 - board_halfheight,
-					-board_halfheight + SCREEN_WIDTH / 2, BodyType.StaticBody,
-					0, 0, 0, 0, new BodyData(BodyData.BODY_BOARD1), null);
-			tBoard0 = B2Util.createRectangle(mworld, board_halfheight,
-					board_halfwidth0, -SCREEN_WIDTH / 2 + board_halfheight,
-					-board_halfheight + SCREEN_WIDTH / 2, BodyType.StaticBody,
-					0, 0, 0, 0, new BodyData(BodyData.BODY_BOARD0), null);
-			tBoard2 = B2Util.createRectangle(mworld, board_halfwidth2,
-					board_halfheight, 0, SCREEN_WIDTH - 2 * board_halfheight,
-					BodyType.StaticBody, 0, 0, 0, 0, new BodyData(
-							BodyData.BODY_BOARD2), null);
-			tBoard3 = B2Util.createRectangle(mworld, board_halfwidth3,
-					board_halfheight, 0, 0, BodyType.StaticBody, 0, 0, 0, 0,
-					new BodyData(BodyData.BODY_BOARD3), null);
-		}
+				}else if (Data.myID == 3) {
+					type = 3;
+					tBoard1 = B2Util.createRectangle(mworld, board_halfheight,
+							board_halfwidth1, SCREEN_WIDTH / 2 - board_halfheight,
+							-board_halfheight + SCREEN_WIDTH / 2, BodyType.StaticBody,
+							0, 0, 0, 0, new BodyData(BodyData.BODY_BOARD1), null);
+					tBoard0 = B2Util.createRectangle(mworld, board_halfheight,
+							board_halfwidth0, -SCREEN_WIDTH / 2 + board_halfheight,
+							-board_halfheight + SCREEN_WIDTH / 2, BodyType.StaticBody,
+							0, 0, 0, 0, new BodyData(BodyData.BODY_BOARD0), null);
+					tBoard2 = B2Util.createRectangle(mworld, board_halfwidth2,
+							board_halfheight, 0, SCREEN_WIDTH - 2 * board_halfheight,
+							BodyType.StaticBody, 0, 0, 0, 0, new BodyData(
+									BodyData.BODY_BOARD2), null);
+					tBoard3 = B2Util.createRectangle(mworld, board_halfwidth3,
+							board_halfheight, 0, 0, BodyType.StaticBody, 0, 0, 0, 0,
+							new BodyData(BodyData.BODY_BOARD3), null);
+				}
+
 
 	}
 
@@ -420,7 +441,7 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 					0, Color.toFloatBits(0, 0, 0, 255),
 					board3_x + board_halfwidth3, board3_y + board_halfheight,
 					0, Color.toFloatBits(0, 0, 0, 255),
-					board2_x + board_halfwidth3, board3_y - board_halfheight,
+					board3_x + board_halfwidth3, board3_y - board_halfheight,
 					0, Color.toFloatBits(0, 0, 0, 255) });
 		} else if (type == 3) {
 			board_mesh.setVertices(new float[] { board_x - board_halfheight,
@@ -513,21 +534,19 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 			tBoard2.setTransform(tBoard2.getWorldCenter().x, SCREEN_WIDTH / 2
 					- board_halfheight + Data.location.get(2) * SCREEN_WIDTH
 					/ 2, 0);
-			tBoard3.setTransform(tBoard3.getWorldCenter().x, SCREEN_WIDTH / 2
-					- board_halfheight - Data.location.get(3) * SCREEN_WIDTH
-					/ 2, 0);
+
 			ball_x = -Data.ball.get(0) * SCREEN_WIDTH / 2;
 
 			ball_y = SCREEN_WIDTH - 2*board_halfheight - Data.ball.get(1) 
 					* SCREEN_WIDTH / 2;
-
+			tBall.setTransform(ball_x, ball_y, 0);
 			circle_radius = tBall.getFixtureList().get(0).getShape()
 					.getRadius();
 			batch.draw(mCreateWorld.getTexture2(), set_x
 					+ (ball_x - circle_radius) * 10, set_y - 120f
 					+ (ball_y - circle_radius) * 10, 20 * circle_radius,
 					20 * circle_radius);
-		} else if (type==2) {
+		} else if(type==2){
 
 			tBoard0.setTransform(tBoard0.getWorldCenter().x, SCREEN_WIDTH / 2
 					- board_halfheight + Data.location.get(0) * SCREEN_WIDTH
@@ -536,19 +555,18 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 			tBoard1.setTransform(tBoard1.getWorldCenter().x, SCREEN_WIDTH / 2
 					- board_halfheight - Data.location.get(1) * SCREEN_WIDTH
 					/ 2, 0);
-			tBoard3.setTransform(-Data.location.get(3) * SCREEN_WIDTH / 2,
-					tBoard0.getWorldCenter().y, 0);
 
 			ball_x =  (1-Data.ball.get(1))* SCREEN_WIDTH/2-board_halfheight;
 			ball_y = (SCREEN_WIDTH / 2) * (1 + Data.ball.get(0))
 					- board_halfheight;
+			tBall.setTransform(ball_x, ball_y, 0);
 			circle_radius = tBall.getFixtureList().get(0).getShape()
 					.getRadius();
 			batch.draw(mCreateWorld.getTexture2(), set_x
 					+ (ball_x - circle_radius) * 10, set_y - 120f
 					+ (ball_y - circle_radius) * 10, 20 * circle_radius,
 					20 * circle_radius);
-		} else if(type==3){
+		}else if(type==3){
 			tBoard0.setTransform(tBoard0.getWorldCenter().x, SCREEN_WIDTH / 2
 					- board_halfheight - Data.location.get(0) * SCREEN_WIDTH
 					/ 2, 0);
@@ -560,6 +578,7 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 			ball_x = (SCREEN_WIDTH / 2) * (Data.ball.get(1) - 1)           
 					+ board_halfheight;
 			ball_y = (SCREEN_WIDTH / 2) * (1 - Data.ball.get(0))-board_halfheight;
+			tBall.setTransform(ball_x, ball_y, 0);
 			circle_radius = tBall.getFixtureList().get(0).getShape()
 					.getRadius();
 			batch.draw(mCreateWorld.getTexture2(), set_x
@@ -587,10 +606,11 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 		}
 		if (Data.blockList.size() == 0 && type == 1) {
 			initBlock();
-		} else if (Data.blockList.size() == 0 && type != 1) {
+		} else if (Data.blockList.size() == 0 && type == 2) {
 			initBlockClient();
+		} else if (Data.blockList.size() == 0 && type == 3) {
+			initBlockClient3();
 		}
-
 		for (int i = 0; i < 4; i++) {
 			Body b = mB[i];
 			float mBx = b.getPosition().x;
@@ -711,7 +731,7 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 				tBoard2.setTransform(touchV.x, 0, 0);
 				Data.location.set(Data.myID, 2 * touchV.x / SCREEN_WIDTH);
 			}
-		}	else {
+		}else {
 			if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
 					- board_halfwidth3
 					&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
@@ -721,7 +741,6 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 			}
 		}
 
-		System.out.println("touch drag");
 
 		return false;
 	}

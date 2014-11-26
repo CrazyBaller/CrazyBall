@@ -76,6 +76,7 @@ public class FourMode implements ApplicationListener, ContactListener,
 	int flagend0 = 0;
 	int flagend1 = 0;
 	int flagend2 = 0;
+	int flagend3 = 0;
 
 	private boolean backReleased = false;
 	private Vector2 oldVector;
@@ -237,34 +238,34 @@ public class FourMode implements ApplicationListener, ContactListener,
 		y = tBoard0.getPosition().y;
 
 		board_mesh.setVertices(new float[] { x - board_halfwidth0,
-				y + board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
+				y + board_halfheight, 0, colors[0].toFloatBits(),
 				x - board_halfwidth0, y - board_halfheight, 0,
-				Color.toFloatBits(0, 0, 0, 255), x + board_halfwidth0,
-				y + board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
+				colors[0].toFloatBits(), x + board_halfwidth0,
+				y + board_halfheight, 0, colors[0].toFloatBits(),
 				x + board_halfwidth0, y - board_halfheight, 0,
-				Color.toFloatBits(0, 0, 0, 255) });
+				colors[0].toFloatBits() });
 
 		x = tBoard1.getPosition().x;
 		y = tBoard1.getPosition().y;
 
 		board_mesh1.setVertices(new float[] { x - board_halfwidth1,
-				y + board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
+				y + board_halfheight, 0, colors[1].toFloatBits(),
 				x - board_halfwidth1, y - board_halfheight, 0,
-				Color.toFloatBits(0, 0, 0, 255), x + board_halfwidth1,
-				y + board_halfheight, 0, Color.toFloatBits(0, 0, 0, 255),
+				colors[1].toFloatBits(), x + board_halfwidth1,
+				y + board_halfheight, 0, colors[1].toFloatBits(),
 				x + board_halfwidth1, y - board_halfheight, 0,
-				Color.toFloatBits(0, 0, 0, 255) });
+				colors[1].toFloatBits() });
 
 		x = tBoard2.getPosition().x;
 		y = tBoard2.getPosition().y;
 
 		board_mesh2.setVertices(new float[] { x - board_halfheight,
-				y + board_halfwidth2, 0, Color.toFloatBits(0, 0, 0, 255),
+				y + board_halfwidth2, 0, colors[2].toFloatBits(),
 				x - board_halfheight, y - board_halfwidth2, 0,
-				Color.toFloatBits(0, 0, 0, 255), x + board_halfheight,
-				y + board_halfwidth2, 0, Color.toFloatBits(0, 0, 0, 255),
+				colors[2].toFloatBits(), x + board_halfheight,
+				y + board_halfwidth2, 0, colors[2].toFloatBits(),
 				x + board_halfheight, y - board_halfwidth2, 0,
-				Color.toFloatBits(0, 0, 0, 255) });
+				colors[2].toFloatBits() });
 		
 		x = tBoard3.getPosition().x;
 		y = tBoard3.getPosition().y;
@@ -307,9 +308,9 @@ public class FourMode implements ApplicationListener, ContactListener,
 		tboard2_y = SCREEN_WIDTH / 2 - board_halfheight - Data.location.get(2)
 				* SCREEN_WIDTH / 2;
 		tBoard2.setTransform(tBoard2.getWorldCenter().x, tboard2_y, 0);
-		tboard3_y = SCREEN_WIDTH / 2 - board_halfheight - Data.location.get(3)
+		tboard3_y = SCREEN_WIDTH / 2 - board_halfheight + Data.location.get(3)           
 				* SCREEN_WIDTH / 2;
-		tBoard3.setTransform(tBoard2.getWorldCenter().x, tboard3_y, 0);
+		tBoard3.setTransform(tBoard3.getWorldCenter().x, tboard3_y, 0);
 
 		// ·´Á¦³¡´¦Àí
 		if (touchingSensor == true) {
@@ -514,7 +515,7 @@ public class FourMode implements ApplicationListener, ContactListener,
 		BodyData dB = (BodyData) cB.getUserData();
 		if ((dA.getType() == BodyData.BODY_BALL && dB.getType() == BodyData.BODY_BORDER_BOTTOM) // 0ºÅËÀ
 				|| (dA.getType() == BodyData.BODY_BORDER_BOTTOM && dB.getType() == BodyData.BODY_BALL)) {
-			tBall.setLinearVelocity(0, 0);
+			//tBall.setLinearVelocity(0, 0);
 			
 			if (flagend0 == 0)
 
@@ -593,31 +594,33 @@ public class FourMode implements ApplicationListener, ContactListener,
 			m.obj = json;
 			windowHandler.sendMessage(m);
 			}
-		} 
-//			else if ((dA.getType() == BodyData.BODY_BALL && dB.getType() == BodyData.BODY_BORDER_RIGHT) // 3ºÅËÀ
-//				|| (dA.getType() == BodyData.BODY_BORDER_RIGHT && dB.getType() == BodyData.BODY_BALL)) {
-//
-//			int result = new Tool().judge(3);
-//
-//			SendData send = new SendData();
-//			send.sendresult(3, result);
-//
-//			JSONObject json = new JSONObject();
-//			try {
-//
-//				json.put("id", 3);
-//				json.put("result", result);
-//
-//			} catch (JSONException e) {
-//
-//				e.printStackTrace();
-//			}
-//
-//			Message m = new Message();
-//			m.what = SHOW_MYDEAD_DIALOG;
-//			m.obj = json;
-//			windowHandler.sendMessage(m);
-//		}
+		}else if ((dA.getType() == BodyData.BODY_BALL && dB.getType() == BodyData.BODY_BORDER_RIGHT) // 3ºÅËÀ
+				|| (dA.getType() == BodyData.BODY_BORDER_RIGHT && dB.getType() == BodyData.BODY_BALL)) {
+
+			if(flagend3 == 0){
+				flagend3 = 1;
+			int result = new Tool().judge(3);
+
+			SendData send = new SendData();
+			send.sendresult(3, result);
+
+			JSONObject json = new JSONObject();
+			try {
+
+				json.put("id", 3);
+				json.put("result", result);
+
+			} catch (JSONException e) {
+
+				e.printStackTrace();
+			}
+
+			Message m = new Message();
+			m.what = SHOW_MYDEAD_DIALOG;
+			m.obj = json;
+			windowHandler.sendMessage(m);
+			}
+		}
 	}
 
 	@Override
@@ -748,8 +751,8 @@ public class FourMode implements ApplicationListener, ContactListener,
 				|| (dA.getType() == BodyData.BODY_BOARD2 && dB.getType() == BodyData.BODY_BALL)) {
 			CONTROL_ID = 2;
 			send.controlId();
-		} else if ((dA.getType() == BodyData.BODY_BALL && dB.getType() == BodyData.BODY_BOARD3) // 3ºÅÅö
-				|| (dA.getType() == BodyData.BODY_BOARD3 && dB.getType() == BodyData.BODY_BALL)) {
+		}else if ((dA.getType() == BodyData.BODY_BALL && dB.getType() == BodyData.BODY_BOARD3) // 2ºÅÅö
+					|| (dA.getType() == BodyData.BODY_BOARD3 && dB.getType() == BodyData.BODY_BALL)) {
 			CONTROL_ID = 3;
 			send.controlId();
 		}
@@ -781,7 +784,7 @@ public class FourMode implements ApplicationListener, ContactListener,
 				} else {
 					po.setChange(i, 2);
 				}
-			} else if (CONTROL_ID == 3) {
+			} else if (CONTROL_ID ==3) {
 				send.eatblock(dA.getId());
 				send.props(i, 3);
 				if (i > 20 && i < 30) {
@@ -818,7 +821,7 @@ public class FourMode implements ApplicationListener, ContactListener,
 				} else {
 					po.setChange(i, 2);
 				}
-			} else if (CONTROL_ID == 3) {
+			}else if (CONTROL_ID ==3) {
 				send.eatblock(dA.getId());
 				send.props(i, 3);
 				if (i > 20 && i < 30) {

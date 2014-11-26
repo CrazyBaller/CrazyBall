@@ -159,9 +159,9 @@ public class ResultActivity extends Activity {
 				tall1 = 250;
 				tall2 = 250;
 			} else {
-				tall0 = 50 + 350 * (Data.time.get(0) - mintime) / timelong;
-				tall1 = 50 + 350 * (Data.time.get(1) - mintime) / timelong;
-				tall2 = 50 + 350 * (Data.time.get(2) - mintime) / timelong;
+				tall0 = 50 + 250 * (Data.time.get(0) - mintime) / timelong;
+				tall1 = 50 + 250 * (Data.time.get(1) - mintime) / timelong;
+				tall2 = 50 + 250 * (Data.time.get(2) - mintime) / timelong;
 			}
 		} else {
 
@@ -183,10 +183,10 @@ public class ResultActivity extends Activity {
 				tall2 = 250;
 				tall3 = 250;
 			} else {
-				tall0 = 50 + 350 * (Data.time.get(0) - mintime) / timelong;
-				tall1 = 50 + 350 * (Data.time.get(1) - mintime) / timelong;
-				tall2 = 50 + 350 * (Data.time.get(2) - mintime) / timelong;
-				tall3 = 50 + 350 * (Data.time.get(3) - mintime) / timelong;
+				tall0 = 50 + 250 * (Data.time.get(0) - mintime) / timelong;
+				tall1 = 50 + 250 * (Data.time.get(1) - mintime) / timelong;
+				tall2 = 50 + 250 * (Data.time.get(2) - mintime) / timelong;
+				tall3 = 50 + 250 * (Data.time.get(3) - mintime) / timelong;
 			}
 		}
 
