@@ -19,17 +19,18 @@ public class BodyData {
 	public static final int left = 10;
 	public static final int right = 11;
 
-	// 设置砖块的被动属性(改变板的属性)
-	public static final int BLOCK_TOLONGER = 31;
-	public static final int BLOCK_TOSHORTER = 32;
-	public static final int BLOCK_TOSPRING = 33;
-	public static final int BLOCK_TOWOOD = 34;
+	// 设置被动道具
+	public static final int BALL_TOBIGGER = 31;
+	public static final int BALL_TOSMALLER = 32;
+	public static final int PROPS_FRESH = 33;
 
-	// 设置砖块的主动属性(改变球的属性)
-	public static final int BALL_TOBIGGER = 21;
-	public static final int BALL_TOSMALLER = 22;
-	public static final int BALL_TOFASTTER = 23;
-	public static final int BALL_TOSLOWER = 24;
+	// 设置主动道具
+	public static final int BALL_TOFASTTER = 21;
+	public static final int BALL_TOSLOWER = 22;
+	public static final int BOARD_TOLONGER = 23;
+	public static final int BOARD_TOSHORTER = 24;
+	public static final int BOARD_DISAPPEAR = 25;
+	public static final int BOARD_NOCONTROL = 26;
 
 	private int id;
 	private int _type;

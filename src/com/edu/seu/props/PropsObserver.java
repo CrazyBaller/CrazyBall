@@ -3,10 +3,6 @@ package com.edu.seu.props;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-
-import com.edu.seu.crazyball2.ChangeBall;
-import com.edu.seu.crazyball2.ChangeBoard;
-import com.edu.seu.crazyball2.ChangeSensor;
 import com.edu.seu.message.Data;
 
 public class PropsObserver implements Observer {

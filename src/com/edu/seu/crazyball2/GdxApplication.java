@@ -600,8 +600,6 @@ public class GdxApplication extends AndroidApplication {
 		set_x = SCREEN_WIDTH * 5;
 		set_y = SCREEN_HEIGHT * 5;
 		
-		Toast.makeText(getApplicationContext(), Data.myID+"", 1000).show();
-
 		timer.schedule(task, 10, 10);
 
 		switch (mode) {

@@ -282,12 +282,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 
 		tBoard1.setTransform(Data.location.get(1) * SCREEN_WIDTH / 2,
 				tBoard1.getWorldCenter().y, 0);
-		// setBallBoardColor();
-		// board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		// board_mesh1.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-
-		// batch.begin();
-
+		
 		// 反力场处理
 		if (touchingSensor == true) {
 
@@ -309,9 +304,13 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		circle_radius = tBall.getFixtureList().get(0).getShape().getRadius();
 
 		setBallBoardColor();
-		board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		board_mesh1.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-
+		if(showBoard[0]==1){
+			board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		}
+		if(showBoard[1]==1){
+			board_mesh1.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		}
+	
 		batch.begin();
 
 		// 画柱子
@@ -472,13 +471,15 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		Vector3 touchV = new Vector3(arg0, arg1, 0);
 		camera.unproject(touchV);
 		// 设置移动坐标
-		if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
-				- board_halfwidth0
-				&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
-						+ board_halfwidth0) {
-			tBoard0.setTransform(touchV.x, 0, 0);
-			Data.location.set(Data.myID, 2 * tBoard0.getWorldCenter().x
-					/ SCREEN_WIDTH);
+		if(move_board){
+			if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
+					- board_halfwidth0
+					&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
+							+ board_halfwidth0) {
+				tBoard0.setTransform(touchV.x, 0, 0);
+				Data.location.set(Data.myID, 2 * tBoard0.getWorldCenter().x
+						/ SCREEN_WIDTH);
+			}
 		}
 
 		return false;
