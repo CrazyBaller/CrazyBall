@@ -4,24 +4,26 @@ import static com.edu.seu.crazyball2.Constant.*;
 import java.util.Timer;
 import java.util.TimerTask;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.edu.seu.crazyball2.BodyData;
 import com.edu.seu.message.Data;
 
 public class ChangeBall {
 	private CircleShape shapeCircle;
+	private int changeType;
 
 	// Ö´ÐÐchange
 	public void start(int changeType) {
-		if (changeType == 21) {
+		this.changeType = changeType;
+		if (changeType == BodyData.BALL_TOBIGGER) {
 			this.toBigger();
-		} else if (changeType == 22) {
+		} else if (changeType == BodyData.BALL_TOSMALLER) {
 			this.toSmaller();
-		} else if (changeType == 23) {
+		} else if (changeType == BodyData.BALL_TOFASTTER) {
 			this.toFaster();
-		} else if (changeType == 24) {
+		} else if (changeType == BodyData.BALL_TOSLOWER) {
 			this.toSlower();
 		}
 		timeVoid();
-
 	}
 
 	public void timeVoid() {
@@ -35,7 +37,13 @@ public class ChangeBall {
 			@Override
 			public void run() {
 				if (i_local == BALL_HIT) {
-					toNormal();
+					if (changeType == BodyData.BALL_TOBIGGER
+							|| changeType == BodyData.BALL_TOSMALLER) {
+						shapetoNormal();
+					} else {
+						speedtoNormal();
+					}
+
 				}
 
 				timer.cancel();
@@ -71,7 +79,7 @@ public class ChangeBall {
 		if (Data.myID == 0) {
 			float x = tBall.getLinearVelocity().x;
 			float y = tBall.getLinearVelocity().y;
-			tBall.setLinearVelocity(x * 1.2f, y * 1.2f);
+			tBall.setLinearVelocity(x * 2.0f, y * 2.0f);
 		}
 	}
 
@@ -79,14 +87,18 @@ public class ChangeBall {
 		if (Data.myID == 0) {
 			float x = tBall.getLinearVelocity().x;
 			float y = tBall.getLinearVelocity().y;
-			tBall.setLinearVelocity(x / 1.2f, y / 1.2f);
+			tBall.setLinearVelocity(x / 1.5f, y / 1.5f);
 		}
 
 	}
 
-	public void toNormal() {
+	public void shapetoNormal() {
 		shapeCircle = (CircleShape) tBall.getFixtureList().get(0).getShape();
 		shapeCircle.setRadius(circle_radius_standard);
+
+	}
+
+	public void speedtoNormal() {
 		if (Data.myID == 0) {
 			float x = tBall.getLinearVelocity().x;
 			float y = tBall.getLinearVelocity().y;

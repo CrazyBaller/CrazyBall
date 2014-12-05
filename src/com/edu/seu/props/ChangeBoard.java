@@ -252,9 +252,7 @@ public class ChangeBoard {
 			break;
 		default:
 			return;
-		}
-		
-	
+		}	
 	}
 	public void noControl(){
 		move_board=false;
