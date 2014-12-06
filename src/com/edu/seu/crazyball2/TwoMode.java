@@ -1,6 +1,7 @@
 package com.edu.seu.crazyball2;
 
 import static com.edu.seu.crazyball2.Constant.*;
+
 import java.util.Random;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,8 +47,10 @@ public class TwoMode implements ApplicationListener, ContactListener,
 
 	private OrthographicCamera camera;
 
-	private Body[] mB = new Body[4];
 	private Body[] slipe = new Body[2];
+	private Body headTitle;
+	private Body blockTitle;
+	private Body Express;
 	private Fixture m_sensor;
 
 	private PropsObservable po;
@@ -95,7 +98,8 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		board_halfheight = board_halfwidth / 5;
 		circle_radius_standard = board_halfheight;
 		circle_radius = circle_radius_standard;
-		block_width = circle_radius;
+		block_width = board_halfwidth/4f;
+		offset_center = (5*SCREEN_WIDTH)/7-(3*SCREEN_HEIGHT)/14-board_halfheight;
 
 		send = new SendData();
 
@@ -132,6 +136,9 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		// 初始化主动道具
 		initBlock();
 		initMyblock();
+		
+		//初始化title
+		initTitle();
 
 		// 创建感应区
 		tSensor = B2Util.createSensor(mworld, base_width * 2, m_sensor, 0f,
@@ -146,6 +153,21 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		inputmultiplexer.addProcessor(this);
 		Gdx.input.setInputProcessor(inputmultiplexer);
 		Gdx.input.setCatchBackKey(true);
+	}
+	
+	private void initTitle(){
+		headTitle = B2Util.createRectangle(mworld, (SCREEN_WIDTH*3)/8,base_width, 
+				-(SCREEN_WIDTH / 8),
+				SCREEN_WIDTH-board_halfheight+base_width, BodyType.StaticBody, 0,
+				0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 10), null);
+		blockTitle = B2Util.createRectangle(mworld,  SCREEN_WIDTH / 8,base_width,
+				((SCREEN_WIDTH *3)/ 8),
+				-board_halfheight-base_width/2-base_width, BodyType.StaticBody, 0,
+				0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 10), null);
+		Express = B2Util.createRectangle(mworld,  SCREEN_WIDTH / 8,base_width,
+				((SCREEN_WIDTH *3)/ 8),
+				SCREEN_WIDTH-board_halfheight+base_width, BodyType.StaticBody, 0,
+				0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 10), null);
 	}
 
 	private void initColor() {
@@ -164,32 +186,13 @@ public class TwoMode implements ApplicationListener, ContactListener,
 	}
 
 	private void initMyblock() {
-		for (int i = 0; i < 4; i++) {
-			myBlock[i] = 0;
-		}
-		mB[0] = B2Util.createRectangle(mworld, base_width, base_width,
-				(-SCREEN_WIDTH / 2 + base_width * 1.5f),
-				-(board_halfheight + base_width * 1.5f), BodyType.StaticBody,
-				0, 0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 31), null);
-		mB[1] = B2Util.createRectangle(mworld, base_width, base_width,
-				(-SCREEN_WIDTH / 2 + base_width * 3.5f),
-				-(board_halfheight + base_width * 1.5f), BodyType.StaticBody,
-				0, 0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 32), null);
-		mB[2] = B2Util.createRectangle(mworld, base_width, base_width,
-				(-SCREEN_WIDTH / 2 + base_width * 5.5f),
-				-(board_halfheight + base_width * 1.5f), BodyType.StaticBody,
-				0, 0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 33), null);
-		mB[3] = B2Util.createRectangle(mworld, base_width, base_width,
-				(-SCREEN_WIDTH / 2 + base_width * 7.5f),
-				-(board_halfheight + base_width * 1.5f), BodyType.StaticBody,
-				0, 0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 34), null);
 		slipe[0] = B2Util.createRectangle(mworld, base_width, base_width,
-				(-SCREEN_WIDTH / 2 + base_width * 2.5f),
-				-(board_halfheight + base_width * 4f), BodyType.StaticBody, 0,
+				-SCREEN_WIDTH / 4f,
+				-(board_halfheight + base_width * (2.5f+1.25f)), BodyType.StaticBody, 0,
 				0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 10), null);
 		slipe[1] = B2Util.createRectangle(mworld, base_width, base_width,
-				(-SCREEN_WIDTH / 2 + base_width * 6.5f),
-				-(board_halfheight + base_width * 4f), BodyType.StaticBody, 0,
+				SCREEN_WIDTH / 4f,
+				-(board_halfheight + base_width * (2.5f+1.25f)), BodyType.StaticBody, 0,
 				0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 11), null);
 	}
 
@@ -270,8 +273,9 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glClearColor(1f, 1f, 1f, 0f);
 
-		mCreateWorld.getHead().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		mCreateWorld.getScreen().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBackground().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_one().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_two().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_three().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
@@ -348,24 +352,6 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		if (Data.blockList.size() == 0) {
 			initBlock();
 		}
-		// 画道具框
-		for (int i = 0; i < 4; i++) {
-			Body b = mB[i];
-			float mBx = b.getPosition().x;
-			float mBy = b.getPosition().y;
-			if (myBlock[i] == 0) {
-				batch.draw(mCreateWorld.getBlockTexture(0), set_x
-						+ (mBx - base_width) * 10f, set_y - 120f
-						+ (mBy - base_width / 2) * 10.6f,
-						10 * base_width / 0.6f, 10 * base_width / 0.6f);
-			} else {
-				batch.draw(
-						mCreateWorld.getBlockTexture(Data.myID * 100 + 21 + i),
-						set_x + (mBx - base_width) * 10f, set_y - 120f
-								+ (mBy - base_width / 2) * 10.6f,
-						10 * base_width / 0.6f, 10 * base_width / 0.6f);
-			}
-		}
 		// 画滑动提示
 		for (int i = 0; i < 2; i++) {
 			Body b = slipe[i];
@@ -425,7 +411,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		}
 		arg1 = SCREEN_HEIGHT * 5 - arg1;
 		arg0 = arg0 - SCREEN_WIDTH * 5;
-		if (arg1 > 10 * (mB[0].getPosition().y - base_width - 12)
+/*		if (arg1 > 10 * (mB[0].getPosition().y - base_width - 12)
 				&& arg1 < 10 * (mB[0].getPosition().y + base_width - 12)) {
 			System.out.println("right");
 			if (arg0 > 10 * (mB[0].getPosition().x - base_width)
@@ -462,7 +448,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 				}
 			}
 		}
-
+*/
 		return false;
 	}
 

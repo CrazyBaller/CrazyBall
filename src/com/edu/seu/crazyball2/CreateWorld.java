@@ -1,5 +1,6 @@
 package com.edu.seu.crazyball2;
 
+import static com.edu.seu.crazyball2.Constant.SCREEN_HEIGHT;
 import static com.edu.seu.crazyball2.Constant.SCREEN_WIDTH;
 import static com.edu.seu.crazyball2.Constant.board_halfheight;
 import static com.edu.seu.crazyball2.Constant.board_halfwidth;
@@ -9,6 +10,7 @@ import static com.edu.seu.crazyball2.Constant.CONTROL_ID;
 import static com.edu.seu.crazyball2.Constant.base_width;
 import static com.edu.seu.crazyball2.Constant.set_x;
 import static com.edu.seu.crazyball2.Constant.set_y;
+import static com.edu.seu.crazyball2.Constant.offset_center;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Mesh;
@@ -34,6 +36,7 @@ public class CreateWorld {
 	private Body tBound_circle2;
 	private Body tBound_circle3;
 	private Body tBound_circle4;
+	private Mesh screen;
 	private Mesh background;
 	private Mesh controlBackground;
 	private Mesh slipeBackground;
@@ -44,6 +47,8 @@ public class CreateWorld {
 	private Mesh head;
 
 	private SpriteBatch batch;
+	private Texture textureup;
+	private Texture texturedown;
 	private Texture texture2;
 	private TextureAtlas atlas;
 	private TextureRegion blockRegion;
@@ -51,7 +56,7 @@ public class CreateWorld {
 
 	public CreateWorld() {
 		board_halfwidth = SCREEN_WIDTH * boardrate;
-		base_width = SCREEN_WIDTH / 8;// half base width
+		base_width = (SCREEN_HEIGHT-SCREEN_WIDTH)/7;// half base width
 		world = new World(new Vector2(0, 0f), true);
 		tBound1 = B2Util.createRectangle(world, SCREEN_WIDTH / 2,
 				bound_width / 2, 0, -board_halfheight + SCREEN_WIDTH
@@ -72,18 +77,19 @@ public class CreateWorld {
 		tBound_circle1 = B2Util.createCircle(world, board_halfheight * 2,
 				-SCREEN_WIDTH / 2, SCREEN_WIDTH - board_halfheight,
 				BodyType.StaticBody, 0, 0, 0, 0, new BodyData(
-						BodyData.BODY_BALL), null);
+						BodyData.BODY_BALL), null);//up
 		tBound_circle2 = B2Util.createCircle(world, board_halfheight * 2,
 				+SCREEN_WIDTH / 2, SCREEN_WIDTH - board_halfheight,
 				BodyType.StaticBody, 0, 0, 0, 0, new BodyData(
-						BodyData.BODY_BALL), null);
+						BodyData.BODY_BALL), null);//up
 		tBound_circle3 = B2Util.createCircle(world, board_halfheight * 2,
 				-SCREEN_WIDTH / 2, -board_halfheight, BodyType.StaticBody, 0,
-				0, 0, 0, new BodyData(BodyData.BODY_BALL), null);
+				0, 0, 0, new BodyData(BodyData.BODY_BALL), null);//down
 		tBound_circle4 = B2Util.createCircle(world, board_halfheight * 2,
 				+SCREEN_WIDTH / 2, -board_halfheight, BodyType.StaticBody, 0,
-				0, 0, 0, new BodyData(BodyData.BODY_BALL), null);
-
+				0, 0, 0, new BodyData(BodyData.BODY_BALL), null);//down
+		
+		setScreenColor();
 		setBackgroundColor();
 		setBoundColor();
 		setControlBackground();
@@ -91,9 +97,26 @@ public class CreateWorld {
 		setHead();
 		batch = new SpriteBatch();
 		texture2 = new Texture(Gdx.files.internal("ball.png"));
+		textureup = new Texture(Gdx.files.internal("balldown.png"));
+		texturedown = new Texture(Gdx.files.internal("ballup.png"));
 		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
 		blockRegion = new TextureRegion(atlas.findRegion("11"));
 
+	}
+	private void setScreenColor(){
+		float halfwidth = SCREEN_HEIGHT / 2;
+		float halfheight = SCREEN_WIDTH / 2;
+		float x = tBound4.getPosition().x;
+		float y = offset_center;
+		screen = new Mesh(true, 4, 4, new VertexAttribute(Usage.Position,
+				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
+				"a_color"));
+		screen.setVertices(new float[] { x - halfheight, y + halfwidth, 0,
+				Color.toFloatBits(250, 248, 239, 255), x - halfheight,
+				y - halfwidth, 0, Color.toFloatBits(250, 248, 239, 255),
+				x + halfheight, y + halfwidth, 0,
+				Color.toFloatBits(250, 248, 239, 255), x + halfheight,
+				y - halfwidth, 0, Color.toFloatBits(250, 248, 239, 255) });
 	}
 
 	private void setBackgroundColor() {
@@ -113,20 +136,20 @@ public class CreateWorld {
 	}
 
 	private void setControlBackground() {
-		float halfwidth = base_width * 1.25f;
-		float halfheight = SCREEN_WIDTH / 2;
-		float x = tBound1.getPosition().x;
-		float y = tBound4.getPosition().y - base_width * 1.25f;
+		float halfwidth = base_width;
+		float halfheight =(SCREEN_WIDTH *3)/ 8;
+		float x = -SCREEN_WIDTH/8;
+		float y = -board_halfheight-base_width/2-base_width;
 		controlBackground = new Mesh(true, 4, 4, new VertexAttribute(
 				Usage.Position, 3, "a_position"), new VertexAttribute(
 				Usage.ColorPacked, 4, "a_color"));
-		controlBackground.setVertices(new float[] { x - halfheight,
-				y + halfwidth, 0, Color.toFloatBits(85, 85, 85, 255),
-				x - halfheight, y - halfwidth, 0,
-				Color.toFloatBits(85, 85, 85, 255), x + halfheight,
-				y + halfwidth, 0, Color.toFloatBits(85, 85, 85, 255),
+		controlBackground.setVertices(new float[] { x - halfheight*1.2f,
+				y + halfwidth, 0, Color.toFloatBits(138, 117, 97, 255),
+				x - halfheight*1.2f, y - halfwidth, 0,
+				Color.toFloatBits(138, 117, 97, 255), x + halfheight,
+				y + halfwidth, 0, Color.toFloatBits(138, 117, 97, 255),
 				x + halfheight, y - halfwidth, 0,
-				Color.toFloatBits(85, 85, 85, 255) });
+				Color.toFloatBits(138, 117, 97, 255) });
 	}
 
 	private void setSlipeBackground() {
@@ -158,11 +181,11 @@ public class CreateWorld {
 					Usage.Position, 3, "a_position"), new VertexAttribute(
 					Usage.ColorPacked, 4, "a_color"));
 			bound_one.setVertices(new float[] { x - halfheight, y + halfwidth,
-					0, Color.toFloatBits(85, 85, 85, 255), x - halfheight,
-					y - halfwidth, 0, Color.toFloatBits(85, 85, 85, 255),
+					0, Color.toFloatBits(187, 173, 160, 255), x - halfheight,
+					y - halfwidth, 0, Color.toFloatBits(187, 173, 160, 255),
 					x + halfheight, y + halfwidth, 0,
-					Color.toFloatBits(85, 85, 85, 255), x + halfheight,
-					y - halfwidth, 0, Color.toFloatBits(85, 85, 85, 255) });
+					Color.toFloatBits(187, 173, 160, 255), x + halfheight,
+					y - halfwidth, 0, Color.toFloatBits(187, 173, 160, 255) });
 		}
 
 		x = tBound2.getPosition().x;
@@ -173,11 +196,11 @@ public class CreateWorld {
 					Usage.Position, 3, "a_position"), new VertexAttribute(
 					Usage.ColorPacked, 4, "a_color"));
 			bound_two.setVertices(new float[] { x - halfwidth, y + halfheight,
-					0, Color.toFloatBits(85, 85, 85, 255), x - halfwidth,
-					y - halfheight, 0, Color.toFloatBits(85, 85, 85, 255),
+					0, Color.toFloatBits(187, 173, 160, 255), x - halfwidth,
+					y - halfheight, 0, Color.toFloatBits(187, 173, 160, 255),
 					x + halfwidth, y + halfheight, 0,
-					Color.toFloatBits(85, 85, 85, 255), x + halfwidth,
-					y - halfheight, 0, Color.toFloatBits(85, 85, 85, 255) });
+					Color.toFloatBits(187, 173, 160, 255), x + halfwidth,
+					y - halfheight, 0, Color.toFloatBits(187, 173, 160, 255) });
 		}
 
 		x = tBound3.getPosition().x;
@@ -188,12 +211,12 @@ public class CreateWorld {
 					Usage.Position, 3, "a_position"), new VertexAttribute(
 					Usage.ColorPacked, 4, "a_color"));
 			bound_three.setVertices(new float[] { x - halfwidth,
-					y + halfheight, 0, Color.toFloatBits(85, 85, 85, 255),
+					y + halfheight, 0, Color.toFloatBits(187, 173, 160, 255),
 					x - halfwidth, y - halfheight, 0,
-					Color.toFloatBits(85, 85, 85, 255), x + halfwidth,
-					y + halfheight, 0, Color.toFloatBits(85, 85, 85, 255),
+					Color.toFloatBits(187, 173, 160, 255), x + halfwidth,
+					y + halfheight, 0, Color.toFloatBits(187, 173, 160, 255),
 					x + halfwidth, y - halfheight, 0,
-					Color.toFloatBits(85, 85, 85, 255) });
+					Color.toFloatBits(187, 173, 160, 255) });
 		}
 
 		x = tBound4.getPosition().x;
@@ -204,11 +227,11 @@ public class CreateWorld {
 					Usage.Position, 3, "a_position"), new VertexAttribute(
 					Usage.ColorPacked, 4, "a_color"));
 			bound_four.setVertices(new float[] { x - halfheight, y + halfwidth,
-					0, Color.toFloatBits(85, 85, 85, 255), x - halfheight,
-					y - halfwidth, 0, Color.toFloatBits(85, 85, 85, 255),
+					0, Color.toFloatBits(187, 173, 160, 255), x - halfheight,
+					y - halfwidth, 0, Color.toFloatBits(187, 173, 160, 255),
 					x + halfheight, y + halfwidth, 0,
-					Color.toFloatBits(85, 85, 85, 255), x + halfheight,
-					y - halfwidth, 0, Color.toFloatBits(85, 85, 85, 255) });
+					Color.toFloatBits(187, 173, 160, 255), x + halfheight,
+					y - halfwidth, 0, Color.toFloatBits(187, 173, 160, 255) });
 		}
 
 	}
@@ -216,48 +239,52 @@ public class CreateWorld {
 	public void setBoundCircle() {
 		float x = tBound_circle1.getPosition().x;
 		float y = tBound_circle1.getPosition().y;
-		batch.draw(this.getTexture2(), set_x + (x - board_halfheight * 2) * 10,
-				set_y - 120f + (y - board_halfheight * 2) * 10,
+		batch.draw(this.getTextureUp(), set_x + (x - board_halfheight * 2) * 10,
+				set_y - offset_center*10f + (y - board_halfheight * 2) * 10,
 				20 * board_halfheight * 2, 20 * board_halfheight * 2);
 
 		x = tBound_circle2.getPosition().x;
 		y = tBound_circle2.getPosition().y;
-		batch.draw(this.getTexture2(), set_x + (x - board_halfheight * 2) * 10,
-				set_y - 120f + (y - board_halfheight * 2) * 10,
+		batch.draw(this.getTextureUp(), set_x + (x - board_halfheight * 2) * 10,
+				set_y - offset_center*10f + (y - board_halfheight * 2) * 10,
 				20 * board_halfheight * 2, 20 * board_halfheight * 2);
 
 		x = tBound_circle3.getPosition().x;
 		y = tBound_circle3.getPosition().y;
-		batch.draw(this.getTexture2(), set_x + (x - board_halfheight * 2) * 10,
-				set_y - 120f + (y - board_halfheight * 2) * 10,
+		batch.draw(this.getTextureDown(), set_x + (x - board_halfheight * 2) * 10,
+				set_y - offset_center*10f + (y - board_halfheight * 2) * 10,
 				20 * board_halfheight * 2, 20 * board_halfheight * 2);
 
 		x = tBound_circle4.getPosition().x;
 		y = tBound_circle4.getPosition().y;
-		batch.draw(this.getTexture2(), set_x + (x - board_halfheight * 2) * 10,
-				set_y - 120f + (y - board_halfheight * 2) * 10,
+		batch.draw(this.getTextureDown(), set_x + (x - board_halfheight * 2) * 10,
+				set_y - offset_center*10f + (y - board_halfheight * 2) * 10,
 				20 * board_halfheight * 2, 20 * board_halfheight * 2);
 	}
 
 	public void setHead() {
 		float x = tBound1.getPosition().x;
-		float y = tBound1.getPosition().y + base_width;
-		float halfwidth = base_width * 3.25f;
+		float y = SCREEN_WIDTH-base_width+board_halfheight;
+		float halfwidth = base_width;
 		float halfheight = SCREEN_WIDTH / 2;
 		head = new Mesh(true, 4, 4, new VertexAttribute(Usage.Position, 3,
 				"a_position"), new VertexAttribute(Usage.ColorPacked, 4,
 				"a_color"));
 		head.setVertices(new float[] { x - halfheight, y + halfwidth, 0,
-				Color.toFloatBits(85, 85, 85, 255), x - halfheight,
-				y - halfwidth, 0, Color.toFloatBits(85, 85, 85, 255),
+				Color.toFloatBits(250, 248, 239, 255), x - halfheight,
+				y - halfwidth, 0, Color.toFloatBits(250, 248, 239, 255),
 				x + halfheight, y + halfwidth, 0,
-				Color.toFloatBits(85, 85, 85, 255), x + halfheight,
-				y - halfwidth, 0, Color.toFloatBits(85, 85, 85, 255) });
+				Color.toFloatBits(250, 248, 239, 255), x + halfheight,
+				y - halfwidth, 0, Color.toFloatBits(250, 248, 239, 255) });
 
 	}
 
 	public World getWorld() {
 		return world;
+	}
+	
+	public Mesh getScreen() {
+		return screen;
 	}
 
 	public Mesh getBackground() {
@@ -296,6 +323,14 @@ public class CreateWorld {
 		return batch;
 	}
 
+	public Texture getTextureUp() {
+		return textureup;
+	}
+	
+	public Texture getTextureDown() {
+		return texturedown;
+	}
+	
 	public Texture getTexture2() {
 		return texture2;
 	}
@@ -305,8 +340,8 @@ public class CreateWorld {
 			blockRegion = new TextureRegion(atlas.findRegion(String
 					.valueOf(type)));
 		} else if (type < 450 && type > 430) {
-			System.out.println(CONTROL_ID);
-			System.out.println(CONTROL_ID * 100 + type - 400);
+			//System.out.println(CONTROL_ID);
+			//System.out.println(CONTROL_ID * 100 + type - 400);
 			if((CONTROL_ID * 100 + type - 400)==241){
 				blockRegion = new TextureRegion(atlas.findRegion(String
 						.valueOf(100 + type - 400)));

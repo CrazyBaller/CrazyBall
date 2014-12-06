@@ -16,7 +16,8 @@ public class Constant {
 	public static float board_halfwidth2 = 5f;
 	public static float board_halfwidth3 = 5f;
 	public static float base_width = 10f;
-
+	public static float offset_center = 12f;
+	
 	public static World mworld;
 
 	public static Body tBoard0;
