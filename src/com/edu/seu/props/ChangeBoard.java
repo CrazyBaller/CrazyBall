@@ -19,24 +19,25 @@ public class ChangeBoard {
 	public ChangeBoard(int num) {
 		this.id = num;
 	}
-	public boolean ifvalidate(int n){
-		if(Data.state.get(n)!=3)
+
+	public boolean ifvalidate(int n) {
+		if (Data.state.get(n) != 3)
 			return true;
-		else 
+		else
 			return false;
 	}
 
 	// Ö´ÐÐchange
 	public void start(int changeType) {
-		this.changeType=changeType;
-		if(ifvalidate(this.id)){
+		this.changeType = changeType;
+		if (ifvalidate(this.id)) {
 			if (changeType == BodyData.BOARD_TOLONGER) {
 				this.toLonger();
 			} else if (changeType == BodyData.BOARD_TOSHORTER) {
 				this.toShorter();
 			} else if (changeType == BodyData.BOARD_DISAPPEAR) {
 				this.toDisappear();
-			} else if(changeType == BodyData.BOARD_NOCONTROL){
+			} else if (changeType == BodyData.BOARD_NOCONTROL) {
 				this.noControl();
 			}
 			timeVoid();
@@ -54,15 +55,15 @@ public class ChangeBoard {
 			@Override
 			public void run() {
 				if (i_local == BOARD_HIT) {
-					if(changeType==BodyData.BOARD_DISAPPEAR){
-						for(int i=0;i<4;i++){
-							showBoard[i]=1;
+					if (changeType == BodyData.BOARD_DISAPPEAR) {
+						for (int i = 0; i < 4; i++) {
+							showBoard[i] = 1;
 						}
-					}else if(changeType==BodyData.BOARD_NOCONTROL){
-						move_board=true;
-					}else{
+					} else if (changeType == BodyData.BOARD_NOCONTROL) {
+						move_board = true;
+					} else {
 						toNormal(id);
-					}					
+					}
 				}
 				timer.cancel();
 			}
@@ -236,26 +237,28 @@ public class ChangeBoard {
 			return;
 		}
 	}
-	public void toDisappear(){
-		switch(id){
+
+	public void toDisappear() {
+		switch (id) {
 		case 0:
-			showBoard[0]=0;
+			showBoard[0] = 0;
 			break;
 		case 1:
-			showBoard[1]=0;
+			showBoard[1] = 0;
 			break;
 		case 2:
-			showBoard[2]=0;
+			showBoard[2] = 0;
 			break;
 		case 3:
-			showBoard[3]=0;
+			showBoard[3] = 0;
 			break;
 		default:
 			return;
-		}	
+		}
 	}
-	public void noControl(){
-		move_board=false;
+
+	public void noControl() {
+		move_board = false;
 	}
 
 }

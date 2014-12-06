@@ -80,6 +80,8 @@ public class SoloMode implements ApplicationListener, ContactListener,
 	Sound sound;
 
 	int flagend0 = 0;
+	
+	private PropsBar propsbar;
 
 	public SoloMode(Handler h, PropsObservable po) {
 		this.windowHandler = h;
@@ -110,9 +112,6 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		// 镜头下的世界
 		camera = new OrthographicCamera(SCREEN_WIDTH, SCREEN_HEIGHT);
 		camera.position.set(0, offset_center, 0);
-		System.out.println("the sub is "+(SCREEN_HEIGHT-SCREEN_WIDTH));
-		System.out.println("the sub is "+(SCREEN_HEIGHT-SCREEN_WIDTH)/7*2);
-		System.out.println("the offset_center is "+offset_center);
 
 		gl = Gdx.graphics.getGL10();
 		renderer = new Box2DDebugRenderer();
@@ -120,6 +119,8 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		// 创建背景世界
 		mCreateWorld = new CreateWorld();
 		mworld = mCreateWorld.getWorld();
+		
+		propsbar = new PropsBar(po); 
 
 		board_mesh = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
 				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
@@ -147,6 +148,7 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		// 设置输入监听
 		InputMultiplexer inputmultiplexer = new InputMultiplexer();
 		inputmultiplexer.addProcessor(this);
+		inputmultiplexer.addProcessor(propsbar.getStage());
 		Gdx.input.setInputProcessor(inputmultiplexer);
 		Gdx.input.setCatchBackKey(true);
 
@@ -253,18 +255,8 @@ public class SoloMode implements ApplicationListener, ContactListener,
 	private void setBallBoardColor() {
 		float x = tBoard0.getPosition().x;
 		float y = tBoard0.getPosition().y;
-		/*
-		 * System.out.println(" r:"+colors[0].r+" g:"+colors[0].g+" b:"+colors[0]
-		 * .b);
-		 * System.out.println(" r:"+colors[1].r+" g:"+colors[1].g+" b:"+colors
-		 * [1].b);
-		 * System.out.println(" r:"+colors[2].r+" g:"+colors[2].g+" b:"+colors
-		 * [2].b);
-		 * System.out.println(" r:"+colors[3].r+" g:"+colors[3].g+" b:"+colors
-		 * [3].b);
-		 */
+		
 		int i = Data.myID;
-		/* System.out.println("myID is "+i); */
 		board_mesh.setVertices(new float[] { x - board_halfwidth0,
 				y + board_halfheight, 0, colors[i].toFloatBits(),
 				x - board_halfwidth0, y - board_halfheight, 0,
@@ -404,6 +396,8 @@ public class SoloMode implements ApplicationListener, ContactListener,
 			windowHandler.sendMessage(m);
 			pause();
 		}
+		propsbar.getStage().act(Gdx.graphics.getDeltaTime());
+		propsbar.getStage().draw();
 
 		camera.update();
 		camera.apply(gl);
@@ -497,9 +491,6 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		if ((dA.getType() == BodyData.BODY_BALL && dB.getType() == BodyData.BODY_BORDER_BOTTOM)
 				|| (dA.getType() == BodyData.BODY_BORDER_BOTTOM && dB.getType() == BodyData.BODY_BALL)) {
 			tBall.setLinearVelocity(0, 0);
-			// Message m=new Message();
-			// m.what=SHOW_DIALOG;
-			// windowHandler.sendMessage(m);
 
 			if (flagend0 == 0)
 
@@ -657,19 +648,27 @@ public class SoloMode implements ApplicationListener, ContactListener,
 			//music.pause();
 			sound.play(30);
 			dA.health = 0;
-			po.setChange(dA.getchangeType(), 0);
-			if (dA.getchangeType() > 20 & dA.getchangeType() < 30) {
-				myBlock[dA.getchangeType() - 21]++;
-			}
+			if(dA.getchangeType()>30&&dA.getchangeType()<35){//被动
+				po.setChange(dA.getchangeType(), 0);
+			}else{
+				propsbar.addbutton(dA.getchangeType());
+			}			
+//			if (dA.getchangeType() > 20 & dA.getchangeType() < 30) {
+//				myBlock[dA.getchangeType() - 21]++;
+//			}
 		}
 		if (dB.getType() == BodyData.BODY_BLOCK) {
 			//music.pause();
 			sound.play(30);
 			dB.health = 0;
-			po.setChange(dA.getchangeType(), 0);
-			if (dA.getchangeType() > 20 & dA.getchangeType() < 30) {
-				myBlock[dA.getchangeType() - 21]++;
-			}
+			if(dA.getchangeType()>30&&dA.getchangeType()<35){//被动
+				po.setChange(dA.getchangeType(), 0);
+			}else{
+				propsbar.addbutton(dA.getchangeType());
+			}			
+//			if (dA.getchangeType() > 20 & dA.getchangeType() < 30) {
+//				myBlock[dA.getchangeType() - 21]++;
+//			}
 		}
 	}
 

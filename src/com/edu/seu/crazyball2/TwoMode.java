@@ -83,6 +83,8 @@ public class TwoMode implements ApplicationListener, ContactListener,
 
 	private boolean backReleased = false;
 	private Vector2 oldVector;
+	
+	private PropsBar propsbar;
 
 	public TwoMode(Handler h, PropsObservable po) {
 		this.windowHandler = h;
@@ -121,6 +123,8 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		// 创建背景世界
 		mCreateWorld = new CreateWorld();
 		mworld = mCreateWorld.getWorld();
+		
+		propsbar = new PropsBar(po); 
 
 		board_mesh = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
 				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
@@ -151,6 +155,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		// 设置输入监听
 		InputMultiplexer inputmultiplexer = new InputMultiplexer();
 		inputmultiplexer.addProcessor(this);
+		inputmultiplexer.addProcessor(propsbar.getStage());
 		Gdx.input.setInputProcessor(inputmultiplexer);
 		Gdx.input.setCatchBackKey(true);
 	}
@@ -372,6 +377,11 @@ public class TwoMode implements ApplicationListener, ContactListener,
 			windowHandler.sendMessage(m);
 			pause();
 		}
+		
+		propsbar.showselectpeople();
+		propsbar.getStage().act(Gdx.graphics.getDeltaTime());
+		propsbar.getStage().draw();
+		
 		camera.update();
 		camera.apply(gl);
 

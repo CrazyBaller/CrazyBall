@@ -91,6 +91,8 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 	Music music;
 	Music backmusic;
 	Sound sound;
+	
+	private PropsBar propsbar;
 
 	public FourModeClient(Handler h, PropsObservable po) {
 		this.windowHandler = h;
@@ -133,6 +135,8 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 		mCreateWorld = new CreateWorld();
 		mworld = mCreateWorld.getWorld();
 		batch = mCreateWorld.getBatch();
+		
+		propsbar = new PropsBar(po); 
 
 		board_mesh = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
 				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
@@ -169,6 +173,7 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 		// …Ë÷√ ‰»Îº‡Ã˝
 		InputMultiplexer inputmultiplexer = new InputMultiplexer();
 		inputmultiplexer.addProcessor(this);
+		inputmultiplexer.addProcessor(propsbar.getStage());
 		Gdx.input.setInputProcessor(inputmultiplexer);
 		Gdx.input.setCatchBackKey(true);
 
@@ -652,6 +657,11 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 			windowHandler.sendMessage(m);
 			pause();
 		}
+		
+		propsbar.showselectpeople();
+		propsbar.getStage().act(Gdx.graphics.getDeltaTime());
+		propsbar.getStage().draw();
+		
 		camera.update();
 		camera.apply(gl);
 		renderer.render(mworld, camera.combined);

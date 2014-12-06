@@ -88,6 +88,7 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 	Music backmusic;
 	Sound sound;
 
+	private PropsBar propsbar;
 	public ThreeMode(Handler h, PropsObservable po) {
 		this.windowHandler = h;
 		this.po = po;
@@ -122,6 +123,8 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 		// 镜头下的世界
 		camera = new OrthographicCamera(SCREEN_WIDTH, SCREEN_HEIGHT);
 		camera.position.set(0, 12, 0);
+		
+		propsbar = new PropsBar(po); 
 
 		gl = Gdx.graphics.getGL10();
 		renderer = new Box2DDebugRenderer();
@@ -160,6 +163,7 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 		// 设置输入监听
 		InputMultiplexer inputmultiplexer = new InputMultiplexer();
 		inputmultiplexer.addProcessor(this);
+		inputmultiplexer.addProcessor(propsbar.getStage());
 		Gdx.input.setInputProcessor(inputmultiplexer);
 		Gdx.input.setCatchBackKey(true);
 	}
@@ -411,6 +415,10 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 			pause();
 		}
 
+		propsbar.showselectpeople();
+		propsbar.getStage().act(Gdx.graphics.getDeltaTime());
+		propsbar.getStage().draw();
+		
 		camera.update();
 		camera.apply(gl);
 		renderer.render(mworld, camera.combined);

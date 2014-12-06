@@ -80,6 +80,7 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 	Music backmusic;
 	Sound sound;
 
+	private PropsBar propsbar;
 	public TwoModeClient(Handler h, PropsObservable po) {
 		this.windowHandler = h;
 		this.po = po;
@@ -112,6 +113,8 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 		camera = new OrthographicCamera(SCREEN_WIDTH, SCREEN_HEIGHT);
 		camera.position.set(0, 12, 0);
 
+		propsbar = new PropsBar(po); 
+		
 		gl = Gdx.graphics.getGL10();
 
 		// 创建背景世界
@@ -144,6 +147,7 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 		// 设置输入监听
 		InputMultiplexer inputmultiplexer = new InputMultiplexer();
 		inputmultiplexer.addProcessor(this);
+		inputmultiplexer.addProcessor(propsbar.getStage());
 		Gdx.input.setInputProcessor(inputmultiplexer);
 		Gdx.input.setCatchBackKey(true);
 		// 设置碰撞监听
@@ -390,6 +394,10 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 			pause();
 		}
 
+		propsbar.showselectpeople();
+		propsbar.getStage().act(Gdx.graphics.getDeltaTime());
+		propsbar.getStage().draw();
+		
 		camera.update();
 		camera.apply(gl);
 
