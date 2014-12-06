@@ -1,5 +1,7 @@
 package com.edu.seu.UI;
 
+import java.util.ArrayList;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -253,6 +255,13 @@ public class ReadyActivity extends Activity {
 			case R.id.ready_ready:
 				if (readyflag == 0) {
 					readyflag = 1;
+					if(Data.state==null||Data.state.isEmpty()){
+						Data.state=new ArrayList<Integer>();
+						Data.state.add(0);
+						Data.state.add(0);
+						Data.state.add(0);
+						Data.state.add(0);
+					}
 					Data.state.set(Data.myID, 1);
 					readybtn.setText("ÒÑ×¼±¸");
 

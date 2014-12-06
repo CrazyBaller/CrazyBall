@@ -23,6 +23,8 @@ public class BodyData {
 	public static final int BALL_TOBIGGER = 31;
 	public static final int BALL_TOSMALLER = 32;
 	public static final int PROPS_FRESH = 33;
+	public static final int DEFY_GRAVITY = 34;
+	
 
 	// 设置主动道具
 	public static final int BALL_TOFASTTER = 21;

@@ -215,26 +215,11 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 			Data.propsimagey.add(y / (SCREEN_WIDTH / 2));
 
 		}
-		for (int i = 0; i < 2; i++) {
-			Integer temp = iter.next();
-			float x = (temp % 10 - 5) * (block_width * 2.4f);
-			float y = (1.5f + (temp / 10)) * block_width * 2.4f;
-			int type = 41;
-			Body tB = B2Util.createRectangle(mworld, block_width / 1.6f,
-					block_width / 1.6f, x, y, BodyType.StaticBody, 0, 0, 0, 0,
-					new BodyData(BodyData.BODY_BLOCK, type, id), null);
-			Data.blockList.add(tB);
-			id++;
-			Data.propsimageid.add(type);
-			Data.propsimagex.add(x / (SCREEN_WIDTH / 2));
-			Data.propsimagey.add(y / (SCREEN_WIDTH / 2));
-
-		}
 		while (iter.hasNext()) {
 			Integer temp = iter.next();
 			float x = (temp % 10 - 5) * (block_width * 2.4f);
 			float y = (1.5f + temp / 10) * block_width * 2.4f;
-			int type = rd.nextInt(4) + 21;
+			int type = rd.nextInt(6) + 21;
 			Body tB = B2Util.createRectangle(mworld, block_width / 1.6f,
 					block_width / 1.6f, x, y, BodyType.StaticBody, 0, 0, 0, 0,
 					new BodyData(BodyData.BODY_BLOCK, type, id), null);

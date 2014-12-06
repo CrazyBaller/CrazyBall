@@ -336,26 +336,23 @@ public class CreateWorld {
 	}
 
 	public TextureRegion getBlockTexture(int type) {
-		if (type < 430 && type > 420) {
+		try{
+			if (type > 430) {
 			blockRegion = new TextureRegion(atlas.findRegion(String
-					.valueOf(type)));
-		} else if (type < 450 && type > 430) {
+					.valueOf(type-400)));
+		} else if (type > 420) {
 			//System.out.println(CONTROL_ID);
 			//System.out.println(CONTROL_ID * 100 + type - 400);
-			if((CONTROL_ID * 100 + type - 400)==241){
-				blockRegion = new TextureRegion(atlas.findRegion(String
-						.valueOf(100 + type - 400)));
-			}
-			else{
 			blockRegion = new TextureRegion(atlas.findRegion(String
 					.valueOf(CONTROL_ID * 100 + type - 400)));
-			}
-			
 		} else {
 			blockRegion = new TextureRegion(atlas.findRegion(String
 					.valueOf(type)));
 		}
+		
+		}catch(Exception e){
+			System.out.println("the can't find pic is "+type);
+		}	
 		return blockRegion;
 	}
-
 }
