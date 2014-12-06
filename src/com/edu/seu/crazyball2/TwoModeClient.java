@@ -80,6 +80,7 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 	Music backmusic;
 	Sound sound;
 
+	private PropsBar propsbar;
 	public TwoModeClient(Handler h, PropsObservable po) {
 		this.windowHandler = h;
 		this.po = po;
@@ -112,6 +113,8 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 		camera = new OrthographicCamera(SCREEN_WIDTH, SCREEN_HEIGHT);
 		camera.position.set(0, 12, 0);
 
+		propsbar = new PropsBar(po); 
+		
 		gl = Gdx.graphics.getGL10();
 
 		// 创建背景世界
@@ -144,6 +147,7 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 		// 设置输入监听
 		InputMultiplexer inputmultiplexer = new InputMultiplexer();
 		inputmultiplexer.addProcessor(this);
+		inputmultiplexer.addProcessor(propsbar.getStage());
 		Gdx.input.setInputProcessor(inputmultiplexer);
 		Gdx.input.setCatchBackKey(true);
 		// 设置碰撞监听
@@ -334,6 +338,24 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 		batch.draw(mCreateWorld.getTexture2(), set_x + (ball_x - circle_radius)
 				* 10, set_y - 120f + (ball_y - circle_radius) * 10,
 				20 * circle_radius, 20 * circle_radius);
+		//画title
+		x = headTitle.getPosition().x;
+		y = headTitle.getPosition().y;
+		batch.draw(mCreateWorld.getTiltleTex(),
+				set_x + (x - (SCREEN_WIDTH*3)/8) * 10, set_y - offset_center*10f
+						+ (y - base_width) * 10, 60 * SCREEN_WIDTH / 8,
+						20 * base_width);
+		System.out.println("the title x:"+(set_x + (x - (0.75f * SCREEN_WIDTH)/2) * 10));
+		System.out.println("the title y:"+(set_y - offset_center*10f
+				+ (y - base_width) * 10));
+		//
+		//画”道具“title
+		x = blockTitle.getPosition().x;
+		y = blockTitle.getPosition().y;
+		batch.draw(mCreateWorld.getBlockTiltleTex(),
+				set_x + (x - SCREEN_WIDTH / 8) * 10, set_y - offset_center*10f
+				+ (y - base_width) * 10, 20 * SCREEN_WIDTH / 8,
+						20 * base_width);
 
 		for (int i = 0; i < Data.blockList.size(); i++) {
 			Body b = Data.blockList.get(i);
@@ -375,6 +397,10 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 			pause();
 		}
 
+		propsbar.showselectpeople();
+		propsbar.getStage().act(Gdx.graphics.getDeltaTime());
+		propsbar.getStage().draw();
+		
 		camera.update();
 		camera.apply(gl);
 

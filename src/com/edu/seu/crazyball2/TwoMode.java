@@ -83,6 +83,8 @@ public class TwoMode implements ApplicationListener, ContactListener,
 
 	private boolean backReleased = false;
 	private Vector2 oldVector;
+	
+	private PropsBar propsbar;
 
 	public TwoMode(Handler h, PropsObservable po) {
 		this.windowHandler = h;
@@ -121,6 +123,8 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		// 创建背景世界
 		mCreateWorld = new CreateWorld();
 		mworld = mCreateWorld.getWorld();
+		
+		propsbar = new PropsBar(po); 
 
 		board_mesh = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
 				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
@@ -151,6 +155,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		// 设置输入监听
 		InputMultiplexer inputmultiplexer = new InputMultiplexer();
 		inputmultiplexer.addProcessor(this);
+		inputmultiplexer.addProcessor(propsbar.getStage());
 		Gdx.input.setInputProcessor(inputmultiplexer);
 		Gdx.input.setCatchBackKey(true);
 	}
@@ -331,6 +336,25 @@ public class TwoMode implements ApplicationListener, ContactListener,
 				set_x + (x - circle_radius) * 10, set_y - 120f
 						+ (y - circle_radius) * 10, 20 * circle_radius,
 				20 * circle_radius);
+		
+		//画title
+		x = headTitle.getPosition().x;
+		y = headTitle.getPosition().y;
+		batch.draw(mCreateWorld.getTiltleTex(),
+				set_x + (x - (SCREEN_WIDTH*3)/8) * 10, set_y - offset_center*10f
+						+ (y - base_width) * 10, 60 * SCREEN_WIDTH / 8,
+						20 * base_width);
+		System.out.println("the title x:"+(set_x + (x - (0.75f * SCREEN_WIDTH)/2) * 10));
+		System.out.println("the title y:"+(set_y - offset_center*10f
+				+ (y - base_width) * 10));
+		//
+		//画”道具“title
+		x = blockTitle.getPosition().x;
+		y = blockTitle.getPosition().y;
+		batch.draw(mCreateWorld.getBlockTiltleTex(),
+				set_x + (x - SCREEN_WIDTH / 8) * 10, set_y - offset_center*10f
+				+ (y - base_width) * 10, 20 * SCREEN_WIDTH / 8,
+						20 * base_width);
 
 		for (int i = 0; i < Data.blockList.size(); i++) {
 			Body b = Data.blockList.get(i);
@@ -372,6 +396,11 @@ public class TwoMode implements ApplicationListener, ContactListener,
 			windowHandler.sendMessage(m);
 			pause();
 		}
+		
+		propsbar.showselectpeople();
+		propsbar.getStage().act(Gdx.graphics.getDeltaTime());
+		propsbar.getStage().draw();
+		
 		camera.update();
 		camera.apply(gl);
 

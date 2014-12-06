@@ -91,6 +91,8 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 	Music music;
 	Music backmusic;
 	Sound sound;
+	
+	private PropsBar propsbar;
 
 	public FourModeClient(Handler h, PropsObservable po) {
 		this.windowHandler = h;
@@ -133,6 +135,8 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 		mCreateWorld = new CreateWorld();
 		mworld = mCreateWorld.getWorld();
 		batch = mCreateWorld.getBatch();
+		
+		propsbar = new PropsBar(po); 
 
 		board_mesh = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
 				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
@@ -169,6 +173,7 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 		// …Ë÷√ ‰»Îº‡Ã˝
 		InputMultiplexer inputmultiplexer = new InputMultiplexer();
 		inputmultiplexer.addProcessor(this);
+		inputmultiplexer.addProcessor(propsbar.getStage());
 		Gdx.input.setInputProcessor(inputmultiplexer);
 		Gdx.input.setCatchBackKey(true);
 
@@ -593,7 +598,26 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 					+ (ball_y - circle_radius) * 10, 20 * circle_radius,
 					20 * circle_radius);
 		}
-
+		
+		//ª≠title
+		x = headTitle.getPosition().x;
+		y = headTitle.getPosition().y;
+		batch.draw(mCreateWorld.getTiltleTex(),
+				set_x + (x - (SCREEN_WIDTH*3)/8) * 10, set_y - offset_center*10f
+						+ (y - base_width) * 10, 60 * SCREEN_WIDTH / 8,
+						20 * base_width);
+		System.out.println("the title x:"+(set_x + (x - (0.75f * SCREEN_WIDTH)/2) * 10));
+		System.out.println("the title y:"+(set_y - offset_center*10f
+				+ (y - base_width) * 10));
+		//
+		//ª≠°±µ¿æﬂ°∞title
+		x = blockTitle.getPosition().x;
+		y = blockTitle.getPosition().y;
+		batch.draw(mCreateWorld.getBlockTiltleTex(),
+				set_x + (x - SCREEN_WIDTH / 8) * 10, set_y - offset_center*10f
+				+ (y - base_width) * 10, 20 * SCREEN_WIDTH / 8,
+						20 * base_width);
+		//ª≠block
 		for (int i = 0; i < Data.blockList.size(); i++) {
 			Body b = Data.blockList.get(i);
 			BodyData bd = (BodyData) b.getUserData();
@@ -637,6 +661,11 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 			windowHandler.sendMessage(m);
 			pause();
 		}
+		
+		propsbar.showselectpeople();
+		propsbar.getStage().act(Gdx.graphics.getDeltaTime());
+		propsbar.getStage().draw();
+		
 		camera.update();
 		camera.apply(gl);
 		renderer.render(mworld, camera.combined);
