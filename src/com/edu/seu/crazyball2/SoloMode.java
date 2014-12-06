@@ -213,21 +213,11 @@ public class SoloMode implements ApplicationListener, ContactListener,
 					new BodyData(BodyData.BODY_BLOCK, type), null);
 			blockList.add(tB);
 		}
-		for (int i = 0; i < 2; i++) {
-			Integer temp = iter.next();
-			float x = (temp % 10 - 5) * (block_width * 2.4f);
-			float y = (1.5f + (temp / 10)) * block_width * 2.4f;
-			// int type = rd.nextInt(4) + 31;
-			Body tB = B2Util.createRectangle(mworld, block_width / 1.2f,
-					block_width / 1.2f, x, y, BodyType.StaticBody, 0, 0, 0, 0,
-					new BodyData(BodyData.BODY_BLOCK, 41), null);
-			blockList.add(tB);
-		}
 		while (iter.hasNext()) {
 			Integer temp = iter.next();
 			float x = (temp % 10 - 5) * (block_width * 2.4f);
 			float y = (1.5f + temp / 10) * block_width * 2.4f;
-			int type = rd.nextInt(4) + 21;
+			int type = rd.nextInt(6) + 21;
 			Body tB = B2Util.createRectangle(mworld, block_width / 1.2f,
 					block_width / 1.2f, x, y, BodyType.StaticBody, 0, 0, 0, 0,
 					new BodyData(BodyData.BODY_BLOCK, type), null);
@@ -416,8 +406,8 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		camera.unproject(touchV);
 		if (firstTouch) {
 			Random r = new Random();
-			float xv = r.nextFloat() * 20;
-			float yv = 50 - xv;
+			float xv = r.nextFloat() * SCREEN_WIDTH;
+			float yv = SCREEN_WIDTH - xv;
 			if (r.nextInt(2) == 0)
 				xv = -xv;
 			if (r.nextInt(2) == 0)
