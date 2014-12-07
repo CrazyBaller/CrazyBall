@@ -356,7 +356,12 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 				set_x + (x - SCREEN_WIDTH / 8) * 10, set_y - offset_center*10f
 				+ (y - base_width) * 10, 20 * SCREEN_WIDTH / 8,
 						20 * base_width);
-
+		
+		//»­µÀ¾ß
+		if(isUpdate ==true){
+			initBlock();
+			isUpdate = false;
+		}
 		for (int i = 0; i < Data.blockList.size(); i++) {
 			Body b = Data.blockList.get(i);
 			BodyData bd = (BodyData) b.getUserData();

@@ -618,6 +618,16 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 				+ (y - base_width) * 10, 20 * SCREEN_WIDTH / 8,
 						20 * base_width);
 		//»­block
+		if (isUpdate ==true && type == 1) {
+			initBlock();
+			isUpdate = false;
+		} else if (isUpdate ==true && type == 2) {
+			initBlockClient();
+			isUpdate = false;
+		} else if (isUpdate ==true&& type == 3) {
+			initBlockClient3();
+			isUpdate = false;
+		}
 		for (int i = 0; i < Data.blockList.size(); i++) {
 			Body b = Data.blockList.get(i);
 			BodyData bd = (BodyData) b.getUserData();

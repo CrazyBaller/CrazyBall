@@ -3,6 +3,7 @@ package com.edu.seu.props;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+import static com.edu.seu.crazyball2.Constant.isUpdate;
 import com.edu.seu.message.Data;
 
 public class PropsObserver implements Observer {
@@ -31,6 +32,9 @@ public class PropsObserver implements Observer {
 		}
 		if(type==33){
 			// Ë¢ÐÂµÀ¾ß
+			if(Data.mode!=0&&Data.myID==1){
+				isUpdate = true;
+			}
 		}
 		if(type==34){
 			ChangeSensor cs = new ChangeSensor();
