@@ -105,6 +105,8 @@ public class CreateWorld {
 		texturedown = new Texture(Gdx.files.internal("ballup.png"));
 		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
 		blockRegion = new TextureRegion(atlas.findRegion("0"));
+		titleTex = new Texture(Gdx.files.internal("title"+Data.myID+".png"));
+		blocktitleTex = new Texture(Gdx.files.internal("blockTitle"+Data.myID+".png"));
 
 	}
 	private void setScreenColor(){
@@ -340,12 +342,12 @@ public class CreateWorld {
 	}
 
 	public Texture getTiltleTex(){
-		titleTex = new Texture(Gdx.files.internal("title"+Data.myID+".png"));
+		//titleTex = new Texture(Gdx.files.internal("title"+Data.myID+".png"));
 		System.out.println("the title name is "+"title"+Data.myID+".png");
 		return titleTex;
 	}
 	public Texture getBlockTiltleTex(){
-		blocktitleTex = new Texture(Gdx.files.internal("blockTitle"+Data.myID+".png"));
+		//blocktitleTex = new Texture(Gdx.files.internal("blockTitle"+Data.myID+".png"));
 		return blocktitleTex;
 	}
 	public TextureRegion getBlockTexture(int type) {

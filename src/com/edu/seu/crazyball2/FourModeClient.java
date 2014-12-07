@@ -127,7 +127,7 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 		music.setVolume(15);
 		// 镜头下的世界
 		camera = new OrthographicCamera(SCREEN_WIDTH, SCREEN_HEIGHT);
-		camera.position.set(0, 12, 0);
+		camera.position.set(0, offset_center, 0);
 
 		gl = Gdx.graphics.getGL10();
 
@@ -383,114 +383,114 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 		if (type == 1) {
 			board_mesh.setVertices(new float[] { board_x - board_halfwidth0,
 					board_y + board_halfheight, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[0].toFloatBits(),
 					board_x - board_halfwidth0, board_y - board_halfheight, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[0].toFloatBits(),
 					board_x + board_halfwidth0, board_y + board_halfheight, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[0].toFloatBits(),
 					board_x + board_halfwidth0, board_y - board_halfheight, 0,
-					Color.toFloatBits(0, 0, 0, 255) });
+					colors[0].toFloatBits() });
 			board_mesh1.setVertices(new float[] { board1_x - board_halfwidth1,
 					board1_y + board_halfheight, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[1].toFloatBits(),
 					board1_x - board_halfwidth1, board1_y - board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[1].toFloatBits(),
 					board1_x + board_halfwidth1, board1_y + board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[1].toFloatBits(),
 					board1_x + board_halfwidth1, board1_y - board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255) });
+					0, colors[1].toFloatBits() });
 			board_mesh2.setVertices(new float[] { board2_x - board_halfheight,
 					board2_y + board_halfwidth2, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[2].toFloatBits(),
 					board2_x - board_halfheight, board2_y - board_halfwidth2,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[2].toFloatBits(),
 					board2_x + board_halfheight, board2_y + board_halfwidth2,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[2].toFloatBits(),
 					board2_x + board_halfheight, board2_y - board_halfwidth2,
-					0, Color.toFloatBits(0, 0, 0, 255) });
+					0, colors[2].toFloatBits() });
 			board_mesh3.setVertices(new float[] { board3_x - board_halfheight,
 					board3_y + board_halfwidth3, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[3].toFloatBits(),
 					board3_x - board_halfheight, board3_y - board_halfwidth3,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[3].toFloatBits(),
 					board3_x + board_halfheight, board3_y + board_halfwidth3,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[3].toFloatBits(),
 					board3_x + board_halfheight, board3_y - board_halfwidth3,
-					0, Color.toFloatBits(0, 0, 0, 255) });
+					0, colors[3].toFloatBits() });
 		} else if (type == 2) {
 			board_mesh.setVertices(new float[] { board_x - board_halfheight,
 					board_y + board_halfwidth0, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[0].toFloatBits(),
 					board_x - board_halfheight, board_y - board_halfwidth0, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[0].toFloatBits(),
 					board_x + board_halfheight, board_y + board_halfwidth0, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[0].toFloatBits(),
 					board_x + board_halfheight, board_y - board_halfwidth0, 0,
-					Color.toFloatBits(0, 0, 0, 255) });
+					colors[0].toFloatBits() });
 			board_mesh1.setVertices(new float[] { board1_x - board_halfheight,
 					board1_y + board_halfwidth1, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[1].toFloatBits(),
 					board1_x - board_halfheight, board1_y - board_halfwidth1,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[1].toFloatBits(),
 					board1_x + board_halfheight, board1_y + board_halfwidth1,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[1].toFloatBits(),
 					board1_x + board_halfheight, board1_y - board_halfwidth1,
-					0, Color.toFloatBits(0, 0, 0, 255) });
+					0, colors[1].toFloatBits() });
 			board_mesh2.setVertices(new float[] { board2_x - board_halfwidth2,
 					board2_y + board_halfheight, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[2].toFloatBits(),
 					board2_x - board_halfwidth2, board2_y - board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[2].toFloatBits(),
 					board2_x + board_halfwidth2, board2_y + board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[2].toFloatBits(),
 					board2_x + board_halfwidth2, board2_y - board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255) });
+					0, colors[2].toFloatBits() });
 			board_mesh3.setVertices(new float[] { board3_x - board_halfwidth3,
 					board3_y + board_halfheight, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[3].toFloatBits(),
 					board3_x - board_halfwidth3, board3_y - board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[3].toFloatBits(),
 					board3_x + board_halfwidth3, board3_y + board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[3].toFloatBits(),
 					board3_x + board_halfwidth3, board3_y - board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255) });
+					0, colors[3].toFloatBits() });
 		} else if (type == 3) {
 			board_mesh.setVertices(new float[] { board_x - board_halfheight,
 					board_y + board_halfwidth0, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[0].toFloatBits(),
 					board_x - board_halfheight, board_y - board_halfwidth0, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[0].toFloatBits(),
 					board_x + board_halfheight, board_y + board_halfwidth0, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[0].toFloatBits(),
 					board_x + board_halfheight, board_y - board_halfwidth0, 0,
-					Color.toFloatBits(0, 0, 0, 255) });
+					colors[0].toFloatBits() });
 			board_mesh1.setVertices(new float[] { board1_x - board_halfheight,
 					board1_y + board_halfwidth1, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[1].toFloatBits(),
 					board1_x - board_halfheight, board1_y - board_halfwidth1,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[1].toFloatBits(),
 					board1_x + board_halfheight, board1_y + board_halfwidth1,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[1].toFloatBits(),
 					board1_x + board_halfheight, board1_y - board_halfwidth1,
-					0, Color.toFloatBits(0, 0, 0, 255) });
+					0, colors[1].toFloatBits() });
 			board_mesh2.setVertices(new float[] { board2_x - board_halfwidth2,
 					board2_y + board_halfheight, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[2].toFloatBits(),
 					board2_x - board_halfwidth2, board2_y - board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[2].toFloatBits(),
 					board2_x + board_halfwidth2, board2_y + board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[2].toFloatBits(),
 					board2_x + board_halfwidth2, board2_y - board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255) });
+					0, colors[2].toFloatBits() });
 			board_mesh3.setVertices(new float[] { board3_x - board_halfwidth3,
 					board3_y + board_halfheight, 0,
-					Color.toFloatBits(0, 0, 0, 255),
+					colors[3].toFloatBits(),
 					board3_x - board_halfwidth3, board3_y - board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[3].toFloatBits(),
 					board3_x + board_halfwidth3, board3_y + board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255),
+					0, colors[3].toFloatBits(),
 					board3_x + board_halfwidth3, board3_y - board_halfheight,
-					0, Color.toFloatBits(0, 0, 0, 255) });
+					0, colors[3].toFloatBits() });
 		}
 
 		
@@ -534,7 +534,7 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 		// 画反力场黑洞
 		if (canTouching) {
 			batch.draw(mCreateWorld.getBlockTexture(541), set_x
-					+ (0 - base_width * 2) * 10f, set_y - 120f
+					+ (0 - base_width * 2) * 10f, set_y - offset_center*10f
 					+ (SCREEN_WIDTH / 2 - base_width * 2) * 10f,
 					40 * base_width, 40 * base_width);
 		}
@@ -555,7 +555,7 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 			circle_radius = tBall.getFixtureList().get(0).getShape()
 					.getRadius();
 			batch.draw(mCreateWorld.getTexture2(), set_x
-					+ (ball_x - circle_radius) * 10, set_y - 120f
+					+ (ball_x - circle_radius) * 10, set_y - offset_center*10f
 					+ (ball_y - circle_radius) * 10, 20 * circle_radius,
 					20 * circle_radius);
 		} else if(type==2){
@@ -575,7 +575,7 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 			circle_radius = tBall.getFixtureList().get(0).getShape()
 					.getRadius();
 			batch.draw(mCreateWorld.getTexture2(), set_x
-					+ (ball_x - circle_radius) * 10, set_y - 120f
+					+ (ball_x - circle_radius) * 10, set_y - offset_center*10f
 					+ (ball_y - circle_radius) * 10, 20 * circle_radius,
 					20 * circle_radius);
 		}else if(type==3){
@@ -594,7 +594,7 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 			circle_radius = tBall.getFixtureList().get(0).getShape()
 					.getRadius();
 			batch.draw(mCreateWorld.getTexture2(), set_x
-					+ (ball_x - circle_radius) * 10, set_y - 120f
+					+ (ball_x - circle_radius) * 10, set_y - offset_center*10f
 					+ (ball_y - circle_radius) * 10, 20 * circle_radius,
 					20 * circle_radius);
 		}
@@ -630,7 +630,7 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 				y = b.getPosition().y;
 				batch.draw(
 						mCreateWorld.getBlockTexture(400 + bd.getchangeType()),
-						set_x + (x - block_width / 1.2f) * 10, set_y - 120f
+						set_x + (x - block_width / 1.2f) * 10, set_y - offset_center*10f
 								+ (y - block_width / 1.2f) * 10,
 						10 * block_width / 0.6f, 10 * block_width / 0.6f);
 			}
@@ -648,7 +648,7 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 			float mBx = b.getPosition().x;
 			float mBy = b.getPosition().y;
 			batch.draw(mCreateWorld.getBlockTexture(10 + i), set_x
-					+ (mBx - base_width) * 10f, set_y - 120f
+					+ (mBx - base_width) * 10f, set_y - offset_center*10f
 					+ (mBy - base_width / 2) * 10.6f, 10 * base_width / 0.6f,
 					10 * base_width / 0.6f);
 		}
@@ -694,8 +694,8 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 		}
 		arg1 = SCREEN_HEIGHT * 5 - arg1;
 		arg0 = arg0 - SCREEN_WIDTH * 5;
-/*		if (arg1 > 10 * (mB[0].getPosition().y - base_width - 12)
-				&& arg1 < 10 * (mB[0].getPosition().y + base_width - 12)) {
+/*		if (arg1 > 10 * (mB[0].getPosition().y - base_width - offset_center*1)
+				&& arg1 < 10 * (mB[0].getPosition().y + base_width - offset_center*1)) {
 			System.out.println("right");
 			if (arg0 > 10 * (mB[0].getPosition().x - base_width)
 					&& arg0 < 10 * (mB[0].getPosition().x + base_width)) {
