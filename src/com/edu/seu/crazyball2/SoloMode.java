@@ -272,7 +272,9 @@ public class SoloMode implements ApplicationListener, ContactListener,
 
 		mCreateWorld.getScreen().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBackground().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		if(showBoard[0]==1){
+			board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		}	
 		mCreateWorld.getBound_one().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_two().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_three().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
@@ -334,9 +336,6 @@ public class SoloMode implements ApplicationListener, ContactListener,
 				set_x + (x - (SCREEN_WIDTH*3)/8) * 10, set_y - offset_center*10f
 						+ (y - base_width) * 10, 60 * SCREEN_WIDTH / 8,
 						20 * base_width);
-		System.out.println("the title x:"+(set_x + (x - (0.75f * SCREEN_WIDTH)/2) * 10));
-		System.out.println("the title y:"+(set_y - offset_center*10f
-				+ (y - base_width) * 10));
 		//
 		//画”道具“title
 		x = blockTitle.getPosition().x;
@@ -481,13 +480,15 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		Vector3 touchV = new Vector3(arg0, arg1, 0);
 		camera.unproject(touchV);
 		// 设置移动坐标
-		if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
-				- board_halfwidth0
-				&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
-						+ board_halfwidth0) {
-			tBoard0.setTransform(touchV.x, tBoard0.getWorldCenter().y, 0);
+		if(move_board){
+			if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
+					- board_halfwidth0
+					&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
+							+ board_halfwidth0) {
+				tBoard0.setTransform(touchV.x, tBoard0.getWorldCenter().y, 0);
+			}
 		}
-
+	
 		return false;
 	}
 

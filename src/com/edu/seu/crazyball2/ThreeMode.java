@@ -333,10 +333,15 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 
 		setBallBoardColor();
 
-		board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		board_mesh1.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		board_mesh2.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-
+		if(showBoard[0]==1){
+			board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		}
+		if(showBoard[1]==1){
+			board_mesh1.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		}
+		if(showBoard[2]==1){
+			board_mesh2.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		}
 		batch.begin();
 		float x = tBall.getPosition().x;
 		float y = tBall.getPosition().y;
@@ -524,14 +529,17 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 		Vector3 touchV = new Vector3(arg0, arg1, 0);
 		camera.unproject(touchV);
 		// …Ë÷√“∆∂Ø◊¯±Í
-		if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
-				- board_halfwidth
-				&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
-						+ board_halfwidth) {
-			tBoard0.setTransform(touchV.x, tBoard0.getWorldCenter().y, 0);
-			Data.location.set(Data.myID, 2 * tBoard0.getWorldCenter().x
-					/ SCREEN_WIDTH);
+		if(move_board){
+			if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
+					- board_halfwidth
+					&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
+							+ board_halfwidth) {
+				tBoard0.setTransform(touchV.x, tBoard0.getWorldCenter().y, 0);
+				Data.location.set(Data.myID, 2 * tBoard0.getWorldCenter().x
+						/ SCREEN_WIDTH);
+			}	
 		}
+	
 		return false;
 	}
 

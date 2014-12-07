@@ -178,7 +178,7 @@ public class SendData {
 	}
 
 	public void myState() {
-		if (Data.mRemoteUser.size() == 0)
+		if(Data.mRemoteUser==null||Data.mRemoteUser.size() == 0)
 			return;
 
 		for (int i = 0; i < Data.mRemoteUser.size(); i++) {
