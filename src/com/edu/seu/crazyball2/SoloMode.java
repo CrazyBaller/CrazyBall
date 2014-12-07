@@ -325,7 +325,26 @@ public class SoloMode implements ApplicationListener, ContactListener,
 				set_x + (x - circle_radius) * 10, set_y - offset_center*10f
 						+ (y - circle_radius) * 10, 20 * circle_radius,
 				20 * circle_radius);
-
+		
+		//»­title
+		x = headTitle.getPosition().x;
+		y = headTitle.getPosition().y;
+		batch.draw(mCreateWorld.getTiltleTex(),
+				set_x + (x - (SCREEN_WIDTH*3)/8) * 10, set_y - offset_center*10f
+						+ (y - base_width) * 10, 60 * SCREEN_WIDTH / 8,
+						20 * base_width);
+		System.out.println("the title x:"+(set_x + (x - (0.75f * SCREEN_WIDTH)/2) * 10));
+		System.out.println("the title y:"+(set_y - offset_center*10f
+				+ (y - base_width) * 10));
+		//
+		//»­¡±µÀ¾ß¡°title
+		x = blockTitle.getPosition().x;
+		y = blockTitle.getPosition().y;
+		batch.draw(mCreateWorld.getBlockTiltleTex(),
+				set_x + (x - SCREEN_WIDTH / 8) * 10, set_y - offset_center*10f
+				+ (y - base_width) * 10, 20 * SCREEN_WIDTH / 8,
+						20 * base_width);
+		
 		for (int i = 0; i < blockList.size(); i++) {
 			Body b = blockList.get(i);
 			BodyData bd = (BodyData) b.getUserData();

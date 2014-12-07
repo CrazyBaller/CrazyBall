@@ -24,6 +24,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.edu.seu.message.Data;
 
 public class CreateWorld {
 
@@ -51,7 +52,10 @@ public class CreateWorld {
 	private Texture texturedown;
 	private Texture texture2;
 	private TextureAtlas atlas;
+	private Texture titleTex;
+	private Texture blocktitleTex;
 	private TextureRegion blockRegion;
+	
 
 
 	public CreateWorld() {
@@ -100,7 +104,7 @@ public class CreateWorld {
 		textureup = new Texture(Gdx.files.internal("balldown.png"));
 		texturedown = new Texture(Gdx.files.internal("ballup.png"));
 		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
-		blockRegion = new TextureRegion(atlas.findRegion("11"));
+		blockRegion = new TextureRegion(atlas.findRegion("0"));
 
 	}
 	private void setScreenColor(){
@@ -335,6 +339,15 @@ public class CreateWorld {
 		return texture2;
 	}
 
+	public Texture getTiltleTex(){
+		titleTex = new Texture(Gdx.files.internal("title"+Data.myID+".png"));
+		System.out.println("the title name is "+"title"+Data.myID+".png");
+		return titleTex;
+	}
+	public Texture getBlockTiltleTex(){
+		blocktitleTex = new Texture(Gdx.files.internal("blockTitle"+Data.myID+".png"));
+		return blocktitleTex;
+	}
 	public TextureRegion getBlockTexture(int type) {
 		try{
 			if (type > 430) {
