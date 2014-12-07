@@ -50,7 +50,7 @@ public class ChangeBall {
 			}
 
 		};
-		timer.schedule(tt, 10000);
+		timer.schedule(tt, 5000);
 	}
 
 	// 属性改变函数

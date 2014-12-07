@@ -259,14 +259,14 @@ public class SoloMode implements ApplicationListener, ContactListener,
 
 	@Override
 	public void render() {
-		float dt = Gdx.graphics.getDeltaTime();
-		mLastTime += dt;
-		if (mLastTime >= 1.0 / 60) {
-			mLastTime = 0;
-		} else
-			return;
+//		float dt = Gdx.graphics.getDeltaTime();
+//		mLastTime += dt;
+//		if (mLastTime >= 1.0 / 60) {
+//			mLastTime = 0;
+//		} else
+//			return;
 
-		mworld.step(Gdx.graphics.getDeltaTime(), 1, 1);
+		mworld.step(Gdx.graphics.getDeltaTime(), 3, 3);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glClearColor(1f, 1f, 1f, 0f);
 

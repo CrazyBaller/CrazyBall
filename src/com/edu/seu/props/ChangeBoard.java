@@ -68,7 +68,7 @@ public class ChangeBoard {
 				timer.cancel();
 			}
 		};
-		timer.schedule(tt, 1000);
+		timer.schedule(tt, 3000);
 	}
 
 	protected void toNormal(int i) {

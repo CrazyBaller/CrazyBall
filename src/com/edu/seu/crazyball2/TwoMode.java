@@ -263,18 +263,19 @@ public class TwoMode implements ApplicationListener, ContactListener,
 	}
 
 	public void render() {
-		float dt = Gdx.graphics.getDeltaTime();
-		mLastTime += dt;
-		if (mLastTime >= 1.0 / 60) {
-			mLastTime = 0;
-		} else
-			return;
+//		float dt = Gdx.graphics.getDeltaTime();
+//		mLastTime += dt;
+//		if (mLastTime >= 1.0 / 60) {
+//			mLastTime = 0;
+//		} else
+//			return;
 
 		if (Data.propsimageid.size() != 0) {
 			initBlock();
 		}
 
-		mworld.step(1.0f / 60f, 1, 1);
+//		mworld.step(1.0f / 60f, 1, 1);
+		mworld.step(Gdx.graphics.getDeltaTime(), 1, 3);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glClearColor(1f, 1f, 1f, 0f);
 
@@ -685,7 +686,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 				send.eatblock(dA.getId());
 				send.props(i, 0);
 				if (i > 20 && i < 30) {
-					myBlock[i - 21]++;
+					//myBlock[i - 21]++;
 				} else {
 					po.setChange(i, 0);
 				}
@@ -707,7 +708,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 				send.eatblock(dA.getId());
 				send.props(i, 0);
 				if (i > 20 && i < 30) {
-					myBlock[i - 21]++;
+					//myBlock[i - 21]++;
 				} else {
 					po.setChange(i, 0);
 				}

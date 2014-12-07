@@ -23,6 +23,6 @@ public class ChangeSensor {
 				timer.cancel();
 			}
 		};
-		timer.schedule(tt, 10000);
+		timer.schedule(tt, 5000);
 	}
 }
