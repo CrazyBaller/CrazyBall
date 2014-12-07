@@ -17,9 +17,12 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.*;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeBitmapFontData;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
@@ -46,6 +49,7 @@ public class CreateWorld {
 	private Mesh bound_three;
 	private Mesh bound_four;
 	private Mesh head;
+	private Mesh timeBackGround;
 
 	private SpriteBatch batch;
 	private Texture textureup;
@@ -56,6 +60,9 @@ public class CreateWorld {
 	private Texture blocktitleTex;
 	private TextureRegion blockRegion;
 	
+	private BitmapFont Font;	
+	private FreeTypeFontGenerator Generator;
+	private FreeTypeBitmapFontData fontData;
 
 
 	public CreateWorld() {
@@ -99,6 +106,7 @@ public class CreateWorld {
 		setControlBackground();
 		setSlipeBackground();
 		setHead();
+		setTimeBackGround();
 		batch = new SpriteBatch();
 		texture2 = new Texture(Gdx.files.internal("ball.png"));
 		textureup = new Texture(Gdx.files.internal("balldown.png"));
@@ -107,7 +115,28 @@ public class CreateWorld {
 		blockRegion = new TextureRegion(atlas.findRegion("0"));
 		titleTex = new Texture(Gdx.files.internal("title"+Data.myID+".png"));
 		blocktitleTex = new Texture(Gdx.files.internal("blockTitle"+Data.myID+".png"));
+		Generator = new FreeTypeFontGenerator(Gdx.files.internal("data/LithosPro-Regular.otf"));
+		fontData = Generator.generateData(25, Generator.DEFAULT_CHARS
+	               , false);// 这里需要把你要输出的字，全部写上，前提是不能有重复的字。
+		Font = new BitmapFont(fontData, fontData.getTextureRegion(), false);
+		Font.setColor(Color.valueOf("ffffff"));
+		Font.setScale((SCREEN_WIDTH / 8)*0.15f);
 
+	}
+	private void setTimeBackGround(){
+		float halfwidth = base_width*0.6f;
+		float halfheight = SCREEN_WIDTH / 8;
+		float x = ((SCREEN_WIDTH *3)/ 8);
+		float y = SCREEN_WIDTH-board_halfheight+base_width;
+		timeBackGround = new Mesh(true, 4, 4, new VertexAttribute(Usage.Position,
+				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
+				"a_color"));
+		timeBackGround.setVertices(new float[] { x - halfheight*0.9f, y + halfwidth, 0,
+				Color.toFloatBits(138, 117, 97, 255), x - halfheight*0.9f,
+				y - halfwidth, 0, Color.toFloatBits(138, 117, 97, 255),
+				x + halfheight*1.2f, y + halfwidth, 0,
+				Color.toFloatBits(138, 117, 97, 255), x + halfheight*1.2f,
+				y - halfwidth, 0, Color.toFloatBits(138, 117, 97, 255) });
 	}
 	private void setScreenColor(){
 		float halfwidth = SCREEN_HEIGHT / 2;
@@ -284,6 +313,10 @@ public class CreateWorld {
 				y - halfwidth, 0, Color.toFloatBits(250, 248, 239, 255) });
 
 	}
+	
+	public BitmapFont getFont(){
+		return Font;
+	}
 
 	public World getWorld() {
 		return world;
@@ -304,6 +337,11 @@ public class CreateWorld {
 	public Mesh getSlipeBackground() {
 		return slipeBackground;
 	}
+	
+	public Mesh getTimeBackGround(){
+		return timeBackGround;
+	}
+	
 
 	public Mesh getBound_one() {
 		return bound_one;
