@@ -525,6 +525,7 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 		mCreateWorld.getBound_four().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getControlBackground()
 				.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		mCreateWorld.getTimeBackGround().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		//mCreateWorld.getSlipeBackground().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 
 		setBallBoardColor();
@@ -674,6 +675,11 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 					+ (mBy - base_width / 2) * 10.6f, 10 * base_width / 0.6f,
 					10 * base_width / 0.6f);
 		}
+		//Ð´Ê±¼ä
+		x = Express.getPosition().x;
+		y = Express.getPosition().y;
+		mCreateWorld.getFont().draw(batch, "00:00,00'", set_x + (x - (SCREEN_WIDTH / 8)*0.9f) * 10, set_y - offset_center*10f
+				+ (y +base_width*0.2f) * 10);
 		batch.end();
 
 		if (Gdx.input.isKeyPressed(Keys.BACK) && !backReleased) {

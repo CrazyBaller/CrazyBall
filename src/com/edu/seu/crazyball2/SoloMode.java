@@ -169,7 +169,7 @@ public class SoloMode implements ApplicationListener, ContactListener,
 				((SCREEN_WIDTH *3)/ 8),
 				-board_halfheight-base_width/2-base_width, BodyType.StaticBody, 0,
 				0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 10), null);
-		Express = B2Util.createRectangle(mworld,  SCREEN_WIDTH / 8,base_width,
+		Express = B2Util.createRectangle(mworld,  SCREEN_WIDTH / 8,base_width*0.6f,
 				((SCREEN_WIDTH *3)/ 8),
 				SCREEN_WIDTH-board_halfheight+base_width, BodyType.StaticBody, 0,
 				0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 10), null);
@@ -285,8 +285,8 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		mCreateWorld.getBound_two().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_three().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_four().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		mCreateWorld.getControlBackground()
-				.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		mCreateWorld.getControlBackground().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		mCreateWorld.getTimeBackGround().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		//mCreateWorld.getSlipeBackground().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 
 		setBallBoardColor();
@@ -351,6 +351,11 @@ public class SoloMode implements ApplicationListener, ContactListener,
 				+ (y - base_width) * 10, 20 * SCREEN_WIDTH / 8,
 						20 * base_width);
 		
+		//画道具
+		if(isUpdate ==true){
+			initBlock();
+			isUpdate = false;
+		}
 		for (int i = 0; i < blockList.size(); i++) {
 			Body b = blockList.get(i);
 			BodyData bd = (BodyData) b.getUserData();
@@ -385,6 +390,16 @@ public class SoloMode implements ApplicationListener, ContactListener,
 					+ (mBy - base_width / 2) * 10.6f, 10 * base_width / 0.6f,
 					10 * base_width / 0.6f);
 		}
+<<<<<<< HEAD
+=======
+		//System.out.println("end batch");
+		
+		//写时间
+		x = Express.getPosition().x;
+		y = Express.getPosition().y;
+		mCreateWorld.getFont().draw(batch, "00:00,00'", set_x + (x - (SCREEN_WIDTH / 8)*0.9f) * 10, set_y - offset_center*10f
+				+ (y +base_width*0.2f) * 10);
+>>>>>>> 3367f32781b20bd97bc4548c52c41970be3bbf56
 		batch.end();
 
 		if (Gdx.input.isKeyPressed(Keys.BACK) && !backReleased) {
