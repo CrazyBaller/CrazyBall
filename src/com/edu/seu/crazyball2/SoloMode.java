@@ -144,7 +144,7 @@ public class SoloMode implements ApplicationListener, ContactListener,
 
 		// …Ë÷√≈ˆ◊≤º‡Ã˝
 		mworld.setContactListener(this);
-
+		
 		// …Ë÷√ ‰»Îº‡Ã˝
 		InputMultiplexer inputmultiplexer = new InputMultiplexer();
 		inputmultiplexer.addProcessor(this);
@@ -266,7 +266,7 @@ public class SoloMode implements ApplicationListener, ContactListener,
 //		} else
 //			return;
 
-		mworld.step(Gdx.graphics.getDeltaTime(), 3, 3);
+		mworld.step(Gdx.graphics.getDeltaTime(), 1, 1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glClearColor(1f, 1f, 1f, 0f);
 
@@ -304,6 +304,7 @@ public class SoloMode implements ApplicationListener, ContactListener,
 				//System.out.println("get f");
 			}
 		}
+		
 		batch = mCreateWorld.getBatch();
 
 		batch.begin();
@@ -327,23 +328,23 @@ public class SoloMode implements ApplicationListener, ContactListener,
 				20 * circle_radius);
 		
 		//ª≠title
-		x = headTitle.getPosition().x;
-		y = headTitle.getPosition().y;
-		batch.draw(mCreateWorld.getTiltleTex(),
-				set_x + (x - (SCREEN_WIDTH*3)/8) * 10, set_y - offset_center*10f
-						+ (y - base_width) * 10, 60 * SCREEN_WIDTH / 8,
-						20 * base_width);
-		System.out.println("the title x:"+(set_x + (x - (0.75f * SCREEN_WIDTH)/2) * 10));
-		System.out.println("the title y:"+(set_y - offset_center*10f
-				+ (y - base_width) * 10));
-		//
-		//ª≠°±µ¿æﬂ°∞title
-		x = blockTitle.getPosition().x;
-		y = blockTitle.getPosition().y;
-		batch.draw(mCreateWorld.getBlockTiltleTex(),
-				set_x + (x - SCREEN_WIDTH / 8) * 10, set_y - offset_center*10f
-				+ (y - base_width) * 10, 20 * SCREEN_WIDTH / 8,
-						20 * base_width);
+//		x = headTitle.getPosition().x;
+//		y = headTitle.getPosition().y;
+//		batch.draw(mCreateWorld.getTiltleTex(),
+//				set_x + (x - (SCREEN_WIDTH*3)/8) * 10, set_y - offset_center*10f
+//						+ (y - base_width) * 10, 60 * SCREEN_WIDTH / 8,
+//						20 * base_width);
+//		System.out.println("the title x:"+(set_x + (x - (0.75f * SCREEN_WIDTH)/2) * 10));
+//		System.out.println("the title y:"+(set_y - offset_center*10f
+//				+ (y - base_width) * 10));
+//		//
+//		//ª≠°±µ¿æﬂ°∞title
+//		x = blockTitle.getPosition().x;
+//		y = blockTitle.getPosition().y;
+//		batch.draw(mCreateWorld.getBlockTiltleTex(),
+//				set_x + (x - SCREEN_WIDTH / 8) * 10, set_y - offset_center*10f
+//				+ (y - base_width) * 10, 20 * SCREEN_WIDTH / 8,
+//						20 * base_width);
 		
 		for (int i = 0; i < blockList.size(); i++) {
 			Body b = blockList.get(i);
@@ -662,9 +663,6 @@ public class SoloMode implements ApplicationListener, ContactListener,
 			}else{
 				propsbar.addbutton(dA.getchangeType());
 			}			
-//			if (dA.getchangeType() > 20 & dA.getchangeType() < 30) {
-//				myBlock[dA.getchangeType() - 21]++;
-//			}
 		}
 		if (dB.getType() == BodyData.BODY_BLOCK) {
 			//music.pause();
@@ -675,9 +673,6 @@ public class SoloMode implements ApplicationListener, ContactListener,
 			}else{
 				propsbar.addbutton(dA.getchangeType());
 			}			
-//			if (dA.getchangeType() > 20 & dA.getchangeType() < 30) {
-//				myBlock[dA.getchangeType() - 21]++;
-//			}
 		}
 	}
 

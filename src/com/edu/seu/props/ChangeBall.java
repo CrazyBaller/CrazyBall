@@ -95,7 +95,6 @@ public class ChangeBall {
 	public void shapetoNormal() {
 		shapeCircle = (CircleShape) tBall.getFixtureList().get(0).getShape();
 		shapeCircle.setRadius(circle_radius_standard);
-
 	}
 
 	public void speedtoNormal() {

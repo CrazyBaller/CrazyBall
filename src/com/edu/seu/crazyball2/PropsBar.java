@@ -319,9 +319,6 @@ public class PropsBar {
 				
 				
 			
-       	}else{
-       		System.out.println("4444444444"+buttonarray.size());
-       		
        	}
        	
        	
