@@ -123,7 +123,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		music.setVolume(15);
 		// 镜头下的世界
 		camera = new OrthographicCamera(SCREEN_WIDTH, SCREEN_HEIGHT);
-		camera.position.set(0, offset_center, 0);
+		camera.position.set(0, 12, 0);
 		
 		propsbar = new PropsBar(po); 
 
@@ -422,7 +422,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		// 画反力场黑洞
 		if (canTouching) {
 			batch.draw(mCreateWorld.getBlockTexture(541), set_x
-					+ (0 - base_width * 2) * 10f, set_y - offset_center*10f
+					+ (0 - base_width * 2) * 10f, set_y - 120f
 					+ (SCREEN_WIDTH / 2 - base_width * 2) * 10f,
 					40 * base_width, 40 * base_width);
 		}
@@ -443,7 +443,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 			circle_radius = tBall.getFixtureList().get(0).getShape()
 					.getRadius();
 			batch.draw(mCreateWorld.getTexture2(), set_x
-					+ (ball_x - circle_radius) * 10, set_y - offset_center*10f
+					+ (ball_x - circle_radius) * 10, set_y - 120f
 					+ (ball_y - circle_radius) * 10, 20 * circle_radius,
 					20 * circle_radius);
 		} else {
@@ -463,7 +463,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 			circle_radius = tBall.getFixtureList().get(0).getShape()
 					.getRadius();
 			batch.draw(mCreateWorld.getTexture2(), set_x
-					+ (ball_x - circle_radius) * 10, set_y - offset_center*10f
+					+ (ball_x - circle_radius) * 10, set_y - 120f
 					+ (ball_y - circle_radius) * 10, 20 * circle_radius,
 					20 * circle_radius);
 		}
@@ -499,7 +499,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 				y = b.getPosition().y;
 				batch.draw(
 						mCreateWorld.getBlockTexture(400 + bd.getchangeType()),
-						set_x + (x - block_width / 1.2f) * 10, set_y - offset_center*10f
+						set_x + (x - block_width / 1.2f) * 10, set_y - 120f
 								+ (y - block_width / 1.2f) * 10,
 						10 * block_width / 0.6f, 10 * block_width / 0.6f);
 			}
@@ -516,7 +516,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 			float mBx = b.getPosition().x;
 			float mBy = b.getPosition().y;
 			batch.draw(mCreateWorld.getBlockTexture(10 + i), set_x
-					+ (mBx - base_width) * 10f, set_y - offset_center*10f
+					+ (mBx - base_width) * 10f, set_y - 120f
 					+ (mBy - base_width / 2) * 10.6f, 10 * base_width / 0.6f,
 					10 * base_width / 0.6f);
 		}
@@ -559,8 +559,8 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		}
 		arg1 = SCREEN_HEIGHT * 5 - arg1;
 		arg0 = arg0 - SCREEN_WIDTH * 5;
-/*		if (arg1 > 10 * (mB[0].getPosition().y - base_width - offset_center*1)
-				&& arg1 < 10 * (mB[0].getPosition().y + base_width - offset_center*1)) {
+/*		if (arg1 > 10 * (mB[0].getPosition().y - base_width - 12)
+				&& arg1 < 10 * (mB[0].getPosition().y + base_width - 12)) {
 			System.out.println("right");
 			if (arg0 > 10 * (mB[0].getPosition().x - base_width)
 					&& arg0 < 10 * (mB[0].getPosition().x + base_width)) {
