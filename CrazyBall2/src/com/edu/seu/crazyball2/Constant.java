@@ -36,4 +36,5 @@ public class Constant {
 	public static final int SHOW_DIALOG = 0;
 	public static final int SHOW_TOAST = 1;
 	public static final int SHOW_MYDEAD_DIALOG = 2;
+	public static final boolean isUpdate = false;
 }

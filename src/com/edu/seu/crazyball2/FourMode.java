@@ -111,6 +111,12 @@ public class FourMode implements ApplicationListener, ContactListener,
 		circle_radius = circle_radius_standard;
 		block_width = board_halfwidth/4f;
 		offset_center = (5*SCREEN_WIDTH)/7-(3*SCREEN_HEIGHT)/14-board_halfheight;
+		showBoard[0]=1;
+		showBoard[1]=1;
+		showBoard[2]=1;
+		showBoard[3]=1;
+		move_board=true;    
+		isUpdate = false;
 
 		send = new SendData();
 
@@ -430,7 +436,9 @@ public class FourMode implements ApplicationListener, ContactListener,
 		if (Data.blockList.size() == 0) {
 			initBlock();
 		}
-
+		if(isUpdate){
+			initBlock();
+		}
 		// 画滑动提示
 		for (int i = 0; i < 2; i++) {
 			Body b = slipe[i];
@@ -813,73 +821,61 @@ public class FourMode implements ApplicationListener, ContactListener,
 			if (CONTROL_ID == 0) {
 				send.eatblock(dA.getId());
 				send.props(i, 0);
-				if (i > 20 && i < 30) {
-					myBlock[i - 21]++;
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 0);
+				} else {
+					propsbar.addbutton(i);
 				}
 			} else if (CONTROL_ID == 1) {
 				send.eatblock(dA.getId());
 				send.props(i, 1);
-				if (i > 20 && i < 30) {
-
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 1);
-				}
+				} 
 			} else if (CONTROL_ID == 2) {
 				send.eatblock(dA.getId());
 				send.props(i, 2);
-				if (i > 20 && i < 30) {
-
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 2);
-				}
-			} else if (CONTROL_ID ==3) {
+				} 
+			}else if (CONTROL_ID ==3) {
 				send.eatblock(dA.getId());
 				send.props(i, 3);
-				if (i > 20 && i < 30) {
-
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 3);
-				}
+				} 
 			}
 		}
 		if (dB.getType() == BodyData.BODY_BLOCK) {
 			sound.play(30);
 			dB.health = 0;
-			int i = dA.getchangeType();
+			int i = dB.getchangeType();
 			if (CONTROL_ID == 0) {
 				send.eatblock(dA.getId());
 				send.props(i, 0);
-				if (i > 20 && i < 30) {
-					myBlock[i - 21]++;
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 0);
+				} else {
+					propsbar.addbutton(i);
 				}
 			} else if (CONTROL_ID == 1) {
 				send.eatblock(dA.getId());
 				send.props(i, 1);
-				if (i > 20 && i < 30) {
-
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 1);
-				}
+				} 
 			} else if (CONTROL_ID == 2) {
 				send.eatblock(dA.getId());
 				send.props(i, 2);
-				if (i > 20 && i < 30) {
-
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 2);
-				}
+				} 
 			}else if (CONTROL_ID ==3) {
 				send.eatblock(dA.getId());
 				send.props(i, 3);
-				if (i > 20 && i < 30) {
-
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 3);
-				}
+				} 
 			}
 		}
 	}

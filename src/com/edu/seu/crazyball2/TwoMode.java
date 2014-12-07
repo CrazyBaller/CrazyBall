@@ -84,7 +84,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 	private boolean backReleased = false;
 	private Vector2 oldVector;
 	
-	private PropsBar propsbar;
+	public static PropsBar propsbar;
 
 	public TwoMode(Handler h, PropsObservable po) {
 		this.windowHandler = h;
@@ -102,6 +102,12 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		circle_radius = circle_radius_standard;
 		block_width = board_halfwidth/4f;
 		offset_center = (5*SCREEN_WIDTH)/7-(3*SCREEN_HEIGHT)/14-board_halfheight;
+		showBoard[0]=1;
+		showBoard[1]=1;
+		showBoard[2]=1;
+		showBoard[3]=1;
+		move_board=true;    
+		isUpdate = false;
 
 		send = new SendData();
 
@@ -203,7 +209,6 @@ public class TwoMode implements ApplicationListener, ContactListener,
 
 	private void initBlock() {
 		Data.blockList.clear();
-		// Data.blockliststate.clear();
 		for (int i = 0; i < Data.propsimageid.size(); i++) {
 			int type = Data.propsimageid.get(i);
 			float x = Data.propsimagex.get(i) * SCREEN_WIDTH / 2;
@@ -213,7 +218,6 @@ public class TwoMode implements ApplicationListener, ContactListener,
 					block_width / 1.6f, x, y, BodyType.StaticBody, 0, 0, 0, 0,
 					new BodyData(BodyData.BODY_BLOCK, type, i), null);
 			Data.blockList.add(t);
-			// Data.blockliststate.add(1);
 
 		}
 		Data.propsimageid.clear();
@@ -275,7 +279,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		}
 
 //		mworld.step(1.0f / 60f, 1, 1);
-		mworld.step(Gdx.graphics.getDeltaTime(), 1, 3);
+		mworld.step(Gdx.graphics.getDeltaTime(), 1, 1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glClearColor(1f, 1f, 1f, 0f);
 
@@ -345,9 +349,6 @@ public class TwoMode implements ApplicationListener, ContactListener,
 				set_x + (x - (SCREEN_WIDTH*3)/8) * 10, set_y - offset_center*10f
 						+ (y - base_width) * 10, 60 * SCREEN_WIDTH / 8,
 						20 * base_width);
-		System.out.println("the title x:"+(set_x + (x - (0.75f * SCREEN_WIDTH)/2) * 10));
-		System.out.println("the title y:"+(set_y - offset_center*10f
-				+ (y - base_width) * 10));
 		//
 		//画”道具“title
 		x = blockTitle.getPosition().x;
@@ -375,6 +376,9 @@ public class TwoMode implements ApplicationListener, ContactListener,
 			}
 		}
 		if (Data.blockList.size() == 0) {
+			initBlock();
+		}
+		if(isUpdate){
 			initBlock();
 		}
 		// 画滑动提示
@@ -682,6 +686,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 
 	@Override
 	public void preSolve(Contact arg0, Manifold arg1) {
+		
 		Body cA = arg0.getFixtureA().getBody();
 		Body cB = arg0.getFixtureB().getBody();
 
@@ -697,51 +702,49 @@ public class TwoMode implements ApplicationListener, ContactListener,
 			send.controlId();
 		}
 		if (dA.getType() == BodyData.BODY_BLOCK) {
+			System.out.println("preSolve  "+CONTROL_ID+"   "+dA.getchangeType());
 			sound.play(30);
 			dA.health = 0;
 			int i = dA.getchangeType();
-			// if (tBall.getLinearVelocity().y < 0) {
-			if (CONTROL_ID == 0) {
-				send.eatblock(dA.getId());
-				send.props(i, 0);
-				if (i > 20 && i < 30) {
-					//myBlock[i - 21]++;
-				} else {
+			if (CONTROL_ID == 0) {  
+			//	send.eatblock(dA.getId());
+			//	send.props(i, 0);
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 0);
+				} else {	
+					System.out.println("碰撞吃！！！！！！"+i+"  "+CONTROL_ID);
+					propsbar.addbutton(i);
 				}
 			} else {
-				send.eatblock(dA.getId());
-				send.props(i, 1);
-				if (i > 20 && i < 30) {
-
-				} else {
+			//	send.eatblock(dA.getId());
+			//	send.props(i, 1);
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 1);
-				}
+				} 
 			}
 		}
-		if (dB.getType() == BodyData.BODY_BLOCK) {
-			sound.play(30);
-			dB.health = 0;
-			int i = dA.getchangeType();
-			if (CONTROL_ID == 0) {
-				send.eatblock(dA.getId());
-				send.props(i, 0);
-				if (i > 20 && i < 30) {
-					//myBlock[i - 21]++;
-				} else {
-					po.setChange(i, 0);
-				}
-			} else {
-				send.eatblock(dA.getId());
-				send.props(i, 1);
-				if (i > 20 && i < 30) {
 
-				} else {
-					po.setChange(i, 1);
-				}
-
-			}
-		}
+//		if (dB.getType() == BodyData.BODY_BLOCK) {
+//			sound.play(30);
+//			dB.health = 0;
+//			int i = dB.getchangeType();
+//			if (CONTROL_ID == 0) {
+//				send.eatblock(dA.getId());
+//				send.props(i, 0);
+//				if (i > 30 && i < 35) { //被动
+//					po.setChange(i, 0);
+//				} else {	
+//					System.out.println("1111碰撞吃！！！！！！");
+//					propsbar.addbutton(i);
+//				}
+//			} else {
+//				send.eatblock(dA.getId());
+//				send.props(i, 1);
+//				if (i > 30 && i < 35) { //被动
+//					po.setChange(i, 1);
+//				} 
+//			}
+//		}
 	}
 
 	@Override

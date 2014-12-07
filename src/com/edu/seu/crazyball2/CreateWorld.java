@@ -343,7 +343,7 @@ public class CreateWorld {
 
 	public Texture getTiltleTex(){
 		//titleTex = new Texture(Gdx.files.internal("title"+Data.myID+".png"));
-		System.out.println("the title name is "+"title"+Data.myID+".png");
+		//System.out.println("the title name is "+"title"+Data.myID+".png");
 		return titleTex;
 	}
 	public Texture getBlockTiltleTex(){
@@ -366,7 +366,7 @@ public class CreateWorld {
 		}
 		
 		}catch(Exception e){
-			System.out.println("the can't find pic is "+type);
+	
 		}	
 		return blockRegion;
 	}

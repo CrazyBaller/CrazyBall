@@ -50,8 +50,9 @@ public class Constant {
 			new Color(253, 152, 122, 255) };
 	public static Color bgcolor = new Color();
 
-	public static int[] myBlock = new int[4];
+	//public static int[] myBlock = new int[4];
 	
 	public static int[] showBoard={1,1,1,1};   ///board显示状态，为1则显示，为0则隐藏
 	public static boolean move_board=true;     ///board可以移动
+	public static boolean isUpdate = false;
 }

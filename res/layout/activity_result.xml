@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="#e8e8e8" >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -11,12 +12,12 @@
 
         <Button
             android:id="@+id/result_backbtn"
-            android:layout_width="35dp"
+            android:layout_width="70dp"
             android:layout_height="35dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="8dp"
-            android:background="@drawable/cuo" />
+            android:background="@drawable/exit0" />
     </RelativeLayout>
 
     <LinearLayout
@@ -26,14 +27,20 @@
         android:orientation="vertical" >
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/result_title"
+            android:layout_width="160dp"
+            android:layout_height="80dp"
             android:layout_gravity="center"
-            android:layout_marginTop="40dp"
-            android:text="result"
-            android:textColor="#ffffff"
-            android:textSize="35sp" />
-
+            android:layout_marginTop="5dp"
+            android:background="@drawable/winner0"
+             />
+ 		 <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dip"
+            
+            android:orientation="horizontal" >
+             </LinearLayout>
+            
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dip"
@@ -54,41 +61,90 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical" >
+                
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                         android:orientation="vertical" >
 
+                    
+                    <LinearLayout
+                 
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                         android:orientation="horizontal" >
+                         
+                         <LinearLayout
+                 
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                         android:orientation="horizontal" >
+                         </LinearLayout>
+                    
+                    
+                 <LinearLayout
+                     	android:id="@+id/result_NO0_background"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="#9c9c9c"
+                         android:orientation="vertical" >
+       
+                
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:orientation="vertical" >
+
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:orientation="vertical" >
+                         android:orientation="vertical" >
                     </LinearLayout>
 
                     <TextView
                         android:id="@+id/result_NO0_time"
                         android:layout_width="match_parent"
-                        android:layout_height="25dp"
+                        android:layout_height="60dp"
                         android:layout_gravity="bottom"
                         android:layout_marginBottom="5dp"
-                        android:gravity="bottom"
+                        android:gravity="bottom"                  
                         android:text="60:60,60&apos;"
-                        android:textColor="#DDDDDD"
-                        android:textSize="13sp" />
+                        android:textColor="#03a9f4"
+                        android:textSize="15sp" />
                 </LinearLayout>
-
+			 	<LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:background="#e8e8e8">
+                    </LinearLayout>
                 <LinearLayout
                     android:id="@+id/result_NO0_tall"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
-                    android:layout_marginBottom="5dp"
-                    android:background="#6fcda8"
+                    android:layout_marginBottom="0dp"
+                    android:background="#4db6af"
                     android:orientation="vertical" >
                 </LinearLayout>
 
+                
+                </LinearLayout>
+                
+                  <LinearLayout
+                 
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                         android:orientation="horizontal" >
+                         </LinearLayout>
+                
+                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="75dp"
@@ -101,10 +157,16 @@
                         android:layout_marginBottom="5dp"
                         android:paddingBottom="0dp"
                         android:text="guodakuiguoda"
-                        android:textColor="#ffffff"
+                        android:textColor="#03a9f4"
                         android:textSize="20sp" />
                 </LinearLayout>
+                
+                
+                
             </LinearLayout>
+            
+            
+                 </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -118,12 +180,39 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                
                 android:orientation="vertical" >
+                
+                
+                
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+					android:orientation="horizontal" >
+                
+                    <LinearLayout
+                 
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                         android:orientation="horizontal" >
+                         </LinearLayout>
+                
+                
+                <LinearLayout
+                    android:id="@+id/result_NO1_background"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#9c9c9c"
+					android:orientation="vertical" >
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
+                    
                     android:orientation="vertical" >
 
                     <LinearLayout
@@ -136,23 +225,40 @@
                     <TextView
                         android:id="@+id/result_NO1_time"
                         android:layout_width="match_parent"
-                        android:layout_height="25dp"
+                        android:layout_height="60dp"
                         android:layout_gravity="bottom"
                         android:layout_marginBottom="5dp"
                         android:gravity="bottom"
                         android:text="60:60,60&apos;"
-                        android:textColor="#DDDDDD"
-                        android:textSize="13sp" />
+                        android:textColor="#de0000"
+                        android:textSize="15sp" />
                 </LinearLayout>
+                
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:background="#e8e8e8">
+                    </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/result_NO1_tall"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
-                    android:layout_marginBottom="5dp"
-                    android:background="#4db6af"
+                    android:layout_marginBottom="0dp"
+                    android:background="#f26d6e"
                     android:orientation="vertical" >
                 </LinearLayout>
+                 </LinearLayout>
+                 
+                <LinearLayout
+                 
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                         android:orientation="horizontal" >
+                         </LinearLayout>
+                 
+                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -166,7 +272,7 @@
                         android:layout_marginBottom="5dp"
                         android:paddingBottom="0dp"
                         android:text="guodakuiguoda"
-                        android:textColor="#ffffff"
+                        android:textColor="#de0000"
                         android:textSize="20sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -183,12 +289,37 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                
                 android:orientation="vertical" >
+                
+                
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal" >
+                    
+                      <LinearLayout
+                 
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                         android:orientation="horizontal" >
+                         </LinearLayout>
+                    
+                     <LinearLayout
+                         android:id="@+id/result_NO2_background"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#9c9c9c"
+                    android:orientation="vertical" >
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
+                    
                     android:orientation="vertical" >
 
                     <LinearLayout
@@ -201,22 +332,38 @@
                     <TextView
                         android:id="@+id/result_NO2_time"
                         android:layout_width="match_parent"
-                        android:layout_height="25dp"
+                        android:layout_height="60dp"
                         android:layout_gravity="bottom"
                         android:layout_marginBottom="5dp"
                         android:gravity="bottom"
                         android:text="60:60,60&apos;"
-                        android:textColor="#DDDDDD"
-                        android:textSize="13sp" />
+                        android:textColor="#38b87c"
+                        android:textSize="15sp" />
                 </LinearLayout>
+                
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:background="#e8e8e8">
+                    </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/result_NO2_tall"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
-                    android:layout_marginBottom="5dp"
-                    android:background="#f26d6e"
+                    android:layout_marginBottom="0dp"
+                    android:background="#6fcda8"
                     android:orientation="vertical" >
+                </LinearLayout>
+                </LinearLayout>
+                
+                       <LinearLayout
+                 
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                         android:orientation="horizontal" >
+                         </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -231,7 +378,7 @@
                         android:layout_marginBottom="5dp"
                         android:paddingBottom="0dp"
                         android:text="guodakuiguoda"
-                        android:textColor="#ffffff"
+                        android:textColor="#38b87c"
                         android:textSize="20sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -249,11 +396,34 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical" >
+                
+                 <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal" >
+                    
+                     <LinearLayout
+                 
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                         android:orientation="horizontal" >
+                         </LinearLayout>
+                    
+                      <LinearLayout
+                    android:id="@+id/result_NO3_background"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#9c9c9c"
+                    android:orientation="vertical" >
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
+                    
                     android:orientation="vertical" >
 
                     <LinearLayout
@@ -266,23 +436,39 @@
                     <TextView
                         android:id="@+id/result_NO3_time"
                         android:layout_width="match_parent"
-                        android:layout_height="25dp"
+                        android:layout_height="60dp"
                         android:layout_gravity="bottom"
                         android:layout_marginBottom="5dp"
                         android:gravity="bottom"
                         android:text="60:60,60&apos;"
-                        android:textColor="#DDDDDD"
-                        android:textSize="13sp" />
+                        android:textColor="#e34a28"
+                        android:textSize="15sp" />
                 </LinearLayout>
 
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:background="#e8e8e8">
+                    </LinearLayout>
+                
                 <LinearLayout
                     android:id="@+id/result_NO3_tall"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginBottom="0dp"
                     android:background="#fd987a"
                     android:orientation="vertical" >
                 </LinearLayout>
+                 </LinearLayout>
+                 
+                      <LinearLayout
+                 
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                         android:orientation="horizontal" >
+                         </LinearLayout>
+                  </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -296,7 +482,7 @@
                         android:layout_marginBottom="5dp"
                         android:paddingBottom="0dp"
                         android:text="guodakuiguoda"
-                        android:textColor="#ffffff"
+                        android:textColor="#e34a28"
                         android:textSize="20sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -312,130 +498,14 @@
     </LinearLayout>
 
     
-    		<LinearLayout
-                
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-				android:background="#AAAAAA"
-                android:orientation="vertical" >
-            </LinearLayout>
+    	
             
-    		<LinearLayout
+    	    <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
-	
-                android:orientation="horizontal" >
-        
-    		    <TextView
-                        
-                        android:layout_width="match_parent"
-                        android:layout_height="25dp"
-                        android:layout_marginLeft="10dp"
-                        android:text="分享到"
-                        android:textColor="#ffffff"
-                        android:textSize="20sp" />
+                android:layout_height="0dp"
+                android:layout_weight="0.4"
+                android:orientation="vertical" >
             </LinearLayout>
     
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1"
-        android:orientation="vertical" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="1"
-            android:orientation="horizontal" >
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical" >
-
-                <LinearLayout
-                    android:layout_width="40dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    android:orientation="horizontal" >
-
-                    <Button
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/renren" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical" >
-
-                <LinearLayout
-                    android:layout_width="40dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    android:orientation="horizontal" >
-
-                    <Button
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/qqkongjian" />
-                </LinearLayout>
-            </LinearLayout>
-
-             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical" >
-
-                <LinearLayout
-                    android:layout_width="40dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    android:orientation="horizontal" >
-
-                    <Button
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/weibo" />
-                </LinearLayout>
-            </LinearLayout>
-
-             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical" >
-
-                <LinearLayout
-                    android:layout_width="40dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    android:orientation="horizontal" >
-
-                    <Button
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/weixin" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-
-      
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="0.5"
-            android:orientation="vertical" >
-        </LinearLayout>
-    </LinearLayout>
-
+    
 </LinearLayout>

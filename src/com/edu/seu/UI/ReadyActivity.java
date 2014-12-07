@@ -243,8 +243,8 @@ public class ReadyActivity extends Activity {
 
 		intent = new Intent(ReadyActivity.this, GdxApplication.class);
 		startActivity(intent);
-		// finish();
-		onDestroy();
+		finish();
+		//onDestroy();
 
 	}
 
@@ -293,9 +293,10 @@ public class ReadyActivity extends Activity {
 				}
 				break;
 			case R.id.ready_exit:
+				
 				Data.mGameShare.quitGame();
 				ReadyActivity.this.finish();
-				android.os.Process.killProcess(android.os.Process.myPid());
+				//android.os.Process.killProcess(android.os.Process.myPid());
 
 
 				break;

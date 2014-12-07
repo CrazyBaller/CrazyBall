@@ -107,6 +107,12 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 		circle_radius = circle_radius_standard;
 		block_width = board_halfwidth/4f;
 		offset_center = (5*SCREEN_WIDTH)/7-(3*SCREEN_HEIGHT)/14-board_halfheight;
+		showBoard[0]=1;
+		showBoard[1]=1;
+		showBoard[2]=1;
+		showBoard[3]=1;
+		move_board=true;    
+		isUpdate = false;
 
 
 		send = new SendData();
@@ -368,9 +374,7 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 				set_x + (x - (SCREEN_WIDTH*3)/8) * 10, set_y - offset_center*10f
 						+ (y - base_width) * 10, 60 * SCREEN_WIDTH / 8,
 						20 * base_width);
-		System.out.println("the title x:"+(set_x + (x - (0.75f * SCREEN_WIDTH)/2) * 10));
-		System.out.println("the title y:"+(set_y - offset_center*10f
-				+ (y - base_width) * 10));
+	
 		//
 		//画”道具“title
 		x = blockTitle.getPosition().x;
@@ -399,6 +403,9 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 			}
 		}
 		if (Data.blockList.size() == 0) {
+			initBlock();
+		}
+		if(isUpdate){
 			initBlock();
 		}
 
@@ -768,61 +775,52 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 			sound.play(30);
 			dA.health = 0;
 			int i = dA.getchangeType();
-			// if (tBall.getLinearVelocity().y < 0) {
 			if (CONTROL_ID == 0) {
 				send.eatblock(dA.getId());
 				send.props(i, 0);
-				if (i > 20 && i < 30) {
-					myBlock[i - 21]++;
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 0);
+				} else {
+					propsbar.addbutton(i);
 				}
 			} else if (CONTROL_ID == 1) {
 				send.eatblock(dA.getId());
 				send.props(i, 1);
-				if (i > 20 && i < 30) {
-
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 1);
-				}
+				} 
 			} else if (CONTROL_ID == 2) {
 				send.eatblock(dA.getId());
 				send.props(i, 2);
-				if (i > 20 && i < 30) {
-
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 2);
-				}
+				} 
 			}
 		}
 		if (dB.getType() == BodyData.BODY_BLOCK) {
 			sound.play(30);
 			dB.health = 0;
-			int i = dA.getchangeType();
+			int i = dB.getchangeType();
 			if (CONTROL_ID == 0) {
 				send.eatblock(dA.getId());
 				send.props(i, 0);
-				if (i > 20 && i < 30) {
-					myBlock[i - 21]++;
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 0);
+				} else {
+					propsbar.addbutton(i);
 				}
 			} else if (CONTROL_ID == 1) {
 				send.eatblock(dA.getId());
 				send.props(i, 1);
-				if (i > 20 && i < 30) {
-
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 1);
-				}
+				} 
 			} else if (CONTROL_ID == 2) {
 				send.eatblock(dA.getId());
 				send.props(i, 2);
-				if (i > 20 && i < 30) {
-
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 2);
-				}
+				} 
 			}
 		}
 	}
