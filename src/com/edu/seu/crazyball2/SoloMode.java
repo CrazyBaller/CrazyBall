@@ -346,6 +346,11 @@ public class SoloMode implements ApplicationListener, ContactListener,
 				+ (y - base_width) * 10, 20 * SCREEN_WIDTH / 8,
 						20 * base_width);
 		
+		//»­µÀ¾ß
+		if(isUpdate ==true){
+			initBlock();
+			isUpdate = false;
+		}
 		for (int i = 0; i < blockList.size(); i++) {
 			Body b = blockList.get(i);
 			BodyData bd = (BodyData) b.getUserData();
