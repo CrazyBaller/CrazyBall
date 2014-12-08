@@ -49,15 +49,13 @@ public class Tool {
 	public String changetimetoString(int time) {
 		int ms = 0;
 		int second = 0;
-		int minute = 0;
+	
 
 		ms = time % 100;
-		time = time / 100;
-		second = time % 60;
-		time = time / 60;
-		minute = time;
+		second = time / 100;
 
-		String result = " " + minute + ":" + second + "," + ms + "'";
+
+		String result = second+"s" ;
 		return result;
 	}
 	

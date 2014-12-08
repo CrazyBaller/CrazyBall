@@ -152,10 +152,10 @@ public class ResultActivity extends Activity {
 		NO2_time = (TextView)findViewById(R.id.result_NO2_time);
 		NO3_time = (TextView)findViewById(R.id.result_NO3_time);
 		
-		NO0_time.setTypeface(fontFace);
-		NO1_time.setTypeface(fontFace);
-		NO2_time.setTypeface(fontFace);
-		NO3_time.setTypeface(fontFace);
+//		NO0_time.setTypeface(fontFace);
+//		NO1_time.setTypeface(fontFace);
+//		NO2_time.setTypeface(fontFace);
+//		NO3_time.setTypeface(fontFace);
 		
 		NO0_tall = (LinearLayout)findViewById(R.id.result_NO0_tall);
 		NO1_tall = (LinearLayout)findViewById(R.id.result_NO1_tall);
@@ -194,7 +194,7 @@ public class ResultActivity extends Activity {
 			
 			NO1_name.setText(Data.name.get(0));
 			
-			NO1_time.setText(tool.changetimetoString(Data.time.get(0)));
+			NO1_time.setText(tool.changetimetoshow(Data.time.get(0)));
 			
 			NO1_tall.setBackgroundColor(Color.parseColor("#4db6af"));
 			NO1_time.setTextColor(Color.parseColor("#03a9f4"));
@@ -218,14 +218,14 @@ public class ResultActivity extends Activity {
 			
 			
 			NO1_name.setText(Data.name.get(0));
-			NO1_time.setText(tool.changetimetoString(Data.time.get(0)));
+			NO1_time.setText(tool.changetimetoshow(Data.time.get(0)));
 			
 			NO1_tall.setBackgroundColor(Color.parseColor("#4db6af"));
 			NO1_time.setTextColor(Color.parseColor("#03a9f4"));
 			NO1_name.setTextColor(Color.parseColor("#03a9f4"));
 			
 			NO2_name.setText(Data.name.get(1));
-			NO2_time.setText(tool.changetimetoString(Data.time.get(1)));
+			NO2_time.setText(tool.changetimetoshow(Data.time.get(1)));
 			
 			NO2_tall.setBackgroundColor(Color.parseColor("#f26d6e"));
 			NO2_time.setTextColor(Color.parseColor("#de0000"));
@@ -249,13 +249,13 @@ public class ResultActivity extends Activity {
 			NO3_background.setVisibility(View.GONE);
 			
 			NO0_name.setText(Data.name.get(0));
-			NO0_time.setText(tool.changetimetoString(Data.time.get(0)));
+			NO0_time.setText(tool.changetimetoshow(Data.time.get(0)));
 			
 			NO1_name.setText(Data.name.get(1));
-			NO1_time.setText(tool.changetimetoString(Data.time.get(1)));
+			NO1_time.setText(tool.changetimetoshow(Data.time.get(1)));
 			
 			NO2_name.setText(Data.name.get(2));
-			NO2_time.setText(tool.changetimetoString(Data.time.get(2)));
+			NO2_time.setText(tool.changetimetoshow(Data.time.get(2)));
 			
 			if(timelong==0){
 				 tall0=250;
@@ -269,16 +269,16 @@ public class ResultActivity extends Activity {
 		}else{
 			
 			NO0_name.setText(Data.name.get(0));
-			NO0_time.setText(tool.changetimetoString(Data.time.get(0)));
+			NO0_time.setText(tool.changetimetoshow(Data.time.get(0)));
 			
 			NO1_name.setText(Data.name.get(1));
-			NO1_time.setText(tool.changetimetoString(Data.time.get(1)));
+			NO1_time.setText(tool.changetimetoshow(Data.time.get(1)));
 			
 			NO2_name.setText(Data.name.get(2));
-			NO2_time.setText(tool.changetimetoString(Data.time.get(2)));
+			NO2_time.setText(tool.changetimetoshow(Data.time.get(2)));
 			
 			NO3_name.setText(Data.name.get(3));
-			NO3_time.setText(tool.changetimetoString(Data.time.get(3)));
+			NO3_time.setText(tool.changetimetoshow(Data.time.get(3)));
 			
 			if(timelong==0){
 				 tall0=250;

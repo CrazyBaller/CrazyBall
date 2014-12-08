@@ -149,9 +149,8 @@ public class ReadyActivity extends Activity {
 		exitbtn.setTypeface(fontFace);
 		exitbtn.setOnClickListener(mClickListener);
 		
-		//fontFace = Typeface.createFromAsset(getAssets(), "fonts/LithosPro-Regular.otf");
 		gametitle = (TextView) findViewById(R.id.ready_titlename);
-		//gametitle.setTypeface(fontFace);
+		gametitle.setTypeface(fontFace);
 		
 		
 		fontFace = Typeface.createFromAsset(getAssets(), "fonts/font1.TTF");
