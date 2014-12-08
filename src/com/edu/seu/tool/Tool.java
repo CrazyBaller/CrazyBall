@@ -2,6 +2,9 @@ package com.edu.seu.tool;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+
+import android.R.integer;
+import android.R.string;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
@@ -46,6 +49,19 @@ public class Tool {
 	public String changetimetoString(int time) {
 		int ms = 0;
 		int second = 0;
+	
+
+		ms = time % 100;
+		second = time / 100;
+
+
+		String result = second+"s" ;
+		return result;
+	}
+	
+	public String changetimetoshow(int time){
+		int ms = 0;
+		int second = 0;
 		int minute = 0;
 
 		ms = time % 100;
@@ -53,9 +69,37 @@ public class Tool {
 		second = time % 60;
 		time = time / 60;
 		minute = time;
-
-		String result = " " + minute + ":" + second + "," + ms + "'";
+		
+		String result =null;
+		
+		if(minute==0)
+		{
+			result="00:";
+		}else if(minute<10){
+			result="0"+minute+":";
+		}else {
+			result=minute+":";
+		}
+		
+		if(second==0)
+		{
+			result+="00,";
+		}else if(second<10){
+			result+="0"+second+",";
+		}else{
+			result+=second+",";
+		}
+		
+		if(ms==0){
+			result+="00'";
+		}else if(ms<10){
+			result+="0"+ms+"'";
+		}else {
+			result+=ms+"'";
+		}
+		
 		return result;
+		
 	}
 
 	public Bitmap stringtoBitmap(String imgStr) {

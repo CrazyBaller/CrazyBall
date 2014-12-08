@@ -1,13 +1,14 @@
 package com.edu.seu.props;
 
 import static com.edu.seu.crazyball2.Constant.*;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class ChangeSensor {
 	public void start() {
 		canTouching = true;
-
+		//warningSound.play(30);
 		timeVoid();
 	}
 

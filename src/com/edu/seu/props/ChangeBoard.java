@@ -1,6 +1,7 @@
 package com.edu.seu.props;
 
 import static com.edu.seu.crazyball2.Constant.*;
+
 import java.util.Timer;
 import java.util.TimerTask;
 import com.badlogic.gdx.math.Vector2;
@@ -33,18 +34,26 @@ public class ChangeBoard {
 		if (ifvalidate(this.id)) {
 			if (changeType == BodyData.BOARD_TOLONGER) {
 				this.toLonger();
+				//warningSound.play(30);
+				timeVoid(5000);
 			} else if (changeType == BodyData.BOARD_TOSHORTER) {
 				this.toShorter();
+				//warningSound.play(30);
+				timeVoid(5000);
 			} else if (changeType == BodyData.BOARD_DISAPPEAR) {
 				this.toDisappear();
+				//warningSound.play(30);
+				timeVoid(2000);
 			} else if (changeType == BodyData.BOARD_NOCONTROL) {
 				this.noControl();
+				//warningSound.play(30);
+				timeVoid(2000);
 			}
-			timeVoid();
+			
 		}
 	}
 
-	public void timeVoid() {
+	public void timeVoid(int time) {
 
 		final Timer timer = new Timer();
 		BOARD_HIT++;
@@ -68,7 +77,7 @@ public class ChangeBoard {
 				timer.cancel();
 			}
 		};
-		timer.schedule(tt, 3000);
+		timer.schedule(tt, time);
 	}
 
 	protected void toNormal(int i) {

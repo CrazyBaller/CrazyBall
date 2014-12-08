@@ -32,9 +32,7 @@ public class PropsObserver implements Observer {
 		}
 		if(type==33){
 			// Ë¢ÐÂµÀ¾ß
-			if(Data.mode!=0&&Data.myID==1){
 				isUpdate = true;
-			}
 		}
 		if(type==34){
 			ChangeSensor cs = new ChangeSensor();

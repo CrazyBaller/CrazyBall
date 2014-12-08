@@ -1,6 +1,7 @@
 package com.edu.seu.props;
 
 import static com.edu.seu.crazyball2.Constant.*;
+
 import java.util.Timer;
 import java.util.TimerTask;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -16,12 +17,16 @@ public class ChangeBall {
 		this.changeType = changeType;
 		if (changeType == BodyData.BALL_TOBIGGER) {
 			this.toBigger();
+			//warningSound.play(30);
 		} else if (changeType == BodyData.BALL_TOSMALLER) {
 			this.toSmaller();
+			//warningSound.play(30);
 		} else if (changeType == BodyData.BALL_TOFASTTER) {
 			this.toFaster();
+			//warningSound.play(30);
 		} else if (changeType == BodyData.BALL_TOSLOWER) {
 			this.toSlower();
+			//warningSound.play(30);
 		}
 		timeVoid();
 	}
@@ -101,7 +106,8 @@ public class ChangeBall {
 		if (Data.myID == 0) {
 			float x = tBall.getLinearVelocity().x;
 			float y = tBall.getLinearVelocity().y;
-			tBall.setLinearVelocity(20f, 20f * y / x);
+			float multiple=(float) (SCREEN_WIDTH/(Math.sqrt(x*x+y*y)));
+			tBall.setLinearVelocity(multiple*x, multiple*y);
 		}
 	}
 }

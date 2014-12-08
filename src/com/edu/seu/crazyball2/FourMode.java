@@ -91,6 +91,8 @@ public class FourMode implements ApplicationListener, ContactListener,
 	Sound sound;
 	
 	private PropsBar propsbar;
+	
+	Tool tool = new Tool();
 
 	public FourMode(Handler h, PropsObservable po) {
 		this.windowHandler = h;
@@ -111,6 +113,12 @@ public class FourMode implements ApplicationListener, ContactListener,
 		circle_radius = circle_radius_standard;
 		block_width = board_halfwidth/4f;
 		offset_center = (5*SCREEN_WIDTH)/7-(3*SCREEN_HEIGHT)/14-board_halfheight;
+		showBoard[0]=1;
+		showBoard[1]=1;
+		showBoard[2]=1;
+		showBoard[3]=1;
+		move_board=true;    
+		isUpdate = false;
 
 		send = new SendData();
 
@@ -359,11 +367,19 @@ public class FourMode implements ApplicationListener, ContactListener,
 		}
 
 		setBallBoardColor();
-
-		board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		board_mesh1.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		board_mesh2.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		board_mesh3.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		
+		if(showBoard[0]==1){
+			board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		}
+		if(showBoard[1]==1){
+			board_mesh1.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		}
+		if(showBoard[2]==1){
+			board_mesh2.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		}
+		if(showBoard[3]==1){
+			board_mesh3.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		}
 
 		batch.begin();
 		float x = tBall.getPosition().x;
@@ -423,7 +439,12 @@ public class FourMode implements ApplicationListener, ContactListener,
 		if (Data.blockList.size() == 0) {
 			initBlock();
 		}
-
+		if(isUpdate){
+			for (int i = 0; i < Data.blockList.size(); i++) {
+				mworld.destroyBody(Data.blockList.get(i));
+			}
+			initBlock();
+		}
 		// 画滑动提示
 		for (int i = 0; i < 2; i++) {
 			Body b = slipe[i];
@@ -437,7 +458,7 @@ public class FourMode implements ApplicationListener, ContactListener,
 		//写时间
 		x = Express.getPosition().x;
 		y = Express.getPosition().y;
-		mCreateWorld.getFont().draw(batch, "00:00,00'", set_x + (x - (SCREEN_WIDTH / 8)*0.9f) * 10, set_y - offset_center*10f
+		mCreateWorld.getFont().draw(batch, tool.changetimetoshow(GdxApplication.time), set_x + (x - (SCREEN_WIDTH / 8)*0.9f) * 10, set_y - offset_center*10f
 				+ (y +base_width*0.2f) * 10);
 		batch.end();
 
@@ -483,8 +504,8 @@ public class FourMode implements ApplicationListener, ContactListener,
 		camera.unproject(touchV);
 		if (firstTouch) {
 			Random r = new Random();
-			float xv = r.nextFloat() * 20;
-			float yv = 40 - xv;
+			float xv = r.nextFloat() * SCREEN_WIDTH;
+			float yv = (float) Math.sqrt(SCREEN_WIDTH*SCREEN_WIDTH-xv*xv);
 			if (r.nextInt(2) == 0)
 				xv = -xv;
 			if (r.nextInt(2) == 0)
@@ -492,45 +513,6 @@ public class FourMode implements ApplicationListener, ContactListener,
 			firstTouch = false;
 			tBall.setLinearVelocity(xv, yv);
 		}
-		arg1 = SCREEN_HEIGHT * 5 - arg1;
-		arg0 = arg0 - SCREEN_WIDTH * 5;
-/*		if (arg1 > 10 * (mB[0].getPosition().y - base_width - offset_center*1)
-				&& arg1 < 10 * (mB[0].getPosition().y + base_width - offset_center*1)) {
-			System.out.println("right");
-			if (arg0 > 10 * (mB[0].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[0].getPosition().x + base_width)) {
-				if (myBlock[0] != 0) {
-					sound.play(30);
-					send.propsactivity(21);
-					po.setChange(21, 0);
-					myBlock[0]--;
-				}
-			} else if (arg0 > 10 * (mB[1].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[1].getPosition().x + base_width)) {
-				if (myBlock[1] != 0) {
-					sound.play(30);
-					send.propsactivity(22);
-					po.setChange(22, 0);
-					myBlock[1]--;
-				}
-			} else if (arg0 > 10 * (mB[2].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[2].getPosition().x + base_width)) {
-				if (myBlock[2] != 0) {
-					sound.play(30);
-					send.propsactivity(23);
-					po.setChange(23, 0);
-					myBlock[2]--;
-				}
-			} else if (arg0 > 10 * (mB[3].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[3].getPosition().x + base_width)) {
-				if (myBlock[3] != 0) {
-					sound.play(30);
-					send.propsactivity(24);
-					po.setChange(24, 0);
-					myBlock[3]--;
-				}
-			}
-		}*/
 		return false;
 	}
 
@@ -539,13 +521,15 @@ public class FourMode implements ApplicationListener, ContactListener,
 		Vector3 touchV = new Vector3(arg0, arg1, 0);
 		camera.unproject(touchV);
 		// 设置移动坐标
-		if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
-				- board_halfwidth
-				&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
-						+ board_halfwidth) {
-			tBoard0.setTransform(touchV.x, tBoard0.getWorldCenter().y, 0);
-			Data.location.set(Data.myID, 2 * tBoard0.getWorldCenter().x
-					/ SCREEN_WIDTH);
+		if(move_board){
+			if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
+					- board_halfwidth
+					&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
+							+ board_halfwidth) {
+				tBoard0.setTransform(touchV.x, tBoard0.getWorldCenter().y, 0);
+				Data.location.set(Data.myID, 2 * tBoard0.getWorldCenter().x
+						/ SCREEN_WIDTH);
+			}
 		}
 		return false;
 	}
@@ -809,73 +793,61 @@ public class FourMode implements ApplicationListener, ContactListener,
 			if (CONTROL_ID == 0) {
 				send.eatblock(dA.getId());
 				send.props(i, 0);
-				if (i > 20 && i < 30) {
-					myBlock[i - 21]++;
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 0);
+				} else {
+					propsbar.addbutton(i);
 				}
 			} else if (CONTROL_ID == 1) {
 				send.eatblock(dA.getId());
 				send.props(i, 1);
-				if (i > 20 && i < 30) {
-
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 1);
-				}
+				} 
 			} else if (CONTROL_ID == 2) {
 				send.eatblock(dA.getId());
 				send.props(i, 2);
-				if (i > 20 && i < 30) {
-
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 2);
-				}
-			} else if (CONTROL_ID ==3) {
+				} 
+			}else if (CONTROL_ID ==3) {
 				send.eatblock(dA.getId());
 				send.props(i, 3);
-				if (i > 20 && i < 30) {
-
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 3);
-				}
+				} 
 			}
 		}
 		if (dB.getType() == BodyData.BODY_BLOCK) {
 			sound.play(30);
 			dB.health = 0;
-			int i = dA.getchangeType();
+			int i = dB.getchangeType();
 			if (CONTROL_ID == 0) {
 				send.eatblock(dA.getId());
 				send.props(i, 0);
-				if (i > 20 && i < 30) {
-					myBlock[i - 21]++;
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 0);
+				} else {
+					propsbar.addbutton(i);
 				}
 			} else if (CONTROL_ID == 1) {
 				send.eatblock(dA.getId());
 				send.props(i, 1);
-				if (i > 20 && i < 30) {
-
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 1);
-				}
+				} 
 			} else if (CONTROL_ID == 2) {
 				send.eatblock(dA.getId());
 				send.props(i, 2);
-				if (i > 20 && i < 30) {
-
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 2);
-				}
+				} 
 			}else if (CONTROL_ID ==3) {
 				send.eatblock(dA.getId());
 				send.props(i, 3);
-				if (i > 20 && i < 30) {
-
-				} else {
+				if (i > 30 && i < 35) { //被动
 					po.setChange(i, 3);
-				}
+				} 
 			}
 		}
 	}

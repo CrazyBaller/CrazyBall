@@ -11,6 +11,7 @@ import static com.edu.seu.crazyball2.Constant.base_width;
 import static com.edu.seu.crazyball2.Constant.set_x;
 import static com.edu.seu.crazyball2.Constant.set_y;
 import static com.edu.seu.crazyball2.Constant.offset_center;
+import static com.edu.seu.crazyball2.Constant.warningSound;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Mesh;
@@ -69,6 +70,8 @@ public class CreateWorld {
 		board_halfwidth = SCREEN_WIDTH * boardrate;
 		base_width = (SCREEN_HEIGHT-SCREEN_WIDTH)/7;// half base width
 		world = new World(new Vector2(0, 0f), true);
+		warningSound = Gdx.audio.newSound(Gdx.files.internal("sound/CountDown.mp3"));
+		
 		tBound1 = B2Util.createRectangle(world, SCREEN_WIDTH / 2,
 				bound_width / 2, 0, -board_halfheight + SCREEN_WIDTH
 						- bound_width / 2, BodyType.StaticBody, 0, 0, 0, 0,
@@ -381,7 +384,7 @@ public class CreateWorld {
 
 	public Texture getTiltleTex(){
 		//titleTex = new Texture(Gdx.files.internal("title"+Data.myID+".png"));
-		System.out.println("the title name is "+"title"+Data.myID+".png");
+		//System.out.println("the title name is "+"title"+Data.myID+".png");
 		return titleTex;
 	}
 	public Texture getBlockTiltleTex(){
@@ -404,7 +407,7 @@ public class CreateWorld {
 		}
 		
 		}catch(Exception e){
-			System.out.println("the can't find pic is "+type);
+	
 		}	
 		return blockRegion;
 	}

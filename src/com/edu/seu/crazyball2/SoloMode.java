@@ -82,6 +82,8 @@ public class SoloMode implements ApplicationListener, ContactListener,
 	int flagend0 = 0;
 	
 	private PropsBar propsbar;
+	
+	Tool tool = new Tool();
 
 	public SoloMode(Handler h, PropsObservable po) {
 		this.windowHandler = h;
@@ -99,6 +101,12 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		circle_radius = circle_radius_standard;
 		block_width = board_halfwidth/4f;
 		offset_center = (5*SCREEN_WIDTH)/7-(3*SCREEN_HEIGHT)/14-board_halfheight;
+		showBoard[0]=1;
+		showBoard[1]=1;
+		showBoard[2]=1;
+		showBoard[3]=1;
+		move_board=true;    
+		isUpdate = false;
 
 		// init color
 		initColor();
@@ -180,8 +188,6 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		colors[2] = Color.valueOf("6fcda8");
 		colors[3] = Color.valueOf("fd987a");
 		bgcolor = Color.valueOf("34495E");
-		/*System.out.println(" r:" + bgcolor.r + " g:" + bgcolor.g + " b:"
-				+ bgcolor.b);*/
 	}
 
 	private void initMyblock() {
@@ -272,7 +278,9 @@ public class SoloMode implements ApplicationListener, ContactListener,
 
 		mCreateWorld.getScreen().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBackground().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		if(showBoard[0]==1){
+			board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		}	
 		mCreateWorld.getBound_one().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_two().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_three().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
@@ -334,9 +342,6 @@ public class SoloMode implements ApplicationListener, ContactListener,
 				set_x + (x - (SCREEN_WIDTH*3)/8) * 10, set_y - offset_center*10f
 						+ (y - base_width) * 10, 60 * SCREEN_WIDTH / 8,
 						20 * base_width);
-		System.out.println("the title x:"+(set_x + (x - (0.75f * SCREEN_WIDTH)/2) * 10));
-		System.out.println("the title y:"+(set_y - offset_center*10f
-				+ (y - base_width) * 10));
 		//
 		//画”道具“title
 		x = blockTitle.getPosition().x;
@@ -346,11 +351,7 @@ public class SoloMode implements ApplicationListener, ContactListener,
 				+ (y - base_width) * 10, 20 * SCREEN_WIDTH / 8,
 						20 * base_width);
 		
-		//画道具
-		if(isUpdate ==true){
-			initBlock();
-			isUpdate = false;
-		}
+
 		for (int i = 0; i < blockList.size(); i++) {
 			Body b = blockList.get(i);
 			BodyData bd = (BodyData) b.getUserData();
@@ -371,42 +372,31 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		if (blockList.size() == 0) {
 			initBlock();
 		}
-/*		// 画道具框
-		for (int i = 0; i < 4; i++) {
-			Body b = mB[i];
-			float mBx = b.getPosition().x;
-			float mBy = b.getPosition().y;
-			if (myBlock[i] == 0) {
-				//System.out.println("set_x: " + set_x + "set_y: " + set_y);
-				batch.draw(mCreateWorld.getBlockTexture(0), set_x
-						+ (mBx - base_width) * 10f, set_y - offset_center*10f
-						+ (mBy - base_width / 2) * 10.6f,
-						10 * base_width / 0.6f, 10 * base_width / 0.6f);
-			} else {
-				batch.draw(
-						mCreateWorld.getBlockTexture(Data.myID * 100 + 21 + i),
-						set_x + (mBx - base_width) * 10f, set_y - offset_center*10f
-								+ (mBy - base_width / 2) * 10.6f,
-						10 * base_width / 0.6f, 10 * base_width / 0.6f);
+		if(isUpdate){
+			for(int i=0;i<blockList.size();i++){
+				mworld.destroyBody(blockList.get(i));
 			}
-		}*/
+			initBlock();
+			isUpdate=false;
+		}
 		// 画滑动提示
 		for (int i = 0; i < 2; i++) {
 			Body b = slipe[i];
 			float mBx = b.getPosition().x;
 			float mBy = b.getPosition().y;
-			//System.out.println("slipe_x: " + set_x + "slipe_y: " + set_y);
 			batch.draw(mCreateWorld.getBlockTexture(10 + i), set_x
 					+ (mBx - base_width) * 10f, set_y - offset_center*10f
 					+ (mBy - base_width / 2) * 10.6f, 10 * base_width / 0.6f,
 					10 * base_width / 0.6f);
 		}
-		//System.out.println("end batch");
 		
 		//写时间
 		x = Express.getPosition().x;
 		y = Express.getPosition().y;
-		mCreateWorld.getFont().draw(batch, "00:00,00'", set_x + (x - (SCREEN_WIDTH / 8)*0.9f) * 10, set_y - offset_center*10f
+		
+		
+		
+		mCreateWorld.getFont().draw(batch, tool.changetimetoshow(GdxApplication.time), set_x + (x - (SCREEN_WIDTH / 8)*0.9f) * 10, set_y - offset_center*10f
 				+ (y +base_width*0.2f) * 10);
 		batch.end();
 
@@ -432,58 +422,15 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		if (firstTouch) {
 			Random r = new Random();
 			float xv = r.nextFloat() * SCREEN_WIDTH;
-			float yv = SCREEN_WIDTH - xv;
+			float yv = (float) Math.sqrt(SCREEN_WIDTH*SCREEN_WIDTH-xv*xv);
 			if (r.nextInt(2) == 0)
 				xv = -xv;
-			if (r.nextInt(2) == 0)
-				yv = -yv;
+//			if (r.nextInt(2) == 0)
+//				yv = -yv;
 			firstTouch = false;
 			tBall.setLinearVelocity(xv, yv);
 		}
-		arg1 = SCREEN_HEIGHT * 5 - arg1;
-		arg0 = arg0 - SCREEN_WIDTH * 5;
-/*		if (arg1 > 10 * (mB[0].getPosition().y - base_width - offset_center)
-				&& arg1 < 10 * (mB[0].getPosition().y + base_width - offset_center)) {
-			//System.out.println("right");
-			if (arg0 > 10 * (mB[0].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[0].getPosition().x + base_width)) {
-				if (myBlock[0] != 0) {
-					music.pause();
-					sound.play(30);
-					//sound.setLooping(false);
-					po.setChange(21, 0);
-					myBlock[0]--;
-					music.play();
-				}
-			} else if (arg0 > 10 * (mB[1].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[1].getPosition().x + base_width)) {
-				if (myBlock[1] != 0) {
-					music.pause();
-					sound.play(30);
-					po.setChange(22, 0);
-					myBlock[1]--;
-					music.play();
-				}
-			} else if (arg0 > 10 * (mB[2].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[2].getPosition().x + base_width)) {
-				if (myBlock[2] != 0) {
-					music.pause();
-					sound.play(30);
-					po.setChange(23, 0);
-					myBlock[2]--;
-					music.play();
-				}
-			} else if (arg0 > 10 * (mB[3].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[3].getPosition().x + base_width)) {
-				if (myBlock[3] != 0) {
-					music.pause();
-					sound.play(30);
-					po.setChange(24, 0);
-					myBlock[3]--;
-					music.play();
-				}
-			}
-		}*/
+
 		return false;
 	}
 
@@ -492,13 +439,15 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		Vector3 touchV = new Vector3(arg0, arg1, 0);
 		camera.unproject(touchV);
 		// 设置移动坐标
-		if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
-				- board_halfwidth0
-				&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
-						+ board_halfwidth0) {
-			tBoard0.setTransform(touchV.x, tBoard0.getWorldCenter().y, 0);
+		if(move_board){
+			if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
+					- board_halfwidth0
+					&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
+							+ board_halfwidth0) {
+				tBoard0.setTransform(touchV.x, tBoard0.getWorldCenter().y, 0);
+			}
 		}
-
+	
 		return false;
 	}
 
@@ -669,20 +618,22 @@ public class SoloMode implements ApplicationListener, ContactListener,
 			//music.pause();
 			sound.play(30);
 			dA.health = 0;
-			if(dA.getchangeType()>30&&dA.getchangeType()<35){//被动
-				po.setChange(dA.getchangeType(), 0);
+			int i=dA.getchangeType();
+			if(i>30&&i<35){//被动
+				po.setChange(i, 0);
 			}else{
-				propsbar.addbutton(dA.getchangeType());
+				propsbar.addbutton(i);
 			}			
 		}
 		if (dB.getType() == BodyData.BODY_BLOCK) {
 			//music.pause();
 			sound.play(30);
 			dB.health = 0;
-			if(dA.getchangeType()>30&&dA.getchangeType()<35){//被动
-				po.setChange(dA.getchangeType(), 0);
+			int i=dB.getchangeType();
+			if(i>30&&i<35){//被动
+				po.setChange(i, 0);
 			}else{
-				propsbar.addbutton(dA.getchangeType());
+				propsbar.addbutton(i);
 			}			
 		}
 	}

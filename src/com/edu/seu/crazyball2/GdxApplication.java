@@ -55,7 +55,7 @@ public class GdxApplication extends AndroidApplication {
 	private PropsObservable po;
 
 	Timer timer = new Timer();
-	int time = 0;
+	 static int time = 0;
 
 	Context context = null;
 
@@ -175,10 +175,18 @@ public class GdxApplication extends AndroidApplication {
 
 				try {
 					json = new JSONObject((String) msg.obj);
-					if (json.getInt("type") > 20 && json.getInt("type") < 30) {
-						myBlock[json.getInt("type") - 21]++;
-					} else {
+					if (json.getInt("type") > 30 && json.getInt("type") < 35) {
 						po.setChange(json.getInt("type"), json.getInt("id"));
+					} else {
+						if(json.getInt("id")==Data.myID){
+							if(Data.mode==2)
+								TwoModeClient.propsbar.addbutton(json.getInt("type"));
+							else if(Data.mode==3)
+								ThreeModeClient.propsbar.addbutton(json.getInt("type"));
+							else if(Data.mode==4)
+								FourModeClient.propsbar.addbutton(json.getInt("type"));
+						}
+						
 					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -191,9 +199,9 @@ public class GdxApplication extends AndroidApplication {
 
 				try {
 					json = new JSONObject((String) msg.obj);
-					po.setChange(json.getInt("type"), 0);
+					warningSound.play(30);
+					po.setChange(json.getInt("type"),json.getInt("id"));
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				break;
@@ -209,7 +217,7 @@ public class GdxApplication extends AndroidApplication {
 					arrayid = json.getJSONArray("propsimageid");
 					arrayx = json.getJSONArray("propsimagex");
 					arrayy = json.getJSONArray("propsimagey");
-
+					
 					Data.propsimageid.clear();
 					Data.propsimagex.clear();
 					Data.propsimagey.clear();
@@ -221,7 +229,7 @@ public class GdxApplication extends AndroidApplication {
 						f = (float) arrayy.getDouble(i);
 						Data.propsimagey.add(f);
 					}
-
+					isUpdate=false;
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -267,6 +275,7 @@ public class GdxApplication extends AndroidApplication {
 							ResultActivity.class);
 
 					startActivity(intent);
+					Gdx.app.exit();
 
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -429,6 +438,7 @@ public class GdxApplication extends AndroidApplication {
 							Intent intent = new Intent(GdxApplication.this,
 									ResultActivity.class);
 							startActivity(intent);
+							Gdx.app.exit();
 						} else {
 							Data.time.set(json.getInt("id"), time);
 							SendData send = new SendData();
@@ -444,6 +454,7 @@ public class GdxApplication extends AndroidApplication {
 							Intent intent = new Intent(GdxApplication.this,
 									ResultActivity.class);
 							startActivity(intent);
+							Gdx.app.exit();
 						}
 						
 						
@@ -568,7 +579,8 @@ public class GdxApplication extends AndroidApplication {
 		});
 		builder.create().show();
 	}
-
+	
+	private TwoModeClient tMode;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -600,6 +612,8 @@ public class GdxApplication extends AndroidApplication {
 		set_x = SCREEN_WIDTH * 5;
 		set_y = SCREEN_HEIGHT * 5;
 		
+		
+		time=0;
 		timer.schedule(task, 10, 10);
 
 		switch (mode) {
@@ -612,6 +626,7 @@ public class GdxApplication extends AndroidApplication {
 			}
 
 			else {
+				//tMode=new TwoModeClient(windowHandler, po);
 				initialize(new TwoModeClient(windowHandler, po), false);
 			}
 

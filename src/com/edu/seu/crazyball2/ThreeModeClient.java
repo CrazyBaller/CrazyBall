@@ -36,6 +36,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.edu.seu.message.Data;
 import com.edu.seu.message.SendData;
 import com.edu.seu.props.PropsObservable;
+import com.edu.seu.tool.Tool;
 
 
 public class ThreeModeClient implements ApplicationListener, ContactListener,
@@ -89,7 +90,9 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 	Music backmusic;
 	Sound sound;
 	
-	private PropsBar propsbar;
+	public static PropsBar propsbar;
+	
+	Tool tool = new Tool();
 
 	public ThreeModeClient(Handler h, PropsObservable po) {
 		this.windowHandler = h;
@@ -110,6 +113,12 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		block_width = board_halfwidth/4f;
 		offset_center = (5*SCREEN_WIDTH)/7-(3*SCREEN_HEIGHT)/14-board_halfheight;
 		Data.ball.set(1, SCREEN_WIDTH / 2 - board_halfheight);
+		showBoard[0]=1;
+		showBoard[1]=1;
+		showBoard[2]=1;
+		showBoard[3]=1;
+		move_board=true;    
+		isUpdate = false;
 
 		send = new SendData();
 
@@ -412,10 +421,16 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		//mCreateWorld.getSlipeBackground().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 
 		setBallBoardColor();
-		board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		board_mesh1.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		board_mesh2.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		if(showBoard[0]==1){
+			board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		}
+		if(showBoard[1]==1){
+			board_mesh1.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		}
+		if(showBoard[2]==1){
+			board_mesh2.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 
+		}
 		batch.begin();
 		// 画柱子
 		mCreateWorld.setBoundCircle();
@@ -490,11 +505,16 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		
 		//画道具
 		if (isUpdate ==true && type == 1) {
+			for (int i = 0; i < Data.blockList.size(); i++) {
+				mworld.destroyBody(Data.blockList.get(i));
+			}
 			initBlock();
 			isUpdate = false;
 		} else if (isUpdate ==true && type != 1) {
+			for (int i = 0; i < Data.blockList.size(); i++) {
+				mworld.destroyBody(Data.blockList.get(i));
+			}
 			initBlockClient();
-			isUpdate = false;
 		}
 		for (int i = 0; i < Data.blockList.size(); i++) {
 			Body b = Data.blockList.get(i);
@@ -532,7 +552,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		//写时间
 		x = Express.getPosition().x;
 		y = Express.getPosition().y;
-		mCreateWorld.getFont().draw(batch, "00:00,00'", set_x + (x - (SCREEN_WIDTH / 8)*0.9f) * 10, set_y - offset_center*10f
+		mCreateWorld.getFont().draw(batch, tool.changetimetoshow(GdxApplication.time), set_x + (x - (SCREEN_WIDTH / 8)*0.9f) * 10, set_y - offset_center*10f
 				+ (y +base_width*0.2f) * 10);
 		batch.end();
 
@@ -571,45 +591,6 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 			firstTouch = false;
 			send.propsimage();
 		}
-		arg1 = SCREEN_HEIGHT * 5 - arg1;
-		arg0 = arg0 - SCREEN_WIDTH * 5;
-/*		if (arg1 > 10 * (mB[0].getPosition().y - base_width - offset_center*1)
-				&& arg1 < 10 * (mB[0].getPosition().y + base_width - offset_center*1)) {
-			System.out.println("right");
-			if (arg0 > 10 * (mB[0].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[0].getPosition().x + base_width)) {
-				if (myBlock[0] != 0) {
-					sound.play(30);
-					send.propsactivity(21);
-					po.setChange(21, 0);
-					myBlock[0]--;
-				}
-			} else if (arg0 > 10 * (mB[1].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[1].getPosition().x + base_width)) {
-				if (myBlock[1] != 0) {
-					sound.play(30);
-					send.propsactivity(22);
-					po.setChange(22, 0);
-					myBlock[1]--;
-				}
-			} else if (arg0 > 10 * (mB[2].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[2].getPosition().x + base_width)) {
-				if (myBlock[2] != 0) {
-					sound.play(30);
-					send.propsactivity(23);
-					po.setChange(23, 0);
-					myBlock[2]--;
-				}
-			} else if (arg0 > 10 * (mB[3].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[3].getPosition().x + base_width)) {
-				if (myBlock[3] != 0) {
-					sound.play(30);
-					send.propsactivity(24);
-					po.setChange(24, 0);
-					myBlock[3]--;
-				}
-			}
-		}*/
 		return false;
 	}
 
@@ -617,25 +598,25 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 	public boolean touchDragged(int arg0, int arg1, int arg2) {
 		Vector3 touchV = new Vector3(arg0, arg1, 0);
 		camera.unproject(touchV);
-		if (type == 1) {
-			if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
-					- board_halfwidth1
-					&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
-							+ board_halfwidth1) {
-				tBoard1.setTransform(touchV.x, 0, 0);
-				Data.location.set(Data.myID, 2 * touchV.x / SCREEN_WIDTH);
-			}
-		} else {
-			if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
-					- board_halfwidth2
-					&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
-							+ board_halfwidth2) {
-				tBoard2.setTransform(touchV.x, 0, 0);
-				Data.location.set(Data.myID, 2 * touchV.x / SCREEN_WIDTH);
+		if(move_board){
+			if (type == 1) {
+				if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
+						- board_halfwidth1
+						&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
+								+ board_halfwidth1) {
+					tBoard1.setTransform(touchV.x, 0, 0);
+					Data.location.set(Data.myID, 2 * touchV.x / SCREEN_WIDTH);
+				}
+			} else {
+				if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
+						- board_halfwidth2
+						&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
+								+ board_halfwidth2) {
+					tBoard2.setTransform(touchV.x, 0, 0);
+					Data.location.set(Data.myID, 2 * touchV.x / SCREEN_WIDTH);
+				}
 			}
 		}
-
-		System.out.println("touch drag");
 
 		return false;
 	}

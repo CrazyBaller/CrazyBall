@@ -3,6 +3,9 @@ package com.edu.seu.message;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.R.integer;
+
 import com.lenovo.game.GameMessage;
 import com.edu.seu.message.GameMessages.StringMessage;
 import static com.edu.seu.crazyball2.Constant.*;
@@ -178,7 +181,7 @@ public class SendData {
 	}
 
 	public void myState() {
-		if (Data.mRemoteUser.size() == 0)
+		if(Data.mRemoteUser==null||Data.mRemoteUser.size() == 0)
 			return;
 
 		for (int i = 0; i < Data.mRemoteUser.size(); i++) {
@@ -321,7 +324,7 @@ public class SendData {
 		}
 	}
 
-	public void propsactivity(int type) {
+	public void propsactivity(int type,int id) {   ///主动道具施法
 		if (Data.mRemoteUser.size() == 0)
 			return;
 
@@ -330,6 +333,7 @@ public class SendData {
 			try {
 
 				json.put("type", type);
+				json.put("id", id);
 
 			} catch (JSONException e) {
 
