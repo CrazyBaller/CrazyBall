@@ -52,7 +52,7 @@ public class GdxApplication extends AndroidApplication {
 	private static final int RECEIVED_CONTROLID = 16;
 	private static final int RECEIVED_PROPS_ACTIVITY = 17;
 
-	private PropsObservable po;
+	private PropsObservable po;	
 
 	Timer timer = new Timer();
 	 static int time = 0;
@@ -582,7 +582,6 @@ public class GdxApplication extends AndroidApplication {
 		builder.create().show();
 	}
 	
-	private TwoModeClient tMode;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -628,7 +627,6 @@ public class GdxApplication extends AndroidApplication {
 			}
 
 			else {
-				//tMode=new TwoModeClient(windowHandler, po);
 				initialize(new TwoModeClient(windowHandler, po), false);
 			}
 
@@ -648,7 +646,6 @@ public class GdxApplication extends AndroidApplication {
 		default:
 			Gdx.app.exit();
 		}
-
 	}
 
 	@Override
