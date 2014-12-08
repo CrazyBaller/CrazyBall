@@ -10,6 +10,7 @@ import com.edu.seu.message.GameMessages;
 import com.edu.seu.message.SendData;
 import com.edu.seu.message.GameMessages.AbstractGameMessage;
 import com.edu.seu.tool.Tool;
+import com.example.crazyball2.GuideActivity;
 import com.example.crazyball2.R;
 import com.lenovo.game.GameMessage;
 import com.lenovo.game.GameMessageListener;

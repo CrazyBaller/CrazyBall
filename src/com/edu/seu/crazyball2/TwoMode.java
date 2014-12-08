@@ -396,9 +396,9 @@ public class TwoMode implements ApplicationListener, ContactListener,
 			float mBx = b.getPosition().x;
 			float mBy = b.getPosition().y;
 			batch.draw(mCreateWorld.getBlockTexture(10 + i), set_x
-					+ (mBx - base_width) * 10f, set_y - offset_center * 10f
-					+ (mBy - base_width / 2) * 10.6f, 10 * base_width / 0.6f,
-					10 * base_width / 0.6f);
+					+ (mBx - base_width) * 10f, set_y - offset_center*10f
+					+ (mBy - base_width) * 10f, 20 * base_width,
+					20 * base_width);
 		}
 
 		// Ð´Ê±¼ä
