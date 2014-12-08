@@ -70,7 +70,7 @@ public class CreateWorld {
 		board_halfwidth = SCREEN_WIDTH * boardrate;
 		base_width = (SCREEN_HEIGHT-SCREEN_WIDTH)/7;// half base width
 		world = new World(new Vector2(0, 0f), true);
-		warningSound = Gdx.audio.newSound(Gdx.files.internal("sound/CountDown.mp3"));
+		warningSound = Gdx.audio.newSound(Gdx.files.internal("sound/warning.mp3"));
 		
 		tBound1 = B2Util.createRectangle(world, SCREEN_WIDTH / 2,
 				bound_width / 2, 0, -board_halfheight + SCREEN_WIDTH

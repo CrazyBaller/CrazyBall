@@ -199,7 +199,9 @@ public class GdxApplication extends AndroidApplication {
 
 				try {
 					json = new JSONObject((String) msg.obj);
+					if(json.getInt("id")== Data.myID){
 					warningSound.play(30);
+					}
 					po.setChange(json.getInt("type"),json.getInt("id"));
 				} catch (JSONException e) {
 					e.printStackTrace();
