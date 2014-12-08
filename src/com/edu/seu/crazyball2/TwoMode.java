@@ -87,6 +87,8 @@ public class TwoMode implements ApplicationListener, ContactListener,
 	public static PropsBar propsbar;
 	
 	Tool tool = new Tool();
+	
+
 
 	public TwoMode(Handler h, PropsObservable po) {
 		this.windowHandler = h;
@@ -312,7 +314,6 @@ public class TwoMode implements ApplicationListener, ContactListener,
 				Vector2 center = ground.getWorldPoint(circle.getPosition());
 				Vector2 position = tBall.getPosition();
 				Vector2 d = center.sub(position);
-				// d.notifyAll();
 				Vector2 F = d.mul(200.0f);
 				tBall.applyForce(F, position);
 			}
@@ -424,7 +425,8 @@ public class TwoMode implements ApplicationListener, ContactListener,
 
 		camera.update();
 		camera.apply(gl);
-
+		
+		
 		if (old_ball_x == tBall.getWorldCenter().x
 				&& old_ball_y == tBall.getWorldCenter().y) {
 

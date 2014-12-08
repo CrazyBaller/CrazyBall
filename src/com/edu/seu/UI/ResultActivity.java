@@ -1,8 +1,11 @@
 package com.edu.seu.UI;
 
+import static com.edu.seu.crazyball2.Constant.warningSound;
+
 import java.util.Timer;
 import java.util.TimerTask;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.edu.seu.message.Data;
 import com.edu.seu.message.SendData;
 import com.edu.seu.tool.Tool;
@@ -63,6 +66,7 @@ public class ResultActivity extends Activity {
 	TextView title = null;
 	
 	Typeface fontFace;
+	private Intent intent=null;
 	
 	
 	@Override
@@ -70,16 +74,20 @@ public class ResultActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		//setTheme(R.style.Transparent);
 		setContentView(R.layout.activity_result);
-		
+		Sound winnerSound = Gdx.audio.newSound(Gdx.files.internal("sound/winner.mp3"));
+		Sound loserSound = Gdx.audio.newSound(Gdx.files.internal("sound/Lose.mp3"));
 		title = (TextView)findViewById(R.id.result_title);
 		back = (Button)findViewById(R.id.result_backbtn);
+		intent=null;
 	
 		if(Data.myID==0){
 			back.setBackgroundResource(R.drawable.result_exit0);
 			if(Data.state.get(Data.myID)==4){
 				title.setBackgroundResource(R.drawable.winner0);
+				winnerSound.play(30);
 			}else {
 				title.setBackgroundResource(R.drawable.loser0);
+				loserSound.play(30);
 			}
 		}else if(Data.myID==1){
 			
@@ -87,8 +95,10 @@ public class ResultActivity extends Activity {
 			
 			if(Data.state.get(Data.myID)==4){
 				title.setBackgroundResource(R.drawable.winner1);
+				winnerSound.play(30);
 			}else {
 				title.setBackgroundResource(R.drawable.loser1);
+				loserSound.play(30);
 			}
 		}else if(Data.myID==2){
 			
@@ -96,8 +106,10 @@ public class ResultActivity extends Activity {
 			
 			if(Data.state.get(Data.myID)==4){
 				title.setBackgroundResource(R.drawable.winner2);
+				winnerSound.play(30);
 			}else {
-				title.setBackgroundResource(R.drawable.loser2);;
+				title.setBackgroundResource(R.drawable.loser2);
+				loserSound.play(30);
 			}
 		}else if(Data.myID==3){
 			
@@ -107,8 +119,10 @@ public class ResultActivity extends Activity {
 			if(Data.state.get(Data.myID)==4){
 				
 				title.setBackgroundResource(R.drawable.winner3);
+				winnerSound.play(30);
 			}else {
 				title.setBackgroundResource(R.drawable.loser3);
+				loserSound.play(30);
 			}
 
 		}
@@ -121,11 +135,11 @@ public class ResultActivity extends Activity {
 				Data.state.set(Data.myID,0);
 				SendData send = new SendData();
 				send.myState();
-				
-				Intent intent=new Intent(ResultActivity.this,ReadyActivity.class);
-				startActivity(intent);
+				if(intent==null){
+					intent=new Intent(ResultActivity.this,ReadyActivity.class);
+					startActivity(intent);
+				}
 				finish();
-				//System.exit(0);
 			}
 		});
 		

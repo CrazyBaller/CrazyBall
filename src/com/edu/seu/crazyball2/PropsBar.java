@@ -1,5 +1,10 @@
 package com.edu.seu.crazyball2;
 
+import static com.edu.seu.crazyball2.Constant.base_width;
+import static com.edu.seu.crazyball2.Constant.board_halfheight;
+import static com.edu.seu.crazyball2.Constant.offset_center;
+import static com.edu.seu.crazyball2.Constant.set_y;
+
 import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -43,6 +48,9 @@ public class PropsBar {
 	float buttonsize;
 	float deltaX;
 	
+	float selectx;//选择器位置
+	float selecty;
+	
 	private TextureAtlas atlas;
 	private TextureRegion blockRegion;
 	
@@ -66,10 +74,14 @@ public class PropsBar {
 		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
 		this.po = p;
 		standy = (Gdx.graphics.getHeight() - Gdx.graphics.getWidth()) / 7f;
-		buttonbuttom = standy * 1.97f;
+		buttonbuttom = standy * 2.35f;
+		//buttonbuttom = set_y - offset_center*10f+ (-board_halfheight-standy/20-standy/10 - standy/10) * 10;
 		buttonup = buttonbuttom + 20f;
 		buttonsize = standy * 1.7f;
-		deltaX = standy * 0.4f;
+		deltaX = standy * 0.1f;//道具左偏移量
+		
+		selectx=standy*1.8f;
+		selecty=standy*4.5f;
 
 		defmove();
 		if (Data.mode != 1)
@@ -91,19 +103,24 @@ public class PropsBar {
 			selectpeople = new ImageButton(new TextureRegionDrawable(
 					new TextureRegion(new Texture(
 							Gdx.files.internal("people2.png")))));
+			selectpeople.setPosition(selectx+2*standy,
+					selecty);
 		} else if (Data.mode == 3) {
 			selectpeople = new ImageButton(new TextureRegionDrawable(
 					new TextureRegion(new Texture(
 							Gdx.files.internal("people3.png")))));
+			selectpeople.setPosition(selectx+standy,
+					selecty);
 		} else if (Data.mode == 4) {
 
 			selectpeople = new ImageButton(new TextureRegionDrawable(
 					new TextureRegion(new Texture(
 							Gdx.files.internal("people4.png")))));
+			selectpeople.setPosition(selectx,
+					selecty);
 		}
 
-		selectpeople.setPosition(Gdx.graphics.getWidth() / 4,
-				buttonbuttom + 60f);
+		
 
 		selectpeople.addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y,
@@ -314,10 +331,10 @@ public class PropsBar {
 						deletebutton(0);
 					} else {
 
-						if (buttonType.get(1) == 21 || buttonType.get(1) == 22) {
-							po.setChange(buttonType.get(1), 0);
-							send.propsactivity(buttonType.get(1), Data.myID);
-							deletebutton(1);
+						if (buttonType.get(0) == 21 || buttonType.get(0) == 22) {
+							po.setChange(buttonType.get(0), 0);
+							send.propsactivity(buttonType.get(0), Data.myID);
+							deletebutton(0);
 
 						} else {
 							if (touchnumber != 0) {

@@ -39,7 +39,8 @@ public class LoadActivity extends Activity {
 	// private GameShare mGameShare;
 	// private GameUserInfo mLocalUser;
 	// private List<GameUserInfo> mRemoteUser;
-
+	Intent intentactivity=null; 
+	
 	private Handler mHandler = new Handler() {
 
 		@Override
@@ -62,10 +63,13 @@ public class LoadActivity extends Activity {
 
 						if (flag) {
 							flag = false;
-							Intent intent = new Intent(LoadActivity.this,
-									ReadyActivity.class);
-							startActivity(intent);
-							finish();
+							if(intentactivity==null){
+								intentactivity= new Intent(LoadActivity.this,
+										ReadyActivity.class);
+								startActivity(intentactivity);
+								finish();
+							}
+							
 							// onDestroy();
 						}
 
@@ -96,10 +100,13 @@ public class LoadActivity extends Activity {
 
 						if (totalone == 0) {
 							timer.cancel();
-							Intent intent = new Intent(LoadActivity.this,
-									ReadyActivity.class);
-							startActivity(intent);
-							finish();
+							if(intentactivity==null){
+								 intentactivity= new Intent(LoadActivity.this,
+											ReadyActivity.class);
+									startActivity(intentactivity);
+									finish();
+							}
+		
 							// onDestroy();
 						}
 
@@ -123,7 +130,7 @@ public class LoadActivity extends Activity {
 		setContentView(R.layout.activity_load);
 
 		Intent intent = getIntent();
-
+		 intentactivity=null; 
 		// get the game mode, single, double or multi
 		if (intent.hasExtra("mode")) {
 			Bundle bundle = intent.getExtras();
