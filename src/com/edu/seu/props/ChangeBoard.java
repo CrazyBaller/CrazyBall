@@ -188,9 +188,11 @@ public class ChangeBoard {
 			vertex = new Vector2();
 			shapeRect.getVertex(2, vertex);
 			if (vertex.x < board_halfwidth) {
+				if(vertex.x / 1.2>board_halfheight){
 				vertex.x = (float) (vertex.x / 1.2);
 				shapeRect.setAsBox((float) (vertex.x / 1.2), board_halfheight);
 				board_halfwidth0 = (float) (vertex.x / 1.2);
+				}
 			} else {
 				shapeRect.setAsBox((float) (board_halfwidth / 1.2),
 						board_halfheight);
