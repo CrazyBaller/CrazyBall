@@ -84,7 +84,7 @@ public class ChangeBall {
 		if (Data.myID == 0) {
 			float x = tBall.getLinearVelocity().x;
 			float y = tBall.getLinearVelocity().y;
-			tBall.setLinearVelocity(x * 2.0f, y * 2.0f);
+			tBall.setLinearVelocity(x * 1.5f, y * 1.5f);
 		}
 	}
 

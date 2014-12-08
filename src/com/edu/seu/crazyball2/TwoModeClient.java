@@ -208,7 +208,7 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 	private void initBlock() {
 		Set<Integer> nums = new HashSet<Integer>();
 		Random rd = new Random();
-		while (nums.size() < 6) {
+		while (nums.size() < 4) {
 			nums.add((int) (rd.nextInt(100)));
 		}
 
@@ -219,7 +219,7 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 		Data.propsimagey.clear();
 		Data.blockList.clear();
 		int id = 0;
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 1; i++) {
 			Integer temp = iter.next();
 			float x = (temp % 10 - 5) * (block_width * 2.4f);
 			float y = (1.5f + (temp / 10)) * block_width * 2.4f;
@@ -334,7 +334,7 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 			board_mesh1.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 
 		}
-
+		
 		batch.begin();
 
 		// »­Öù×Ó
@@ -401,9 +401,9 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 			float mBx = b.getPosition().x;
 			float mBy = b.getPosition().y;
 			batch.draw(mCreateWorld.getBlockTexture(10 + i), set_x
-					+ (mBx - base_width) * 10f, set_y - offset_center * 10f
-					+ (mBy - base_width / 2) * 10.6f, 10 * base_width / 0.6f,
-					10 * base_width / 0.6f);
+					+ (mBx - base_width) * 10f, set_y - offset_center*10f
+					+ (mBy - base_width) * 10f, 20 * base_width,
+					20 * base_width);
 		}
 		// Ð´Ê±¼ä
 		x = Express.getPosition().x;

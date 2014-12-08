@@ -69,6 +69,11 @@ public class PropsBar {
 	}
 
 	public PropsBar(PropsObservable p) {
+		
+		buttonarray.clear();
+		buttonType.clear();
+		touchnumber = 3;
+		
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
 				true);
 		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));

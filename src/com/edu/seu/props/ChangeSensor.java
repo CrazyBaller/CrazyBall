@@ -8,7 +8,6 @@ import java.util.TimerTask;
 public class ChangeSensor {
 	public void start() {
 		canTouching = true;
-		//warningSound.play(30);
 		timeVoid();
 	}
 

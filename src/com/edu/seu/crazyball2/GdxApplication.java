@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.edu.seu.UI.ResultActivity;
 import com.edu.seu.message.Data;
@@ -176,8 +177,11 @@ public class GdxApplication extends AndroidApplication {
 
 				try {
 					json = new JSONObject((String) msg.obj);
-					if (json.getInt("type") > 30 && json.getInt("type") < 35) {
+					if (json.getInt("type") > 30 && json.getInt("type") < 35) {//±»¶¯
 						po.setChange(json.getInt("type"), json.getInt("id"));
+						if(json.getInt("type")==34){
+							System.out.println("heidong dsdfdsfsdfsd");
+						}
 					} else {
 						if(json.getInt("id")==Data.myID){
 							if(Data.mode==2)
@@ -649,6 +653,7 @@ public class GdxApplication extends AndroidApplication {
 		default:
 			Gdx.app.exit();
 		}
+		
 	}
 
 	@Override
