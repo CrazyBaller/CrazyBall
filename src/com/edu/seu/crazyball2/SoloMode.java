@@ -425,8 +425,7 @@ public class SoloMode implements ApplicationListener, ContactListener,
 			float yv = (float) Math.sqrt(SCREEN_WIDTH*SCREEN_WIDTH-xv*xv);
 			if (r.nextInt(2) == 0)
 				xv = -xv;
-//			if (r.nextInt(2) == 0)
-//				yv = -yv;
+
 			firstTouch = false;
 			tBall.setLinearVelocity(xv, yv);
 		}
@@ -491,10 +490,10 @@ public class SoloMode implements ApplicationListener, ContactListener,
 
 		}
 	}
-
+	
 	@Override
 	public void dispose() {
-		Log.d("debug", "dispose");
+		System.out.println("dispose                                                 dispose");
 
 		if (mworld != null) {
 			mworld.dispose();
