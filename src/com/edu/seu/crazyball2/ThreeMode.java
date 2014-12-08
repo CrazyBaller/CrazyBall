@@ -89,6 +89,9 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 	Sound sound;
 
 	private PropsBar propsbar;
+	
+	Tool tool = new Tool();
+	
 	public ThreeMode(Handler h, PropsObservable po) {
 		this.windowHandler = h;
 		this.po = po;
@@ -407,27 +410,13 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 			initBlock();
 		}
 		if(isUpdate){
+			for (int i = 0; i < Data.blockList.size(); i++) {
+				mworld.destroyBody(Data.blockList.get(i));
+			}
 			initBlock();
 		}
 
-		// 画道具框
-/*		for (int i = 0; i < 4; i++) {
-			Body b = mB[i];
-			float mBx = b.getPosition().x;
-			float mBy = b.getPosition().y;
-			if (myBlock[i] == 0) {
-				batch.draw(mCreateWorld.getBlockTexture(0), set_x
-						+ (mBx - base_width) * 10f, set_y - offset_center*10f
-						+ (mBy - base_width / 2) * 10.6f,
-						10 * base_width / 0.6f, 10 * base_width / 0.6f);
-			} else {
-				batch.draw(
-						mCreateWorld.getBlockTexture(Data.myID * 100 + 21 + i),
-						set_x + (mBx - base_width) * 10f, set_y - offset_center*10f
-								+ (mBy - base_width / 2) * 10.6f,
-						10 * base_width / 0.6f, 10 * base_width / 0.6f);
-			}
-		}*/
+
 		// 画滑动提示
 		for (int i = 0; i < 2; i++) {
 			Body b = slipe[i];
@@ -442,7 +431,9 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 		//写时间
 		x = Express.getPosition().x;
 		y = Express.getPosition().y;
-		mCreateWorld.getFont().draw(batch, "00:00,00'", set_x + (x - (SCREEN_WIDTH / 8)*0.9f) * 10, set_y - offset_center*10f
+		
+		
+		mCreateWorld.getFont().draw(batch, tool.changetimetoshow(GdxApplication.time), set_x + (x - (SCREEN_WIDTH / 8)*0.9f) * 10, set_y - offset_center*10f
 				+ (y +base_width*0.2f) * 10);
 	
 		batch.end();
@@ -488,8 +479,8 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 		camera.unproject(touchV);
 		if (firstTouch) {
 			Random r = new Random();
-			float xv = r.nextFloat() * 20;
-			float yv = 40 - xv;
+			float xv = r.nextFloat() * SCREEN_WIDTH;
+			float yv = (float) Math.sqrt(SCREEN_WIDTH*SCREEN_WIDTH-xv*xv);
 			if (r.nextInt(2) == 0)
 				xv = -xv;
 			if (r.nextInt(2) == 0)
@@ -497,45 +488,7 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 			firstTouch = false;
 			tBall.setLinearVelocity(xv, yv);
 		}
-		arg1 = SCREEN_HEIGHT * 5 - arg1;
-		arg0 = arg0 - SCREEN_WIDTH * 5;
-/*		if (arg1 > 10 * (mB[0].getPosition().y - base_width - offset_center*1)
-				&& arg1 < 10 * (mB[0].getPosition().y + base_width - offset_center*1)) {
-			System.out.println("right");
-			if (arg0 > 10 * (mB[0].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[0].getPosition().x + base_width)) {
-				if (myBlock[0] != 0) {
-					sound.play(30);
-					send.propsactivity(21);
-					po.setChange(21, 0);
-					myBlock[0]--;
-				}
-			} else if (arg0 > 10 * (mB[1].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[1].getPosition().x + base_width)) {
-				if (myBlock[1] != 0) {
-					sound.play(30);
-					send.propsactivity(22);
-					po.setChange(22, 0);
-					myBlock[1]--;
-				}
-			} else if (arg0 > 10 * (mB[2].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[2].getPosition().x + base_width)) {
-				if (myBlock[2] != 0) {
-					sound.play(30);
-					send.propsactivity(23);
-					po.setChange(23, 0);
-					myBlock[2]--;
-				}
-			} else if (arg0 > 10 * (mB[3].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[3].getPosition().x + base_width)) {
-				if (myBlock[3] != 0) {
-					sound.play(30);
-					send.propsactivity(24);
-					po.setChange(24, 0);
-					myBlock[3]--;
-				}
-			}
-		}*/
+	
 		return false;
 	}
 

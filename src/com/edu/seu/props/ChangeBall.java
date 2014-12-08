@@ -101,7 +101,8 @@ public class ChangeBall {
 		if (Data.myID == 0) {
 			float x = tBall.getLinearVelocity().x;
 			float y = tBall.getLinearVelocity().y;
-			tBall.setLinearVelocity(20f, 20f * y / x);
+			float multiple=(float) (SCREEN_WIDTH/(Math.sqrt(x*x+y*y)));
+			tBall.setLinearVelocity(multiple*x, multiple*y);
 		}
 	}
 }

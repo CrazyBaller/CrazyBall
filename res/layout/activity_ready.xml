@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#ffffff" >
+    android:background="#f8f6df" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,62 +11,151 @@
         android:layout_weight="1"
         android:orientation="vertical" >
 
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="60dp"
-            android:background="@drawable/ic_launcher"
-            
-            android:scaleType="center"
-            />
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="0dip"
+              android:layout_weight="4"
+              android:orientation="vertical" >
 
-        <TextView
+              <ImageView
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_marginTop="0dp"
+                  android:background="@drawable/ready_title" />
+          </LinearLayout>
+         
+          <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:orientation="horizontal" >
+               
+              
+               <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="5"
+        android:orientation="vertical" >
+        
+                   
+           <TextView
+               android:id="@+id/ready_titlename"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="15dp"
-            android:background="#ffffff"
-            android:text="Can't Stop"
-            android:textSize="26sp" 
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:text="CAN'T STOP"
+            android:textSize="23sp" 
             android:textColor="#000000"/>
-
-        <TextView
+        </LinearLayout>
+        
+               
+               <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:orientation="vertical" >
+                    
+                   
+                    <TextView
             android:id="@+id/ready_mode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="单人版"
-            android:textSize="20sp" />
-    </LinearLayout>
-
-    <FrameLayout
+          	android:layout_marginTop="5dp"
+          	android:text="单人版"
+            android:textColor="#000000"
+            android:textSize="23sp" />
+        </LinearLayout>
+              
+              
+         </LinearLayout>
+      
+       </LinearLayout>
+       
+     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingBottom="70dp" >
-
-        <Button
+        android:orientation="vertical" >
+          
+         
+         <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:orientation="vertical" >
+        </LinearLayout>
+         
+         <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+               
+              <Button
             android:id="@+id/ready_ready"
-            android:layout_width="250dp"
-            android:layout_height="52dp"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
-            android:layout_marginBottom="32dp"
             android:background="@drawable/prepare_btn_bg"
             android:text="准备"
             android:textColor="#ffffff"
             android:textSize="27sp" />
-
-        <Button
-            android:id="@+id/ready_exit"
-            android:layout_width="250dp"
-            android:layout_height="52dp"
+         </LinearLayout>
+          
+         
+           <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+              
+              <Button
+            android:id="@+id/ready_explain"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
-            android:layout_marginTop="32dp"
+            android:background="@drawable/prepare_btn_bg"
+            android:text="游戏说明"
+            android:textColor="#ffffff"
+            android:textSize="27sp" />
+              
+               
+              </LinearLayout>
+              
+           
+             <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+              
+                    <Button
+            android:id="@+id/ready_exit"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
             android:background="@drawable/exit_button_bg"
             android:text="退出"
             android:textSize="27sp" />
-    </FrameLayout>
+                 
+                 
+              </LinearLayout>
 
+             
+               <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:orientation="vertical" >
+              </LinearLayout>
+         
+          
+          
+            
+         
+         
+        </LinearLayout>
+
+   
 </LinearLayout>

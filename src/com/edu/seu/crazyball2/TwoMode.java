@@ -60,7 +60,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 
 	private boolean firstTouch = true;
 	private boolean touchingSensor = false;
-	
+
 	Music music;
 	Music backmusic;
 	Sound sound;
@@ -83,8 +83,10 @@ public class TwoMode implements ApplicationListener, ContactListener,
 
 	private boolean backReleased = false;
 	private Vector2 oldVector;
-	
+
 	public static PropsBar propsbar;
+	
+	Tool tool = new Tool();
 
 	public TwoMode(Handler h, PropsObservable po) {
 		this.windowHandler = h;
@@ -100,25 +102,26 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		board_halfheight = board_halfwidth / 5;
 		circle_radius_standard = board_halfheight;
 		circle_radius = circle_radius_standard;
-		block_width = board_halfwidth/4f;
-		offset_center = (5*SCREEN_WIDTH)/7-(3*SCREEN_HEIGHT)/14-board_halfheight;
-		showBoard[0]=1;
-		showBoard[1]=1;
-		showBoard[2]=1;
-		showBoard[3]=1;
-		move_board=true;    
+		block_width = board_halfwidth / 4f;
+		offset_center = (5 * SCREEN_WIDTH) / 7 - (3 * SCREEN_HEIGHT) / 14
+				- board_halfheight;
+		showBoard[0] = 1;
+		showBoard[1] = 1;
+		showBoard[2] = 1;
+		showBoard[3] = 1;
+		move_board = true;
 		isUpdate = false;
 
 		send = new SendData();
 
 		// init color
 		initColor();
-		
-		//初始化声音
+
+		// 初始化声音
 		initSound();
 		music.play();
 		music.setLooping(true);
-		music.setVolume(15);		
+		music.setVolume(15);
 
 		// 镜头下的世界
 		camera = new OrthographicCamera(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -129,8 +132,8 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		// 创建背景世界
 		mCreateWorld = new CreateWorld();
 		mworld = mCreateWorld.getWorld();
-		
-		propsbar = new PropsBar(po); 
+
+		propsbar = new PropsBar(po);
 
 		board_mesh = new Mesh(false, 4, 4, new VertexAttribute(Usage.Position,
 				3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
@@ -146,8 +149,8 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		// 初始化主动道具
 		initBlock();
 		initMyblock();
-		
-		//初始化title
+
+		// 初始化title
 		initTitle();
 
 		// 创建感应区
@@ -165,20 +168,20 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		Gdx.input.setInputProcessor(inputmultiplexer);
 		Gdx.input.setCatchBackKey(true);
 	}
-	
-	private void initTitle(){
-		headTitle = B2Util.createRectangle(mworld, (SCREEN_WIDTH*3)/8,base_width, 
-				-(SCREEN_WIDTH / 8),
-				SCREEN_WIDTH-board_halfheight+base_width, BodyType.StaticBody, 0,
+
+	private void initTitle() {
+		headTitle = B2Util.createRectangle(mworld, (SCREEN_WIDTH * 3) / 8,
+				base_width, -(SCREEN_WIDTH / 8), SCREEN_WIDTH
+						- board_halfheight + base_width, BodyType.StaticBody,
+				0, 0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 10), null);
+		blockTitle = B2Util.createRectangle(mworld, SCREEN_WIDTH / 8,
+				base_width, ((SCREEN_WIDTH * 3) / 8), -board_halfheight
+						- base_width / 2 - base_width, BodyType.StaticBody, 0,
 				0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 10), null);
-		blockTitle = B2Util.createRectangle(mworld,  SCREEN_WIDTH / 8,base_width,
-				((SCREEN_WIDTH *3)/ 8),
-				-board_halfheight-base_width/2-base_width, BodyType.StaticBody, 0,
-				0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 10), null);
-		Express = B2Util.createRectangle(mworld,  SCREEN_WIDTH / 8,base_width,
-				((SCREEN_WIDTH *3)/ 8),
-				SCREEN_WIDTH-board_halfheight+base_width, BodyType.StaticBody, 0,
-				0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 10), null);
+		Express = B2Util.createRectangle(mworld, SCREEN_WIDTH / 8, base_width,
+				((SCREEN_WIDTH * 3) / 8), SCREEN_WIDTH - board_halfheight
+						+ base_width, BodyType.StaticBody, 0, 0, 0, 0,
+				new BodyData(BodyData.BODY_BLOCK, 10), null);
 	}
 
 	private void initColor() {
@@ -189,22 +192,22 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		bgcolor = Color.valueOf("34495E");
 
 	}
-	
-	private void initSound(){
+
+	private void initSound() {
 		music = Gdx.audio.newMusic(Gdx.files.internal("sound/2ways.mp3"));
-		//backmusic = Gdx.audio.newMusic(Gdx.files.internal("data/"));
+		// backmusic = Gdx.audio.newMusic(Gdx.files.internal("data/"));
 		sound = Gdx.audio.newSound(Gdx.files.internal("sound/CountDown.mp3"));
 	}
 
 	private void initMyblock() {
 		slipe[0] = B2Util.createRectangle(mworld, base_width, base_width,
-				-SCREEN_WIDTH / 4f,
-				-(board_halfheight + base_width * (2.5f+1.25f)), BodyType.StaticBody, 0,
-				0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 10), null);
+				-SCREEN_WIDTH / 4f, -(board_halfheight + base_width
+						* (2.5f + 1.25f)), BodyType.StaticBody, 0, 0, 0, 0,
+				new BodyData(BodyData.BODY_BLOCK, 10), null);
 		slipe[1] = B2Util.createRectangle(mworld, base_width, base_width,
-				SCREEN_WIDTH / 4f,
-				-(board_halfheight + base_width * (2.5f+1.25f)), BodyType.StaticBody, 0,
-				0, 0, 0, new BodyData(BodyData.BODY_BLOCK, 11), null);
+				SCREEN_WIDTH / 4f, -(board_halfheight + base_width
+						* (2.5f + 1.25f)), BodyType.StaticBody, 0, 0, 0, 0,
+				new BodyData(BodyData.BODY_BLOCK, 11), null);
 	}
 
 	private void initBlock() {
@@ -267,18 +270,18 @@ public class TwoMode implements ApplicationListener, ContactListener,
 	}
 
 	public void render() {
-//		float dt = Gdx.graphics.getDeltaTime();
-//		mLastTime += dt;
-//		if (mLastTime >= 1.0 / 60) {
-//			mLastTime = 0;
-//		} else
-//			return;
+		// float dt = Gdx.graphics.getDeltaTime();
+		// mLastTime += dt;
+		// if (mLastTime >= 1.0 / 60) {
+		// mLastTime = 0;
+		// } else
+		// return;
 
-		if (Data.propsimageid.size() != 0) {
-			initBlock();
-		}
+		// if (Data.propsimageid.size() != 0) {
+		// initBlock();
+		// }
 
-//		mworld.step(1.0f / 60f, 1, 1);
+		// mworld.step(1.0f / 60f, 1, 1);
 		mworld.step(Gdx.graphics.getDeltaTime(), 1, 1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glClearColor(1f, 1f, 1f, 0f);
@@ -293,11 +296,12 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		mCreateWorld.getControlBackground()
 				.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getTimeBackGround().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		//mCreateWorld.getSlipeBackground().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		// mCreateWorld.getSlipeBackground().render(GL10.GL_TRIANGLE_STRIP, 0,
+		// 4);
 
 		tBoard1.setTransform(Data.location.get(1) * SCREEN_WIDTH / 2,
 				tBoard1.getWorldCenter().y, 0);
-		
+
 		// 反力场处理
 		if (touchingSensor == true) {
 
@@ -319,13 +323,13 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		circle_radius = tBall.getFixtureList().get(0).getShape().getRadius();
 
 		setBallBoardColor();
-		if(showBoard[0]==1){
+		if (showBoard[0] == 1) {
 			board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		}
-		if(showBoard[1]==1){
+		if (showBoard[1] == 1) {
 			board_mesh1.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		}
-	
+
 		batch.begin();
 
 		// 画柱子
@@ -334,30 +338,29 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		// 画反力场黑洞
 		if (canTouching == true) {
 			batch.draw(mCreateWorld.getBlockTexture(541), set_x
-					+ (0 - base_width * 2) * 10f, set_y - offset_center*10f
+					+ (0 - base_width * 2) * 10f, set_y - offset_center * 10f
 					+ (SCREEN_WIDTH / 2 - base_width * 2) * 10f,
 					40 * base_width, 40 * base_width);
 		}
 		batch.draw(mCreateWorld.getTexture2(),
-				set_x + (x - circle_radius) * 10, set_y - offset_center*10f
+				set_x + (x - circle_radius) * 10, set_y - offset_center * 10f
 						+ (y - circle_radius) * 10, 20 * circle_radius,
 				20 * circle_radius);
-		
-		//画title
+
+		// 画title
 		x = headTitle.getPosition().x;
 		y = headTitle.getPosition().y;
-		batch.draw(mCreateWorld.getTiltleTex(),
-				set_x + (x - (SCREEN_WIDTH*3)/8) * 10, set_y - offset_center*10f
-						+ (y - base_width) * 10, 60 * SCREEN_WIDTH / 8,
-						20 * base_width);
+		batch.draw(mCreateWorld.getTiltleTex(), set_x
+				+ (x - (SCREEN_WIDTH * 3) / 8) * 10, set_y - offset_center
+				* 10f + (y - base_width) * 10, 60 * SCREEN_WIDTH / 8,
+				20 * base_width);
 		//
-		//画”道具“title
+		// 画”道具“title
 		x = blockTitle.getPosition().x;
 		y = blockTitle.getPosition().y;
-		batch.draw(mCreateWorld.getBlockTiltleTex(),
-				set_x + (x - SCREEN_WIDTH / 8) * 10, set_y - offset_center*10f
-				+ (y - base_width) * 10, 20 * SCREEN_WIDTH / 8,
-						20 * base_width);
+		batch.draw(mCreateWorld.getBlockTiltleTex(), set_x
+				+ (x - SCREEN_WIDTH / 8) * 10, set_y - offset_center * 10f
+				+ (y - base_width) * 10, 20 * SCREEN_WIDTH / 8, 20 * base_width);
 
 		for (int i = 0; i < Data.blockList.size(); i++) {
 			Body b = Data.blockList.get(i);
@@ -371,7 +374,8 @@ public class TwoMode implements ApplicationListener, ContactListener,
 				y = b.getPosition().y;
 				batch.draw(
 						mCreateWorld.getBlockTexture(400 + bd.getchangeType()),
-						set_x + (x - block_width / 1.2f) * 10, set_y - offset_center*10f
+						set_x + (x - block_width / 1.2f) * 10, set_y
+								- offset_center * 10f
 								+ (y - block_width / 1.2f) * 10,
 						10 * block_width / 0.6f, 10 * block_width / 0.6f);
 			}
@@ -379,8 +383,12 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		if (Data.blockList.size() == 0) {
 			initBlock();
 		}
-		if(isUpdate){
+		if (isUpdate) {
+			for (int i = 0; i < Data.blockList.size(); i++) {
+				mworld.destroyBody(Data.blockList.get(i));
+			}
 			initBlock();
+			isUpdate = false;
 		}
 		// 画滑动提示
 		for (int i = 0; i < 2; i++) {
@@ -388,17 +396,17 @@ public class TwoMode implements ApplicationListener, ContactListener,
 			float mBx = b.getPosition().x;
 			float mBy = b.getPosition().y;
 			batch.draw(mCreateWorld.getBlockTexture(10 + i), set_x
-					+ (mBx - base_width) * 10f, set_y - offset_center*10f
+					+ (mBx - base_width) * 10f, set_y - offset_center * 10f
 					+ (mBy - base_width / 2) * 10.6f, 10 * base_width / 0.6f,
 					10 * base_width / 0.6f);
 		}
-		
-		//写时间
+
+		// 写时间
 		x = Express.getPosition().x;
 		y = Express.getPosition().y;
-		mCreateWorld.getFont().draw(batch, "00:00,00'", set_x + (x - (SCREEN_WIDTH / 8)*0.9f) * 10, set_y - offset_center*10f
-				+ (y +base_width*0.2f) * 10);
-
+		mCreateWorld.getFont().draw(batch, tool.changetimetoshow(GdxApplication.time),
+				set_x + (x - (SCREEN_WIDTH / 8) * 0.9f) * 10,
+				set_y - offset_center * 10f + (y + base_width * 0.2f) * 10);
 
 		batch.end();
 
@@ -409,11 +417,11 @@ public class TwoMode implements ApplicationListener, ContactListener,
 			windowHandler.sendMessage(m);
 			pause();
 		}
-		
+
 		propsbar.showselectpeople();
 		propsbar.getStage().act(Gdx.graphics.getDeltaTime());
 		propsbar.getStage().draw();
-		
+
 		camera.update();
 		camera.apply(gl);
 
@@ -442,8 +450,8 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		camera.unproject(touchV);
 		if (firstTouch) {
 			Random r = new Random();
-			float xv = r.nextFloat() * 20;
-			float yv = 50 - xv;
+			float xv = r.nextFloat() * SCREEN_WIDTH;
+			float yv = (float) Math.sqrt(SCREEN_WIDTH*SCREEN_WIDTH-xv*xv);
 			if (r.nextInt(2) == 0)
 				xv = -xv;
 			if (r.nextInt(2) == 0)
@@ -451,46 +459,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 			firstTouch = false;
 			tBall.setLinearVelocity(xv, yv);
 		}
-		arg1 = SCREEN_HEIGHT * 5 - arg1;
-		arg0 = arg0 - SCREEN_WIDTH * 5;
-/*		if (arg1 > 10 * (mB[0].getPosition().y - base_width - 12)
-				&& arg1 < 10 * (mB[0].getPosition().y + base_width - 12)) {
-			System.out.println("right");
-			if (arg0 > 10 * (mB[0].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[0].getPosition().x + base_width)) {
-				if (myBlock[0] != 0) {
-					sound.play(30);
-					send.propsactivity(21);
-					po.setChange(21, 0);
-					myBlock[0]--;
-				}
-			} else if (arg0 > 10 * (mB[1].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[1].getPosition().x + base_width)) {
-				if (myBlock[1] != 0) {
-					sound.play(30);
-					send.propsactivity(22);
-					po.setChange(22, 0);
-					myBlock[1]--;
-				}
-			} else if (arg0 > 10 * (mB[2].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[2].getPosition().x + base_width)) {
-				if (myBlock[2] != 0) {
-					sound.play(30);
-					send.propsactivity(23);
-					po.setChange(23, 0);
-					myBlock[2]--;
-				}
-			} else if (arg0 > 10 * (mB[3].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[3].getPosition().x + base_width)) {
-				if (myBlock[3] != 0) {
-					sound.play(30);
-					send.propsactivity(24);
-					po.setChange(24, 0);
-					myBlock[3]--;
-				}
-			}
-		}
-*/
+	
 		return false;
 	}
 
@@ -499,7 +468,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		Vector3 touchV = new Vector3(arg0, arg1, 0);
 		camera.unproject(touchV);
 		// 设置移动坐标
-		if(move_board){
+		if (move_board) {
 			if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
 					- board_halfwidth0
 					&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
@@ -694,7 +663,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 
 	@Override
 	public void preSolve(Contact arg0, Manifold arg1) {
-		
+
 		Body cA = arg0.getFixtureA().getBody();
 		Body cB = arg0.getFixtureB().getBody();
 
@@ -710,49 +679,50 @@ public class TwoMode implements ApplicationListener, ContactListener,
 			send.controlId();
 		}
 		if (dA.getType() == BodyData.BODY_BLOCK) {
-			System.out.println("preSolve  "+CONTROL_ID+"   "+dA.getchangeType());
+			System.out.println("preSolve  " + CONTROL_ID + "   "
+					+ dA.getchangeType());
 			sound.play(30);
 			dA.health = 0;
 			int i = dA.getchangeType();
-			if (CONTROL_ID == 0) {  
-			//	send.eatblock(dA.getId());
-			//	send.props(i, 0);
-				if (i > 30 && i < 35) { //被动
+			if (CONTROL_ID == 0) {
+				// send.eatblock(dA.getId());
+				// send.props(i, 0);
+				if (i > 30 && i < 35) { // 被动
 					po.setChange(i, 0);
-				} else {	
-					System.out.println("碰撞吃！！！！！！"+i+"  "+CONTROL_ID);
+				} else {
+					System.out.println("碰撞吃！！！！！！" + i + "  " + CONTROL_ID);
 					propsbar.addbutton(i);
 				}
 			} else {
-			//	send.eatblock(dA.getId());
-			//	send.props(i, 1);
-				if (i > 30 && i < 35) { //被动
+				// send.eatblock(dA.getId());
+				// send.props(i, 1);
+				if (i > 30 && i < 35) { // 被动
 					po.setChange(i, 1);
-				} 
+				}
 			}
 		}
 
-//		if (dB.getType() == BodyData.BODY_BLOCK) {
-//			sound.play(30);
-//			dB.health = 0;
-//			int i = dB.getchangeType();
-//			if (CONTROL_ID == 0) {
-//				send.eatblock(dA.getId());
-//				send.props(i, 0);
-//				if (i > 30 && i < 35) { //被动
-//					po.setChange(i, 0);
-//				} else {	
-//					System.out.println("1111碰撞吃！！！！！！");
-//					propsbar.addbutton(i);
-//				}
-//			} else {
-//				send.eatblock(dA.getId());
-//				send.props(i, 1);
-//				if (i > 30 && i < 35) { //被动
-//					po.setChange(i, 1);
-//				} 
-//			}
-//		}
+		// if (dB.getType() == BodyData.BODY_BLOCK) {
+		// sound.play(30);
+		// dB.health = 0;
+		// int i = dB.getchangeType();
+		// if (CONTROL_ID == 0) {
+		// send.eatblock(dA.getId());
+		// send.props(i, 0);
+		// if (i > 30 && i < 35) { //被动
+		// po.setChange(i, 0);
+		// } else {
+		// System.out.println("1111碰撞吃！！！！！！");
+		// propsbar.addbutton(i);
+		// }
+		// } else {
+		// send.eatblock(dA.getId());
+		// send.props(i, 1);
+		// if (i > 30 && i < 35) { //被动
+		// po.setChange(i, 1);
+		// }
+		// }
+		// }
 	}
 
 	@Override

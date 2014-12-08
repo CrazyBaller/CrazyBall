@@ -33,18 +33,22 @@ public class ChangeBoard {
 		if (ifvalidate(this.id)) {
 			if (changeType == BodyData.BOARD_TOLONGER) {
 				this.toLonger();
+				timeVoid(5000);
 			} else if (changeType == BodyData.BOARD_TOSHORTER) {
 				this.toShorter();
+				timeVoid(5000);
 			} else if (changeType == BodyData.BOARD_DISAPPEAR) {
 				this.toDisappear();
+				timeVoid(2000);
 			} else if (changeType == BodyData.BOARD_NOCONTROL) {
 				this.noControl();
+				timeVoid(2000);
 			}
-			timeVoid();
+			
 		}
 	}
 
-	public void timeVoid() {
+	public void timeVoid(int time) {
 
 		final Timer timer = new Timer();
 		BOARD_HIT++;
@@ -68,7 +72,7 @@ public class ChangeBoard {
 				timer.cancel();
 			}
 		};
-		timer.schedule(tt, 3000);
+		timer.schedule(tt, time);
 	}
 
 	protected void toNormal(int i) {

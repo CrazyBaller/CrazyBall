@@ -75,7 +75,7 @@ public class ResultActivity extends Activity {
 		back = (Button)findViewById(R.id.result_backbtn);
 	
 		if(Data.myID==0){
-			back.setBackgroundResource(R.drawable.exit0);
+			back.setBackgroundResource(R.drawable.result_exit0);
 			if(Data.state.get(Data.myID)==4){
 				title.setBackgroundResource(R.drawable.winner0);
 			}else {
@@ -83,7 +83,7 @@ public class ResultActivity extends Activity {
 			}
 		}else if(Data.myID==1){
 			
-			back.setBackgroundResource(R.drawable.exit1);
+			back.setBackgroundResource(R.drawable.result_exit1);
 			
 			if(Data.state.get(Data.myID)==4){
 				title.setBackgroundResource(R.drawable.winner1);
@@ -92,7 +92,7 @@ public class ResultActivity extends Activity {
 			}
 		}else if(Data.myID==2){
 			
-			back.setBackgroundResource(R.drawable.exit2);
+			back.setBackgroundResource(R.drawable.result_exit2);
 			
 			if(Data.state.get(Data.myID)==4){
 				title.setBackgroundResource(R.drawable.winner2);
@@ -102,7 +102,7 @@ public class ResultActivity extends Activity {
 		}else if(Data.myID==3){
 			
 
-			back.setBackgroundResource(R.drawable.exit3);
+			back.setBackgroundResource(R.drawable.result_exit3);
 			
 			if(Data.state.get(Data.myID)==4){
 				

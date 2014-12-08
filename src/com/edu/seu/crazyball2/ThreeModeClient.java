@@ -36,6 +36,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.edu.seu.message.Data;
 import com.edu.seu.message.SendData;
 import com.edu.seu.props.PropsObservable;
+import com.edu.seu.tool.Tool;
 
 
 public class ThreeModeClient implements ApplicationListener, ContactListener,
@@ -90,6 +91,8 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 	Sound sound;
 	
 	public static PropsBar propsbar;
+	
+	Tool tool = new Tool();
 
 	public ThreeModeClient(Handler h, PropsObservable po) {
 		this.windowHandler = h;
@@ -502,9 +505,15 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		
 		//画道具
 		if (isUpdate ==true && type == 1) {
+			for (int i = 0; i < Data.blockList.size(); i++) {
+				mworld.destroyBody(Data.blockList.get(i));
+			}
 			initBlock();
 			isUpdate = false;
 		} else if (isUpdate ==true && type != 1) {
+			for (int i = 0; i < Data.blockList.size(); i++) {
+				mworld.destroyBody(Data.blockList.get(i));
+			}
 			initBlockClient();
 		}
 		for (int i = 0; i < Data.blockList.size(); i++) {
@@ -543,7 +552,7 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		//写时间
 		x = Express.getPosition().x;
 		y = Express.getPosition().y;
-		mCreateWorld.getFont().draw(batch, "00:00,00'", set_x + (x - (SCREEN_WIDTH / 8)*0.9f) * 10, set_y - offset_center*10f
+		mCreateWorld.getFont().draw(batch, tool.changetimetoshow(GdxApplication.time), set_x + (x - (SCREEN_WIDTH / 8)*0.9f) * 10, set_y - offset_center*10f
 				+ (y +base_width*0.2f) * 10);
 		batch.end();
 

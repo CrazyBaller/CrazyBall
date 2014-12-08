@@ -55,7 +55,7 @@ public class GdxApplication extends AndroidApplication {
 	private PropsObservable po;
 
 	Timer timer = new Timer();
-	int time = 0;
+	 static int time = 0;
 
 	Context context = null;
 
@@ -611,6 +611,8 @@ public class GdxApplication extends AndroidApplication {
 		set_x = SCREEN_WIDTH * 5;
 		set_y = SCREEN_HEIGHT * 5;
 		
+		
+		time=0;
 		timer.schedule(task, 10, 10);
 
 		switch (mode) {

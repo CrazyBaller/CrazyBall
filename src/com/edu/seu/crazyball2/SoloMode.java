@@ -82,6 +82,8 @@ public class SoloMode implements ApplicationListener, ContactListener,
 	int flagend0 = 0;
 	
 	private PropsBar propsbar;
+	
+	Tool tool = new Tool();
 
 	public SoloMode(Handler h, PropsObservable po) {
 		this.windowHandler = h;
@@ -186,8 +188,6 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		colors[2] = Color.valueOf("6fcda8");
 		colors[3] = Color.valueOf("fd987a");
 		bgcolor = Color.valueOf("34495E");
-		/*System.out.println(" r:" + bgcolor.r + " g:" + bgcolor.g + " b:"
-				+ bgcolor.b);*/
 	}
 
 	private void initMyblock() {
@@ -351,11 +351,7 @@ public class SoloMode implements ApplicationListener, ContactListener,
 				+ (y - base_width) * 10, 20 * SCREEN_WIDTH / 8,
 						20 * base_width);
 		
-		//画道具
-		if(isUpdate ==true){
-			initBlock();
-			isUpdate = false;
-		}
+
 		for (int i = 0; i < blockList.size(); i++) {
 			Body b = blockList.get(i);
 			BodyData bd = (BodyData) b.getUserData();
@@ -377,6 +373,9 @@ public class SoloMode implements ApplicationListener, ContactListener,
 			initBlock();
 		}
 		if(isUpdate){
+			for(int i=0;i<blockList.size();i++){
+				mworld.destroyBody(blockList.get(i));
+			}
 			initBlock();
 			isUpdate=false;
 		}
@@ -390,16 +389,15 @@ public class SoloMode implements ApplicationListener, ContactListener,
 					+ (mBy - base_width / 2) * 10.6f, 10 * base_width / 0.6f,
 					10 * base_width / 0.6f);
 		}
-<<<<<<< HEAD
-=======
-		//System.out.println("end batch");
 		
 		//写时间
 		x = Express.getPosition().x;
 		y = Express.getPosition().y;
-		mCreateWorld.getFont().draw(batch, "00:00,00'", set_x + (x - (SCREEN_WIDTH / 8)*0.9f) * 10, set_y - offset_center*10f
+		
+		
+		
+		mCreateWorld.getFont().draw(batch, tool.changetimetoshow(GdxApplication.time), set_x + (x - (SCREEN_WIDTH / 8)*0.9f) * 10, set_y - offset_center*10f
 				+ (y +base_width*0.2f) * 10);
->>>>>>> 3367f32781b20bd97bc4548c52c41970be3bbf56
 		batch.end();
 
 		if (Gdx.input.isKeyPressed(Keys.BACK) && !backReleased) {
@@ -424,11 +422,11 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		if (firstTouch) {
 			Random r = new Random();
 			float xv = r.nextFloat() * SCREEN_WIDTH;
-			float yv = SCREEN_WIDTH - xv;
+			float yv = (float) Math.sqrt(SCREEN_WIDTH*SCREEN_WIDTH-xv*xv);
 			if (r.nextInt(2) == 0)
 				xv = -xv;
-			if (r.nextInt(2) == 0)
-				yv = -yv;
+//			if (r.nextInt(2) == 0)
+//				yv = -yv;
 			firstTouch = false;
 			tBall.setLinearVelocity(xv, yv);
 		}

@@ -1,7 +1,6 @@
 package com.edu.seu.UI;
 
 import java.util.ArrayList;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,6 +10,7 @@ import com.edu.seu.message.GameMessages;
 import com.edu.seu.message.SendData;
 import com.edu.seu.message.GameMessages.AbstractGameMessage;
 import com.edu.seu.tool.Tool;
+import com.example.crazyball2.GuideActivity;
 import com.example.crazyball2.R;
 import com.lenovo.game.GameMessage;
 import com.lenovo.game.GameMessageListener;
@@ -23,6 +23,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -37,9 +38,13 @@ public class ReadyActivity extends Activity {
 	private static final int RECEIVED_SYSTEM_ID = 10;
 	private int readyflag = 0;
 	Button readybtn = null;
+	Button explainbtn = null;
 	Button exitbtn = null;
 	TextView modetextview = null;
+	TextView gametitle = null;
 	Tool tool = new Tool();
+	
+	Typeface fontFace = null;
 
 	private Handler mHandler = new Handler() {
 
@@ -131,13 +136,27 @@ public class ReadyActivity extends Activity {
 		Data.mGameShare.addUserListener(mUserListener);
 		Data.mGameShare.addMessageListener(mMessageListener);
 
+		fontFace = Typeface.createFromAsset(getAssets(), "fonts/font1.TTF");
 		readybtn = (Button) findViewById(R.id.ready_ready);
+		readybtn.setTypeface(fontFace);
 		readybtn.setOnClickListener(mClickListener);
-
+		
+		explainbtn = (Button) findViewById(R.id.ready_explain);
+		explainbtn.setTypeface(fontFace);
+		explainbtn.setOnClickListener(mClickListener);
+		
 		exitbtn = (Button) findViewById(R.id.ready_exit);
+		exitbtn.setTypeface(fontFace);
 		exitbtn.setOnClickListener(mClickListener);
-
+		
+		//fontFace = Typeface.createFromAsset(getAssets(), "fonts/LithosPro-Regular.otf");
+		gametitle = (TextView) findViewById(R.id.ready_titlename);
+		//gametitle.setTypeface(fontFace);
+		
+		
+		fontFace = Typeface.createFromAsset(getAssets(), "fonts/font1.TTF");
 		modetextview = (TextView) findViewById(R.id.ready_mode);
+		modetextview.setTypeface(fontFace);
 
 		switch (Data.mode) {
 		case 1:
@@ -296,9 +315,12 @@ public class ReadyActivity extends Activity {
 				
 				Data.mGameShare.quitGame();
 				ReadyActivity.this.finish();
-				//android.os.Process.killProcess(android.os.Process.myPid());
 
-
+				break;
+				
+			case R.id.ready_explain:
+				Intent intent=new Intent(ReadyActivity.this,GuideActivity.class);
+				startActivity(intent);
 				break;
 
 			default:

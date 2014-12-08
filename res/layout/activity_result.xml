@@ -17,7 +17,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="8dp"
-            android:background="@drawable/exit0" />
+            android:background="@drawable/result_exit0" />
     </RelativeLayout>
 
     <LinearLayout

@@ -42,8 +42,13 @@
             android:label="@string/title_activity_ready" >
         </activity>
         <activity
-             android:name="com.edu.seu.UI.ResultActivity" 
-             android:theme="@style/Transparent" > >
+            android:name="com.edu.seu.UI.ResultActivity"
+            android:theme="@style/Transparent" >
+ >
+        </activity>
+        <activity
+            android:name="com.example.crazyball2.GuideActivity"
+            android:label="@string/title_activity_guide" >
         </activity>
     </application>
 
