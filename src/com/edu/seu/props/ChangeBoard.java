@@ -84,26 +84,58 @@ public class ChangeBoard {
 		case 0:
 			boardFixture = tBoard0.getFixtureList().get(0);
 			shapeRect = (PolygonShape) boardFixture.getShape();
+			vertex = new Vector2();
+			shapeRect.getVertex(2, vertex);
+			if(vertex.x!=board_halfheight){
 			shapeRect.setAsBox(board_halfwidth, board_halfheight);
 			board_halfwidth0 = board_halfwidth;
+			}
+			else{
+				shapeRect.setAsBox(board_halfheight, board_halfwidth);
+				board_halfwidth0 = board_halfwidth;
+			}
 			break;
 		case 1:
 			boardFixture = tBoard1.getFixtureList().get(0);
 			shapeRect = (PolygonShape) boardFixture.getShape();
-			shapeRect.setAsBox(board_halfwidth, board_halfheight);
+			vertex = new Vector2();
+			shapeRect.getVertex(2, vertex);
+			if(vertex.x!=board_halfheight){
+				shapeRect.setAsBox(board_halfwidth, board_halfheight);
+				board_halfwidth1 = board_halfwidth;
+			}
+			else{
+				shapeRect.setAsBox( board_halfheight,board_halfwidth);
 			board_halfwidth1 = board_halfwidth;
+			}
 			break;
 		case 2:
 			boardFixture = tBoard2.getFixtureList().get(0);
 			shapeRect = (PolygonShape) boardFixture.getShape();
-			shapeRect.setAsBox(board_halfwidth, board_halfheight);
-			board_halfwidth2 = board_halfwidth;
+			vertex = new Vector2();
+			shapeRect.getVertex(2, vertex);
+			if(vertex.x!=board_halfheight){
+				shapeRect.setAsBox(board_halfwidth, board_halfheight);
+				board_halfwidth2 = board_halfwidth;
+			}
+			else{
+				shapeRect.setAsBox(board_halfheight, board_halfwidth);
+				board_halfwidth2 = board_halfwidth;
+			}
 			break;
 		case 3:
 			boardFixture = tBoard3.getFixtureList().get(0);
 			shapeRect = (PolygonShape) boardFixture.getShape();
-			shapeRect.setAsBox(board_halfwidth, board_halfheight);
-			board_halfwidth3 = board_halfwidth;
+			vertex = new Vector2();
+			shapeRect.getVertex(2, vertex);
+			if(vertex.x!=board_halfheight){
+				shapeRect.setAsBox(board_halfwidth, board_halfheight);
+				board_halfwidth3 = board_halfwidth;
+			}
+			else{
+				shapeRect.setAsBox(board_halfheight,board_halfwidth);
+				board_halfwidth3 = board_halfwidth;
+			}
 			break;
 		default:
 			return;
