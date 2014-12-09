@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.edu.seu.message.Data;
 import com.edu.seu.message.SendData;
 import com.edu.seu.props.PropsObservable;
+import static com.edu.seu.crazyball2.Constant.stage;
 
 public class PropsBar {
 
@@ -49,7 +50,7 @@ public class PropsBar {
 	static int touchnumber = 3;
 
 	Action endAction;
-	Stage stage;
+	//Stage stage;
 	private PropsObservable po;
 
 	private int clock = 0;
