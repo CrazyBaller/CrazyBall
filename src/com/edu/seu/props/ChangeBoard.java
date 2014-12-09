@@ -154,10 +154,12 @@ public class ChangeBoard {
 			shapeRect.getVertex(2, vertex);
 			if(vertex.x!=board_halfheight){
 				if (vertex.x > board_halfwidth) {
+					//System.out.println("the vertex.x is"+vertex.x +"board_halfwidth is"+board_halfwidth);
 					vertex.x = (float) (vertex.x * 1.2);
 					shapeRect.setAsBox((float) (vertex.x * 1.2), board_halfheight);
 					board_halfwidth0 = (float) (vertex.x * 1.2);
 				} else {
+					//System.out.println("the vertex.x is"+vertex.x +"board_halfwidth is"+board_halfwidth);
 					shapeRect.setAsBox((float) (board_halfwidth * 1.2),
 							board_halfheight);
 					board_halfwidth0 = (float) (board_halfwidth * 1.2);
@@ -270,14 +272,18 @@ public class ChangeBoard {
 			shapeRect = (PolygonShape) tBoard0.getFixtureList().get(0)
 					.getShape();
 			vertex = new Vector2();
+			shapeRect.getVertex(2, vertex);
 			if(vertex.x!=board_halfheight){
 				if (vertex.x < board_halfwidth) {
 					if(vertex.x / 1.2>board_halfheight){
 					vertex.x = (float) (vertex.x / 1.2);
+					System.out.println("the vertex.x is"+vertex.x +"board_halfheight is"+board_halfheight);
 					shapeRect.setAsBox((float) (vertex.x / 1.2), board_halfheight);
 					board_halfwidth0 = (float) (vertex.x / 1.2);
 					}
+					//System.out.println("the vertex.x is"+vertex.x +"board_halfheight is"+board_halfheight);
 				} else {
+					//System.out.println("the vertex.x is"+vertex.x +"board_halfheight is"+board_halfheight);
 					shapeRect.setAsBox((float) (board_halfwidth / 1.2),
 							board_halfheight);
 					board_halfwidth0 = (float) (board_halfwidth / 1.2);
@@ -290,6 +296,7 @@ public class ChangeBoard {
 					shapeRect.setAsBox(board_halfheight,(float) (vertex.y / 1.2));
 					board_halfwidth0 = (float) (vertex.y / 1.2);
 					}
+					System.out.println("the vertex.x is"+vertex.y +"board_halfheight is"+board_halfheight);
 				} else {
 					shapeRect.setAsBox(board_halfheight,(float) (board_halfwidth / 1.2));
 					board_halfwidth0 = (float) (board_halfwidth / 1.2);

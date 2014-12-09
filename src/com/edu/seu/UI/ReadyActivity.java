@@ -10,7 +10,6 @@ import com.edu.seu.message.GameMessages;
 import com.edu.seu.message.SendData;
 import com.edu.seu.message.GameMessages.AbstractGameMessage;
 import com.edu.seu.tool.Tool;
-import com.example.crazyball2.GuideActivity;
 import com.example.crazyball2.R;
 import com.lenovo.game.GameMessage;
 import com.lenovo.game.GameMessageListener;
@@ -45,6 +44,9 @@ public class ReadyActivity extends Activity {
 	Tool tool = new Tool();
 	
 	Typeface fontFace = null;
+	private Intent intent = null;
+	
+	boolean clock =true; 
 
 	private Handler mHandler = new Handler() {
 
@@ -79,7 +81,10 @@ public class ReadyActivity extends Activity {
 					if (temp == 0) {
 						SendData send = new SendData();
 						send.start();
+						if(clock){
+						clock=false;
 						startgame(Data.mode);
+						}
 					}
 
 				}
@@ -89,7 +94,6 @@ public class ReadyActivity extends Activity {
 
 				try {
 					json = new JSONObject((String) msg.obj);
-
 					startgame(json.getInt("mode"));
 
 				} catch (JSONException e) {
@@ -130,7 +134,10 @@ public class ReadyActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_ready);
-
+		
+		intent = null;
+		clock =true;
+		
 		Data.mGameShare = new GameShare(getApplicationContext());
 		Data.mGameShare.bind(mBindlistener);
 		Data.mGameShare.addUserListener(mUserListener);
@@ -257,13 +264,13 @@ public class ReadyActivity extends Activity {
 		for (int i = 0; i < Data.mode; i++)
 			Data.state.set(i, 2);
 
-		Intent intent = null;
-
-		intent = new Intent(ReadyActivity.this, GdxApplication.class);
-		startActivity(intent);
-		finish();
-		//onDestroy();
-
+		
+		if(intent==null){
+			intent = new Intent(ReadyActivity.this, GdxApplication.class);
+			startActivity(intent);
+			finish();
+		}
+		
 	}
 
 	private OnClickListener mClickListener = new OnClickListener() {
@@ -295,11 +302,9 @@ public class ReadyActivity extends Activity {
 							}
 						}
 						if (temp == 0) {
-
 							send.start();
 							startgame(Data.mode);
 						}
-
 					}
 				} else if (readyflag == 1) {
 
@@ -311,15 +316,13 @@ public class ReadyActivity extends Activity {
 				}
 				break;
 			case R.id.ready_exit:
-				
 				Data.mGameShare.quitGame();
 				ReadyActivity.this.finish();
-
 				break;
 				
 			case R.id.ready_explain:
-				Intent intent=new Intent(ReadyActivity.this,GuideActivity.class);
-				startActivity(intent);
+				Intent in=new Intent(ReadyActivity.this,GuideActivity.class);
+				startActivity(in);
 				break;
 
 			default:

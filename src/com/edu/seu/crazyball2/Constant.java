@@ -1,5 +1,6 @@
 package com.edu.seu.crazyball2;
 
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -60,7 +61,11 @@ public class Constant {
 	
 	//设置警告声音
 	public static Sound warningSound;
+<<<<<<< HEAD
 	
 	//设置舞台
 	public static Stage stage;
+=======
+
+>>>>>>> 089c801664966802783f03ae7874ff1247a6fe2c
 }

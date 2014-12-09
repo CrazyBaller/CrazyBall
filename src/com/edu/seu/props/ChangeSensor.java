@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 public class ChangeSensor {
 	ImageButton addButton;
 	public void start() {
+<<<<<<< HEAD
 		canTouching = true;		
 		addButton=new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("data/blackhole.png")))));
     	addButton.setPosition(set_x+ (0 - base_width * 3) * 10f, set_y - offset_center*10f+ (SCREEN_WIDTH / 2 - base_width * 3) * 10f);
@@ -26,6 +27,9 @@ public class ChangeSensor {
     	addButton.getImage().setFillParent(true);
     	stage.addActor(addButton);
 		//warningSound.play(30);
+=======
+		canTouching = true;
+>>>>>>> 089c801664966802783f03ae7874ff1247a6fe2c
 		timeVoid();
 	}
 

@@ -208,7 +208,7 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 	private void initBlock() {
 		Set<Integer> nums = new HashSet<Integer>();
 		Random rd = new Random();
-		while (nums.size() < 6) {
+		while (nums.size() < 4) {
 			nums.add((int) (rd.nextInt(100)));
 		}
 
@@ -219,7 +219,7 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 		Data.propsimagey.clear();
 		Data.blockList.clear();
 		int id = 0;
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 1; i++) {
 			Integer temp = iter.next();
 			float x = (temp % 10 - 5) * (block_width * 2.4f);
 			float y = (1.5f + (temp / 10)) * block_width * 2.4f;
@@ -334,7 +334,7 @@ public class TwoModeClient implements ApplicationListener, ContactListener,
 			board_mesh1.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 
 		}
-
+		
 		batch.begin();
 
 		// »­Öù×Ó

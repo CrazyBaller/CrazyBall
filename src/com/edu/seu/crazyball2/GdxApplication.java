@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.edu.seu.UI.ResultActivity;
 import com.edu.seu.message.Data;
@@ -58,6 +59,7 @@ public class GdxApplication extends AndroidApplication {
 	 static int time = 0;
 
 	Context context = null;
+	private Intent intent=null;
 
 	private Handler mHandler = new Handler() {
 
@@ -175,8 +177,11 @@ public class GdxApplication extends AndroidApplication {
 
 				try {
 					json = new JSONObject((String) msg.obj);
-					if (json.getInt("type") > 30 && json.getInt("type") < 35) {
+					if (json.getInt("type") > 30 && json.getInt("type") < 35) {//±»¶¯
 						po.setChange(json.getInt("type"), json.getInt("id"));
+						if(json.getInt("type")==34){
+							System.out.println("heidong dsdfdsfsdfsd");
+						}
 					} else {
 						if(json.getInt("id")==Data.myID){
 							if(Data.mode==2)
@@ -264,19 +269,17 @@ public class GdxApplication extends AndroidApplication {
 
 				try {
 					json = new JSONObject((String) msg.obj);
-
 					JSONArray array = json.getJSONArray("time");
 					JSONArray arrayname = json.getJSONArray("name");
 					for (int i = 0; i < Data.mode; i++) {
 						Data.time.set(i, array.getInt(i));
 						Data.name.set(i, arrayname.getString(i));
-
 					}
-
-					Intent intent = new Intent(GdxApplication.this,
-							ResultActivity.class);
-
-					startActivity(intent);
+					if(intent==null){
+						intent = new Intent(GdxApplication.this,
+								ResultActivity.class);					
+						startActivity(intent);	
+					}
 					Gdx.app.exit();
 
 				} catch (JSONException e) {
@@ -420,7 +423,6 @@ public class GdxApplication extends AndroidApplication {
 			case SHOW_MYDEAD_DIALOG:
 				try {
 					
-					System.out.println("SHOW_MYDEAD_DIALOG      "+msg.obj);
 					//JSONObject json = new JSONObject((String) msg.obj);
 					JSONObject json = new JSONObject(msg.obj.toString());
 					Data.state.set(json.getInt("id"), json.getInt("result"));
@@ -437,9 +439,11 @@ public class GdxApplication extends AndroidApplication {
 
 							Toast.makeText(getApplicationContext(), "you win ",
 									Toast.LENGTH_LONG).show();
-							Intent intent = new Intent(GdxApplication.this,
-									ResultActivity.class);
-							startActivity(intent);
+							if(intent==null){
+								intent = new Intent(GdxApplication.this,
+										ResultActivity.class);
+								startActivity(intent);
+							}
 							Gdx.app.exit();
 						} else {
 							Data.time.set(json.getInt("id"), time);
@@ -453,9 +457,11 @@ public class GdxApplication extends AndroidApplication {
 									Data.mRemoteUser.get(json.getInt("id") - 1).name
 											+ " win ", Toast.LENGTH_LONG)
 									.show();
-							Intent intent = new Intent(GdxApplication.this,
-									ResultActivity.class);
-							startActivity(intent);
+							if(intent==null){
+								intent = new Intent(GdxApplication.this,
+										ResultActivity.class);
+								startActivity(intent);
+							}	
 							Gdx.app.exit();
 						}
 						
@@ -591,7 +597,8 @@ public class GdxApplication extends AndroidApplication {
 		po.addObserver(new PropsObserver());
 
 		context = this;
-
+		intent=null;
+		
 		Data.mGameShare = new GameShare(getApplicationContext());
 		Data.mGameShare.bind(mBindlistener);
 
@@ -646,6 +653,7 @@ public class GdxApplication extends AndroidApplication {
 		default:
 			Gdx.app.exit();
 		}
+		
 	}
 
 	@Override

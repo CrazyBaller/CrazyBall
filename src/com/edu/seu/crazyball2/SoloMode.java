@@ -3,6 +3,8 @@ package com.edu.seu.crazyball2;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.Gdx;
@@ -204,14 +206,14 @@ public class SoloMode implements ApplicationListener, ContactListener,
 	private void initBlock() {
 		Set<Integer> nums = new HashSet<Integer>();
 		Random rd = new Random();
-		while (nums.size() < 6) {
+		while (nums.size() < 3) {
 			nums.add((int) (rd.nextInt(100)));
 		}
 
 		Iterator<Integer> iter = nums.iterator();
 
 		blockList.clear();
-		for (int i = 0; i < 2 ; i++) {
+		for (int i = 0; i < 1 ; i++) {
 			Integer temp = iter.next();
 			float x = (temp % 10 - 5) * (block_width * 2.4f);
 			float y = (1.5f + (temp / 10)) * block_width * 2.4f;
@@ -412,7 +414,8 @@ public class SoloMode implements ApplicationListener, ContactListener,
 
 		camera.update();
 		camera.apply(gl);
-		renderer.render(mworld, camera.combined);
+		//renderer.render(mworld, camera.combined);
+		//System.out.println("FPS:"+Gdx.graphics.getFramesPerSecond());
 	}
 
 	@Override
