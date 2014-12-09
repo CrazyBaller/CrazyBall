@@ -504,7 +504,11 @@ public class FourMode implements ApplicationListener, ContactListener,
 		if (firstTouch) {
 			Random r = new Random();
 			float xv = r.nextFloat() * (SCREEN_WIDTH/2);
+<<<<<<< HEAD
 			float yv = (float) Math.sqrt(SCREEN_WIDTH * SCREEN_WIDTH/4 - xv * xv);
+=======
+			float yv = (float) Math.sqrt(SCREEN_WIDTH*SCREEN_WIDTH/4-xv*xv);
+>>>>>>> 797c9de4e3e95ae95391bc227a12d6015633be60
 			if (r.nextInt(2) == 0)
 				xv = -xv;
 			if (r.nextInt(2) == 0)

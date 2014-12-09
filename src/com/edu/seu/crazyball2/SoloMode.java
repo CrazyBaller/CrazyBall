@@ -308,7 +308,11 @@ public class SoloMode implements ApplicationListener, ContactListener,
 				Vector2 position = tBall.getPosition();
 				Vector2 d = center.sub(position);
 				// d.notifyAll();
+<<<<<<< HEAD
 				Vector2 F = d.mul(70.0f);
+=======
+				Vector2 F = d.mul(60.0f);
+>>>>>>> 797c9de4e3e95ae95391bc227a12d6015633be60
 				tBall.applyForce(F, position);
 				//System.out.println("get f");
 			}
@@ -322,7 +326,11 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		mCreateWorld.setBoundCircle();
 
 		// »­·´Á¦³¡ºÚ¶´
+<<<<<<< HEAD
 /*		if (canTouching == true) {
+=======
+		/*if (canTouching == true) {
+>>>>>>> 797c9de4e3e95ae95391bc227a12d6015633be60
 			batch.draw(mCreateWorld.getBlockTexture(541), set_x
 					+ (0 - base_width * 2) * 10f, set_y - offset_center*10f
 					+ (SCREEN_WIDTH / 2 - base_width * 2) * 10f,

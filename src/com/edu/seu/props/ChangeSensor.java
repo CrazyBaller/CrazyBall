@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+<<<<<<< HEAD
 import com.edu.seu.crazyball2.CreateWorld;
 import com.edu.seu.crazyball2.FourMode;
 import com.edu.seu.crazyball2.FourModeClient;
@@ -20,10 +21,13 @@ import com.edu.seu.crazyball2.ThreeModeClient;
 import com.edu.seu.crazyball2.TwoMode;
 import com.edu.seu.crazyball2.TwoModeClient;
 import com.edu.seu.message.Data;
+=======
+>>>>>>> 797c9de4e3e95ae95391bc227a12d6015633be60
 
 public class ChangeSensor {
 	ImageButton addButton;
 	public void start() {
+<<<<<<< HEAD
 		canTouching = true;
 		addButton=new ImageButton(new TextureRegionDrawable(CreateWorld.getBlockHole()));
     	addButton.setPosition(set_x+ (0 - base_width * 3) * 10f, set_y - offset_center*10f+ (SCREEN_WIDTH / 2 - base_width * 3) * 10f);
@@ -60,6 +64,18 @@ public class ChangeSensor {
 			}
 		}
     	//stage.addActor(addButton);
+=======
+		canTouching = true;		
+		addButton=new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("data/blackhole.png")))));
+    	addButton.setPosition(set_x+ (0 - base_width * 3) * 10f, set_y - offset_center*10f+ (SCREEN_WIDTH / 2 - base_width * 3) * 10f);
+    	addButton.setSize(base_width * 40, base_width * 40);
+    	RepeatAction rotateToAction = Actions.repeat(5, Actions.rotateTo(720f, 5.0f));
+    	addButton.getImage().setOrigin(addButton.getWidth()/2, addButton.getHeight()/2); 
+    	addButton.getImage().addAction(rotateToAction);
+    	addButton.getImage().setFillParent(true);
+    	stage.addActor(addButton);
+		//warningSound.play(30);
+>>>>>>> 797c9de4e3e95ae95391bc227a12d6015633be60
 		timeVoid();
 	}
 
@@ -71,6 +87,7 @@ public class ChangeSensor {
 			@Override
 			public void run() {
 				canTouching = false;
+<<<<<<< HEAD
 		    	if(Data.mode == 1){
 		    		SoloMode.propsbar.getStage().getRoot().removeActor(addButton);
 		    	}
@@ -99,6 +116,9 @@ public class ChangeSensor {
 					}
 				}
 				//stage.getRoot().removeActor(addButton);
+=======
+				stage.getRoot().removeActor(addButton);
+>>>>>>> 797c9de4e3e95ae95391bc227a12d6015633be60
 				timer.cancel();
 			}
 		};

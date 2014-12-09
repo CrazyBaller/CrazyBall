@@ -63,8 +63,15 @@ public class Constant {
 	
 	//设置警告声音
 	public static Sound warningSound;
+    
+	//设置定时器
 	public static Timer sendtimer;  //发送定时器
+<<<<<<< HEAD
 	
 	//public static Stage stage;
 
+=======
+	//设置舞台
+	public static Stage stage;
+>>>>>>> 797c9de4e3e95ae95391bc227a12d6015633be60
 }
