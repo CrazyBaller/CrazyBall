@@ -13,6 +13,7 @@ import static com.edu.seu.crazyball2.Constant.set_y;
 import static com.edu.seu.crazyball2.Constant.offset_center;
 import static com.edu.seu.crazyball2.Constant.warningSound;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
@@ -60,10 +61,14 @@ public class CreateWorld {
 	private Texture titleTex;
 	private Texture blocktitleTex;
 	private TextureRegion blockRegion;
+	private static Sound winnerSound;
+	private static Sound loserSound;
 	
 	private BitmapFont Font;	
 	private FreeTypeFontGenerator Generator;
 	private FreeTypeBitmapFontData fontData;
+	
+	public static TextureRegion gravity;
 
 
 	public CreateWorld() {
@@ -124,7 +129,9 @@ public class CreateWorld {
 		Font = new BitmapFont(fontData, fontData.getTextureRegion(), false);
 		Font.setColor(Color.valueOf("ffffff"));
 		Font.setScale((SCREEN_WIDTH / 8)*0.15f);
-
+		gravity = new TextureRegion(new Texture(Gdx.files.internal("data/blackhole.png")));
+		winnerSound = Gdx.audio.newSound(Gdx.files.internal("sound/winner.mp3"));
+		loserSound = Gdx.audio.newSound(Gdx.files.internal("sound/Lose.mp3"));
 	}
 	private void setTimeBackGround(){
 		float halfwidth = base_width*0.6f;
@@ -410,5 +417,15 @@ public class CreateWorld {
 	
 		}	
 		return blockRegion;
+	}
+	
+	public static Sound getWinnerSound(){
+		return winnerSound;
+	}
+	public static Sound getLoseSound(){
+		return loserSound;
+	}
+	public static TextureRegion getBlockHole(){
+		return gravity;
 	}
 }

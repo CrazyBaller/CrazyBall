@@ -39,8 +39,10 @@ public class PropsObserver implements Observer {
 			cs.start();
 		}
 		if (type>=23&&type<=26) {
-			ChangeBoard cbd = new ChangeBoard(id);
-			cbd.start(type);
+//			if(Data.state.get(id)!=3){
+				ChangeBoard cbd = new ChangeBoard(id);
+				cbd.start(type);
+//			}	
 		}
 	}
 }

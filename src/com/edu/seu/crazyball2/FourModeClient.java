@@ -45,7 +45,6 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 	private GL10 gl;
 	private Handler windowHandler;
 	private OrthographicCamera camera;
-	private Box2DDebugRenderer renderer;
 	private CreateWorld mCreateWorld;
 
 	private Body[] slipe = new Body[2];
@@ -508,14 +507,15 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 
 	@Override
 	public void render() {
-		float dt = Gdx.graphics.getDeltaTime();
-		mLastTime += dt;
-		if (mLastTime >= 1.0 / 60) {
-			mLastTime = 0;
-		} else
-			return;
-
-		mworld.step(1.0f / 6.0f, 1, 1);
+//		float dt = Gdx.graphics.getDeltaTime();
+//		mLastTime += dt;
+//		if (mLastTime >= 1.0 / 60) {
+//			mLastTime = 0;
+//		} else
+//			return;
+//
+//		mworld.step(1.0f / 6.0f, 1, 1);
+		mworld.step(Gdx.graphics.getDeltaTime(), 1, 1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glClearColor(1f, 1f, 1f, 0f);
 
@@ -547,14 +547,8 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 		batch.begin();
 		// 画柱子
 		mCreateWorld.setBoundCircle();
-		renderer = new Box2DDebugRenderer();
 		// 画反力场黑洞
-		if (canTouching) {
-			batch.draw(mCreateWorld.getBlockTexture(541), set_x
-					+ (0 - base_width * 2) * 10f, set_y - offset_center*10f
-					+ (SCREEN_WIDTH / 2 - base_width * 2) * 10f,
-					40 * base_width, 40 * base_width);
-		}
+
 		if (type == 1) {
 
 			tBoard0.setTransform(-Data.location.get(0) * SCREEN_WIDTH / 2,
@@ -563,7 +557,9 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 			tBoard2.setTransform(tBoard2.getWorldCenter().x, SCREEN_WIDTH / 2
 					- board_halfheight + Data.location.get(2) * SCREEN_WIDTH
 					/ 2, 0);
-
+			tBoard3.setTransform(tBoard3.getWorldCenter().x, SCREEN_WIDTH / 2
+					- board_halfheight - Data.location.get(3) * SCREEN_WIDTH
+					/ 2, 0);
 			ball_x = -Data.ball.get(0) * SCREEN_WIDTH / 2;
 
 			ball_y = SCREEN_WIDTH - 2*board_halfheight - Data.ball.get(1) 
@@ -584,7 +580,7 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 			tBoard1.setTransform(tBoard1.getWorldCenter().x, SCREEN_WIDTH / 2
 					- board_halfheight - Data.location.get(1) * SCREEN_WIDTH
 					/ 2, 0);
-
+			tBoard3.setTransform(-Data.location.get(3) * SCREEN_WIDTH/2, tBoard3.getWorldCenter().y,0);
 			ball_x =  (1-Data.ball.get(1))* SCREEN_WIDTH/2-board_halfheight;
 			ball_y = (SCREEN_WIDTH / 2) * (1 + Data.ball.get(0))
 					- board_halfheight;
@@ -623,9 +619,7 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 				set_x + (x - (SCREEN_WIDTH*3)/8) * 10, set_y - offset_center*10f
 						+ (y - base_width) * 10, 60 * SCREEN_WIDTH / 8,
 						20 * base_width);
-		System.out.println("the title x:"+(set_x + (x - (0.75f * SCREEN_WIDTH)/2) * 10));
-		System.out.println("the title y:"+(set_y - offset_center*10f
-				+ (y - base_width) * 10));
+	
 		//
 		//画”道具“title
 		x = blockTitle.getPosition().x;
@@ -707,7 +701,6 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 		
 		camera.update();
 		camera.apply(gl);
-		renderer.render(mworld, camera.combined);
 
 		if ((old_board_x != tBoard1.getPosition().x) && type == 1) {
 			send.myboard();
@@ -731,45 +724,7 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 			firstTouch = false;
 			send.propsimage();
 		}
-		arg1 = SCREEN_HEIGHT * 5 - arg1;
-		arg0 = arg0 - SCREEN_WIDTH * 5;
-/*		if (arg1 > 10 * (mB[0].getPosition().y - base_width - offset_center*1)
-				&& arg1 < 10 * (mB[0].getPosition().y + base_width - offset_center*1)) {
-			System.out.println("right");
-			if (arg0 > 10 * (mB[0].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[0].getPosition().x + base_width)) {
-				if (myBlock[0] != 0) {
-					sound.play(30);
-					send.propsactivity(21);
-					po.setChange(21, 0);
-					myBlock[0]--;
-				}
-			} else if (arg0 > 10 * (mB[1].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[1].getPosition().x + base_width)) {
-				if (myBlock[1] != 0) {
-					sound.play(30);
-					send.propsactivity(22);
-					po.setChange(22, 0);
-					myBlock[1]--;
-				}
-			} else if (arg0 > 10 * (mB[2].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[2].getPosition().x + base_width)) {
-				if (myBlock[2] != 0) {
-					sound.play(30);
-					send.propsactivity(23);
-					po.setChange(23, 0);
-					myBlock[2]--;
-				}
-			} else if (arg0 > 10 * (mB[3].getPosition().x - base_width)
-					&& arg0 < 10 * (mB[3].getPosition().x + base_width)) {
-				if (myBlock[3] != 0) {
-					sound.play(30);
-					send.propsactivity(24);
-					po.setChange(24, 0);
-					myBlock[3]--;
-				}
-			}
-		}*/
+
 		return false;
 	}
 
@@ -777,33 +732,38 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 	public boolean touchDragged(int arg0, int arg1, int arg2) {
 		Vector3 touchV = new Vector3(arg0, arg1, 0);
 		camera.unproject(touchV);
-		if(move_board){
-			if (type == 1) {
-				if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
-						- board_halfwidth1
-						&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
-								+ board_halfwidth1) {
-					tBoard1.setTransform(touchV.x, 0, 0);
-					Data.location.set(Data.myID, 2 * touchV.x / SCREEN_WIDTH);
-				}
-			} else if(type==2) {
-				if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
-						- board_halfwidth2
-						&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
-								+ board_halfwidth2) {
-					tBoard2.setTransform(touchV.x, 0, 0);
-					Data.location.set(Data.myID, 2 * touchV.x / SCREEN_WIDTH);
-				}
-			}else {
-				if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
-						- board_halfwidth3
-						&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
-								+ board_halfwidth3) {
-					tBoard3.setTransform(touchV.x, 0, 0);
-					Data.location.set(Data.myID, 2 * touchV.x / SCREEN_WIDTH);
+		try {
+			if(move_board&& Data.state.get(type)!=3){
+				if (type == 1) {
+					if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
+							- board_halfwidth1
+							&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
+									+ board_halfwidth1) {
+						tBoard1.setTransform(touchV.x, 0, 0);
+						Data.location.set(Data.myID, 2 * touchV.x / SCREEN_WIDTH);
+					}
+				} else if(type==2) {
+					if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
+							- board_halfwidth2
+							&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
+									+ board_halfwidth2) {
+						tBoard2.setTransform(touchV.x, 0, 0);
+						Data.location.set(Data.myID, 2 * touchV.x / SCREEN_WIDTH);
+					}
+				}else {
+					if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
+							- board_halfwidth3
+							&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
+									+ board_halfwidth3) {
+						tBoard3.setTransform(touchV.x, 0, 0);
+						Data.location.set(Data.myID, 2 * touchV.x / SCREEN_WIDTH);
+					}
 				}
 			}
+		} catch (IndexOutOfBoundsException e) {
+			// TODO: handle exception
 		}
+	
 		return false;
 	}
 
@@ -815,10 +775,7 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 			mworld.dispose();
 			mworld = null;
 		}
-		if (renderer != null) {
-			renderer.dispose();
-			renderer = null;
-		}
+
 		if (mCreateWorld.getTexture2() != null) {
 			mCreateWorld.getTexture2().dispose();
 		}

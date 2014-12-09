@@ -57,7 +57,6 @@ public class SoloMode implements ApplicationListener, ContactListener,
 	private GL10 gl;
 
 	private OrthographicCamera camera;
-	private Box2DDebugRenderer renderer;
 
 	private List<Body> blockList = new ArrayList<Body>();
 	private Body[] slipe = new Body[2];
@@ -83,7 +82,7 @@ public class SoloMode implements ApplicationListener, ContactListener,
 
 	int flagend0 = 0;
 	
-	private PropsBar propsbar;
+	public static PropsBar propsbar;
 	
 	Tool tool = new Tool();
 
@@ -124,7 +123,7 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		camera.position.set(0, offset_center, 0);
 
 		gl = Gdx.graphics.getGL10();
-		renderer = new Box2DDebugRenderer();
+		
 
 		// 创建背景世界
 		mCreateWorld = new CreateWorld();
@@ -309,7 +308,7 @@ public class SoloMode implements ApplicationListener, ContactListener,
 				Vector2 position = tBall.getPosition();
 				Vector2 d = center.sub(position);
 				// d.notifyAll();
-				Vector2 F = d.mul(50.0f);
+				Vector2 F = d.mul(70.0f);
 				tBall.applyForce(F, position);
 				//System.out.println("get f");
 			}
@@ -323,12 +322,12 @@ public class SoloMode implements ApplicationListener, ContactListener,
 		mCreateWorld.setBoundCircle();
 
 		// 画反力场黑洞
-		if (canTouching == true) {
+/*		if (canTouching == true) {
 			batch.draw(mCreateWorld.getBlockTexture(541), set_x
 					+ (0 - base_width * 2) * 10f, set_y - offset_center*10f
 					+ (SCREEN_WIDTH / 2 - base_width * 2) * 10f,
 					40 * base_width, 40 * base_width);
-		}
+		}*/
 		float x = tBall.getPosition().x;
 		float y = tBall.getPosition().y;
 		circle_radius = tBall.getFixtureList().get(0).getShape().getRadius();
@@ -414,8 +413,7 @@ public class SoloMode implements ApplicationListener, ContactListener,
 
 		camera.update();
 		camera.apply(gl);
-		//renderer.render(mworld, camera.combined);
-		//System.out.println("FPS:"+Gdx.graphics.getFramesPerSecond());
+
 	}
 
 	@Override

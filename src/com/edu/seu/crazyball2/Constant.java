@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public class Constant {
 	public static int SCREEN_WIDTH;
@@ -63,5 +64,7 @@ public class Constant {
 	//设置警告声音
 	public static Sound warningSound;
 	public static Timer sendtimer;  //发送定时器
+	
+	//public static Stage stage;
 
 }

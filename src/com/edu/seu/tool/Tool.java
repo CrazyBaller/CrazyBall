@@ -158,15 +158,26 @@ public class Tool {
 	}
 
 	public int maxtime() {
-		ArrayList<Integer> order = timeorder();
 
-		return Data.time.get(0);
+		int maxtime = 0;
+		
+		for(int i =0;i<Data.mode;i++){
+			if(Data.time.get(i)>maxtime)
+				maxtime=Data.time.get(i);
+		}
+
+		return maxtime;
 	}
 
 	public int mintime() {
-		ArrayList<Integer> order = timeorder();
+		int mintime = 0;
+		
+		for(int i =0;i<Data.mode;i++){
+			if(Data.time.get(i)<mintime)
+				mintime=Data.time.get(i);
+		}
 
-		return Data.time.get(order.size() - 1);
+		return mintime;
 	}
 
 }

@@ -45,7 +45,6 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 	private GL10 gl;
 	private Handler windowHandler;
 	private OrthographicCamera camera;
-	private Box2DDebugRenderer renderer;
 	private CreateWorld mCreateWorld;
 
 	private Body[] slipe = new Body[2];
@@ -397,14 +396,15 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 
 	@Override
 	public void render() {
-		float dt = Gdx.graphics.getDeltaTime();
-		mLastTime += dt;
-		if (mLastTime >= 1.0 / 60) {
-			mLastTime = 0;
-		} else
-			return;
-
-		mworld.step(1.0f / 6.0f, 1, 1);
+//		float dt = Gdx.graphics.getDeltaTime();
+//		mLastTime += dt;
+//		if (mLastTime >= 1.0 / 60) {
+//			mLastTime = 0;
+//		} else
+//			return;
+//
+//		mworld.step(1.0f / 6.0f, 1, 1);
+		mworld.step(Gdx.graphics.getDeltaTime(), 1, 1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glClearColor(1f, 1f, 1f, 0f);
 
@@ -433,14 +433,13 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		batch.begin();
 		// 画柱子
 		mCreateWorld.setBoundCircle();
-		renderer = new Box2DDebugRenderer();
 		// 画反力场黑洞
-		if (canTouching) {
+/*		if (canTouching) {
 			batch.draw(mCreateWorld.getBlockTexture(541), set_x
 					+ (0 - base_width * 2) * 10f, set_y - offset_center*10f
 					+ (SCREEN_WIDTH / 2 - base_width * 2) * 10f,
 					40 * base_width, 40 * base_width);
-		}
+		}*/
 		if (type == 1) {
 
 			tBoard0.setTransform(-Data.location.get(0) * SCREEN_WIDTH / 2,
@@ -570,7 +569,6 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		
 		camera.update();
 		camera.apply(gl);
-		renderer.render(mworld, camera.combined);
 
 		if ((old_board_x != tBoard1.getPosition().x) && type == 1) {
 			send.myboard();
@@ -597,25 +595,30 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 	public boolean touchDragged(int arg0, int arg1, int arg2) {
 		Vector3 touchV = new Vector3(arg0, arg1, 0);
 		camera.unproject(touchV);
-		if(move_board){
-			if (type == 1) {
-				if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
-						- board_halfwidth1
-						&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
-								+ board_halfwidth1) {
-					tBoard1.setTransform(touchV.x, 0, 0);
-					Data.location.set(Data.myID, 2 * touchV.x / SCREEN_WIDTH);
-				}
-			} else {
-				if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
-						- board_halfwidth2
-						&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
-								+ board_halfwidth2) {
-					tBoard2.setTransform(touchV.x, 0, 0);
-					Data.location.set(Data.myID, 2 * touchV.x / SCREEN_WIDTH);
+		try {
+			if(move_board&&Data.state.get(type)!=3){
+				if (type == 1) {
+					if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
+							- board_halfwidth1
+							&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
+									+ board_halfwidth1) {
+						tBoard1.setTransform(touchV.x, 0, 0);
+						Data.location.set(Data.myID, 2 * touchV.x / SCREEN_WIDTH);
+					}
+				} else {
+					if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
+							- board_halfwidth2
+							&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
+									+ board_halfwidth2) {
+						tBoard2.setTransform(touchV.x, 0, 0);
+						Data.location.set(Data.myID, 2 * touchV.x / SCREEN_WIDTH);
+					}
 				}
 			}
+		} catch (IndexOutOfBoundsException e) {
+			// TODO: handle exception
 		}
+
 
 		return false;
 	}
@@ -627,10 +630,6 @@ public class ThreeModeClient implements ApplicationListener, ContactListener,
 		if (mworld != null) {
 			mworld.dispose();
 			mworld = null;
-		}
-		if (renderer != null) {
-			renderer.dispose();
-			renderer = null;
 		}
 		if (mCreateWorld.getTexture2() != null) {
 			mCreateWorld.getTexture2().dispose();

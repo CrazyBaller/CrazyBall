@@ -22,10 +22,16 @@ public class ChangeBoard {
 	}
 
 	public boolean ifvalidate(int n) {
-		if (Data.state.get(n) != 3)
-			return true;
-		else
-			return false;
+		boolean flag=false;
+		try {
+			if(Data.state.get(n) != 3)
+				flag=true;
+		} catch (IndexOutOfBoundsException e) {
+			// TODO: handle exception
+			return flag;
+		} 
+		return flag;
+
 	}
 
 	// Ö´ÐÐchange
@@ -61,7 +67,7 @@ public class ChangeBoard {
 
 			@Override
 			public void run() {
-				if (i_local == BOARD_HIT) {
+				if (i_local == BOARD_HIT && ifvalidate(id)) {
 					if (changeType == BodyData.BOARD_DISAPPEAR) {
 						for (int i = 0; i < 4; i++) {
 							showBoard[i] = 1;
@@ -84,26 +90,58 @@ public class ChangeBoard {
 		case 0:
 			boardFixture = tBoard0.getFixtureList().get(0);
 			shapeRect = (PolygonShape) boardFixture.getShape();
+			vertex = new Vector2();
+			shapeRect.getVertex(2, vertex);
+			if(vertex.x!=board_halfheight){
 			shapeRect.setAsBox(board_halfwidth, board_halfheight);
 			board_halfwidth0 = board_halfwidth;
+			}
+			else{
+				shapeRect.setAsBox(board_halfheight, board_halfwidth);
+				board_halfwidth0 = board_halfwidth;
+			}
 			break;
 		case 1:
 			boardFixture = tBoard1.getFixtureList().get(0);
 			shapeRect = (PolygonShape) boardFixture.getShape();
-			shapeRect.setAsBox(board_halfwidth, board_halfheight);
+			vertex = new Vector2();
+			shapeRect.getVertex(2, vertex);
+			if(vertex.x!=board_halfheight){
+				shapeRect.setAsBox(board_halfwidth, board_halfheight);
+				board_halfwidth1 = board_halfwidth;
+			}
+			else{
+				shapeRect.setAsBox( board_halfheight,board_halfwidth);
 			board_halfwidth1 = board_halfwidth;
+			}
 			break;
 		case 2:
 			boardFixture = tBoard2.getFixtureList().get(0);
 			shapeRect = (PolygonShape) boardFixture.getShape();
-			shapeRect.setAsBox(board_halfwidth, board_halfheight);
-			board_halfwidth2 = board_halfwidth;
+			vertex = new Vector2();
+			shapeRect.getVertex(2, vertex);
+			if(vertex.x!=board_halfheight){
+				shapeRect.setAsBox(board_halfwidth, board_halfheight);
+				board_halfwidth2 = board_halfwidth;
+			}
+			else{
+				shapeRect.setAsBox(board_halfheight, board_halfwidth);
+				board_halfwidth2 = board_halfwidth;
+			}
 			break;
 		case 3:
 			boardFixture = tBoard3.getFixtureList().get(0);
 			shapeRect = (PolygonShape) boardFixture.getShape();
-			shapeRect.setAsBox(board_halfwidth, board_halfheight);
-			board_halfwidth3 = board_halfwidth;
+			vertex = new Vector2();
+			shapeRect.getVertex(2, vertex);
+			if(vertex.x!=board_halfheight){
+				shapeRect.setAsBox(board_halfwidth, board_halfheight);
+				board_halfwidth3 = board_halfwidth;
+			}
+			else{
+				shapeRect.setAsBox(board_halfheight,board_halfwidth);
+				board_halfwidth3 = board_halfwidth;
+			}
 			break;
 		default:
 			return;

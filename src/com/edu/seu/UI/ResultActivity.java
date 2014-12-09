@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.edu.seu.crazyball2.CreateWorld;
 import com.edu.seu.message.Data;
 import com.edu.seu.message.GameMessages;
 import com.edu.seu.message.SendData;
@@ -122,8 +123,8 @@ public class ResultActivity extends Activity {
 		Data.mGameShare.addUserListener(mUserListener);
 		Data.mGameShare.addMessageListener(mMessageListener);
 		
-		Sound winnerSound = Gdx.audio.newSound(Gdx.files.internal("sound/winner.mp3"));
-		Sound loserSound = Gdx.audio.newSound(Gdx.files.internal("sound/Lose.mp3"));
+		/*Sound winnerSound = Gdx.audio.newSound(Gdx.files.internal("sound/winner.mp3"));
+		Sound loserSound = Gdx.audio.newSound(Gdx.files.internal("sound/Lose.mp3"));*/
 		title = (TextView)findViewById(R.id.result_title);
 		back = (Button)findViewById(R.id.result_backbtn);
 		intent=null;
@@ -131,33 +132,33 @@ public class ResultActivity extends Activity {
 		if(Data.myID==0){
 			back.setBackgroundResource(R.drawable.result_exit0);
 			if(Data.state.get(Data.myID)==4){
-				title.setBackgroundResource(R.drawable.winner0);
-				winnerSound.play(30);
+				CreateWorld.getWinnerSound().play(30);
+				title.setBackgroundResource(R.drawable.winner0);				
 			}else {
-				title.setBackgroundResource(R.drawable.loser0);
-				loserSound.play(30);
+				CreateWorld.getLoseSound().play(30);
+				title.setBackgroundResource(R.drawable.loser0);				
 			}
 		}else if(Data.myID==1){
 			
 			back.setBackgroundResource(R.drawable.result_exit1);
 			
 			if(Data.state.get(Data.myID)==4){
-				title.setBackgroundResource(R.drawable.winner1);
-				winnerSound.play(30);
+				CreateWorld.getWinnerSound().play(30);
+				title.setBackgroundResource(R.drawable.winner1);				
 			}else {
+				CreateWorld.getLoseSound().play(30);
 				title.setBackgroundResource(R.drawable.loser1);
-				loserSound.play(30);
 			}
 		}else if(Data.myID==2){
 			
 			back.setBackgroundResource(R.drawable.result_exit2);
 			
 			if(Data.state.get(Data.myID)==4){
-				title.setBackgroundResource(R.drawable.winner2);
-				winnerSound.play(30);
+				CreateWorld.getWinnerSound().play(30);
+				title.setBackgroundResource(R.drawable.winner2);				
 			}else {
-				title.setBackgroundResource(R.drawable.loser2);
-				loserSound.play(30);
+				CreateWorld.getLoseSound().play(30);
+				title.setBackgroundResource(R.drawable.loser2);				
 			}
 		}else if(Data.myID==3){
 			
@@ -165,12 +166,12 @@ public class ResultActivity extends Activity {
 			back.setBackgroundResource(R.drawable.result_exit3);
 			
 			if(Data.state.get(Data.myID)==4){
-				
+				CreateWorld.getWinnerSound().play(30);
 				title.setBackgroundResource(R.drawable.winner3);
-				winnerSound.play(30);
+				
 			}else {
+				CreateWorld.getLoseSound().play(30);
 				title.setBackgroundResource(R.drawable.loser3);
-				loserSound.play(30);
 			}
 
 		}
@@ -546,27 +547,8 @@ public class ResultActivity extends Activity {
 					Data.mLocalUser = Data.mGameShare.getLocalUser();
 					Data.mRemoteUser = Data.mGameShare.getRemoteUsers();
 
-					if (Data.inviter == true) {
-						if (Data.mode == 1) {
-							Intent intent = new Intent(ResultActivity.this,
-									ReadyActivity.class);
-							startActivity(intent);
-							
-							onDestroy();
-							finish();
-						} else {
-							timer.schedule(task, 0, 500);
-
-						}
-
-					}
-
-				} else {
-
-					Toast.makeText(getApplicationContext(), "Bind Service failed.",
-							Toast.LENGTH_LONG).show();
-					return;
-				}
+					
+				} 
 			}
 		};
 

@@ -157,7 +157,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		initTitle();
 		
 		sendtimer=new Timer();
-		sendtimer.schedule(sendPosition, 0, 20);
+		sendtimer.schedule(sendPosition, 0, 25);
 
 		// 创建感应区
 		tSensor = B2Util.createSensor(mworld, base_width * 2, m_sensor, 0f,
@@ -317,7 +317,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 				Vector2 center = ground.getWorldPoint(circle.getPosition());
 				Vector2 position = tBall.getPosition();
 				Vector2 d = center.sub(position);
-				Vector2 F = d.mul(200.0f);
+				Vector2 F = d.mul(70.0f);
 				tBall.applyForce(F, position);
 			}
 		}
@@ -340,12 +340,12 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		mCreateWorld.setBoundCircle();
 
 		// 画反力场黑洞
-		if (canTouching == true) {
+/*		if (canTouching == true) {
 			batch.draw(mCreateWorld.getBlockTexture(541), set_x
 					+ (0 - base_width * 2) * 10f, set_y - offset_center * 10f
 					+ (SCREEN_WIDTH / 2 - base_width * 2) * 10f,
 					40 * base_width, 40 * base_width);
-		}
+		}*/
 		batch.draw(mCreateWorld.getTexture2(),
 				set_x + (x - circle_radius) * 10, set_y - offset_center * 10f
 						+ (y - circle_radius) * 10, 20 * circle_radius,
@@ -457,7 +457,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 			send.myboard();
 			Data.ball.set(0, tBall.getWorldCenter().x / (SCREEN_WIDTH / 2));
 			Data.ball.set(1, tBall.getWorldCenter().y / (SCREEN_WIDTH / 2));
-			 send.ball(); 
+			send.ball(); 
 		}
 	}; 
 
@@ -475,6 +475,7 @@ public class TwoMode implements ApplicationListener, ContactListener,
 				yv = -yv;
 			firstTouch = false;
 			tBall.setLinearVelocity(xv, yv);
+		
 		}
 
 		return false;
@@ -485,16 +486,21 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		Vector3 touchV = new Vector3(arg0, arg1, 0);
 		camera.unproject(touchV);
 		// 设置移动坐标
-		if (move_board) {
-			if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
-					- board_halfwidth0
-					&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
-							+ board_halfwidth0) {
-				tBoard0.setTransform(touchV.x, 0, 0);
-				Data.location.set(Data.myID, 2 * tBoard0.getWorldCenter().x
-						/ SCREEN_WIDTH);
+		try {
+			if (move_board && Data.state.get(0)!=3) {
+				if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
+						- board_halfwidth0
+						&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
+								+ board_halfwidth0) {
+					tBoard0.setTransform(touchV.x, 0, 0);
+					Data.location.set(Data.myID, 2 * tBoard0.getWorldCenter().x
+							/ SCREEN_WIDTH);
+				}
 			}
+		} catch (IndexOutOfBoundsException e) {
+			// TODO: handle exception
 		}
+	
 
 		return false;
 	}

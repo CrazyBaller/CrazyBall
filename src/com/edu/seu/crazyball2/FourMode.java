@@ -49,7 +49,6 @@ public class FourMode implements ApplicationListener, ContactListener,
 	private GL10 gl;
 
 	private OrthographicCamera camera;
-	private Box2DDebugRenderer renderer;
 
 	private Body[] slipe = new Body[2];
 	private Body headTitle;
@@ -93,7 +92,7 @@ public class FourMode implements ApplicationListener, ContactListener,
 	Music backmusic;
 	Sound sound;
 	
-	private PropsBar propsbar;
+	public static PropsBar propsbar;
 	
 	Tool tool = new Tool();
 
@@ -141,7 +140,6 @@ public class FourMode implements ApplicationListener, ContactListener,
 		
 
 		gl = Gdx.graphics.getGL10();
-		renderer = new Box2DDebugRenderer();
 
 		// 创建背景世界
 		mCreateWorld = new CreateWorld();
@@ -173,7 +171,7 @@ public class FourMode implements ApplicationListener, ContactListener,
 		initTitle();
 		
 		sendtimer=new Timer();
-		sendtimer.schedule(sendPosition, 0, 20);
+		sendtimer.schedule(sendPosition, 0, 35);
 
 		// 创建感应区
 		tSensor = B2Util.createSensor(mworld, base_width * 2, m_sensor, 0f,
@@ -323,14 +321,15 @@ public class FourMode implements ApplicationListener, ContactListener,
 
 	@Override
 	public void render() {
-		float dt = Gdx.graphics.getDeltaTime();
-		mLastTime += dt;
-		if (mLastTime >= 1.0 / 60) {
-			mLastTime = 0;
-		} else
-			return;
+//		float dt = Gdx.graphics.getDeltaTime();
+//		mLastTime += dt;
+//		if (mLastTime >= 1.0 / 60) {
+//			mLastTime = 0;
+//		} else
+//			return;
 
-		mworld.step(1.0f / 6.0f, 1, 1);
+//		mworld.step(1.0f / 6.0f, 1, 1);
+		mworld.step(Gdx.graphics.getDeltaTime(), 1, 1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glClearColor(1f, 1f, 1f, 0f);
 
@@ -366,7 +365,7 @@ public class FourMode implements ApplicationListener, ContactListener,
 				Vector2 position = tBall.getPosition();
 				Vector2 d = center.sub(position);
 				// d.notifyAll();
-				Vector2 F = d.mul(200.0f);
+				Vector2 F = d.mul(70.0f);
 				tBall.applyForce(F, position);
 			}
 		}
@@ -394,12 +393,12 @@ public class FourMode implements ApplicationListener, ContactListener,
 		mCreateWorld.setBoundCircle();
 
 		// 画反力场黑洞
-		if (canTouching == true) {
+/*		if (canTouching == true) {
 			batch.draw(mCreateWorld.getBlockTexture(541), set_x
 					+ (0 - base_width * 2) * 10f, set_y - offset_center*10f
 					+ (SCREEN_WIDTH / 2 - base_width * 2) * 10f,
 					40 * base_width, 40 * base_width);
-		}
+		}*/
 		batch.draw(mCreateWorld.getTexture2(),
 				set_x + (x - circle_radius) * 10, set_y - offset_center*10f
 						+ (y - circle_radius) * 10, 20 * circle_radius,
@@ -482,24 +481,7 @@ public class FourMode implements ApplicationListener, ContactListener,
 		
 		camera.update();
 		camera.apply(gl);
-//		renderer.render(mworld, camera.combined);
-//
-//		if (old_ball_x == tBall.getWorldCenter().x
-//				& old_ball_y == tBall.getWorldCenter().y) {
-//
-//		} else {
-//			Data.ball.set(0, tBall.getWorldCenter().x / (SCREEN_WIDTH / 2));
-//			Data.ball.set(1, tBall.getWorldCenter().y / (SCREEN_WIDTH / 2));
-//
-//			send.ball();
-//			old_ball_x = tBall.getWorldCenter().x;
-//			old_ball_y = tBall.getWorldCenter().y;
-//		}
-//
-//		if (old_board_x != tBoard0.getWorldCenter().x) {
-//			send.myboard();
-//			old_board_x = tBoard0.getWorldCenter().x;
-//		}
+
 
 	}
 	
@@ -521,8 +503,8 @@ public class FourMode implements ApplicationListener, ContactListener,
 		camera.unproject(touchV);
 		if (firstTouch) {
 			Random r = new Random();
-			float xv = r.nextFloat() * SCREEN_WIDTH;
-			float yv = (float) Math.sqrt(SCREEN_WIDTH*SCREEN_WIDTH-xv*xv);
+			float xv = r.nextFloat() * (SCREEN_WIDTH/2);
+			float yv = (float) Math.sqrt(SCREEN_WIDTH * SCREEN_WIDTH/4 - xv * xv);
 			if (r.nextInt(2) == 0)
 				xv = -xv;
 			if (r.nextInt(2) == 0)
@@ -538,16 +520,21 @@ public class FourMode implements ApplicationListener, ContactListener,
 		Vector3 touchV = new Vector3(arg0, arg1, 0);
 		camera.unproject(touchV);
 		// 设置移动坐标
-		if(move_board){
-			if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
-					- board_halfwidth
-					&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
-							+ board_halfwidth) {
-				tBoard0.setTransform(touchV.x, tBoard0.getWorldCenter().y, 0);
-				Data.location.set(Data.myID, 2 * tBoard0.getWorldCenter().x
-						/ SCREEN_WIDTH);
+		try {
+			if(move_board && Data.state.get(0)!=3){
+				if (touchV.x <= SCREEN_WIDTH / 2 - board_halfheight * 2
+						- board_halfwidth
+						&& touchV.x >= -SCREEN_WIDTH / 2 + board_halfheight * 2
+								+ board_halfwidth) {
+					tBoard0.setTransform(touchV.x, tBoard0.getWorldCenter().y, 0);
+					Data.location.set(Data.myID, 2 * tBoard0.getWorldCenter().x
+							/ SCREEN_WIDTH);
+				}
 			}
+		} catch (IndexOutOfBoundsException e) {
+			// TODO: handle exception
 		}
+		
 		return false;
 	}
 
@@ -677,10 +664,7 @@ public class FourMode implements ApplicationListener, ContactListener,
 			mworld.dispose();
 			mworld = null;
 		}
-		if (renderer != null) {
-			renderer.dispose();
-			renderer = null;
-		}
+
 		if (mCreateWorld.getTexture2() != null) {
 			mCreateWorld.getTexture2().dispose();
 		}
