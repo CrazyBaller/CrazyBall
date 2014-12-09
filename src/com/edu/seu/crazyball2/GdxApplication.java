@@ -11,6 +11,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.edu.seu.UI.LoadActivity;
 import com.edu.seu.UI.ResultActivity;
 import com.edu.seu.message.Data;
 import com.edu.seu.message.GameMessages;
@@ -29,11 +30,13 @@ import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.DialogInterface.OnKeyListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 import android.widget.Toast;
 
 public class GdxApplication extends AndroidApplication {
@@ -68,6 +71,11 @@ public class GdxApplication extends AndroidApplication {
 			super.handleMessage(msg);
 			JSONObject json;
 			switch (msg.what) {
+			
+			case 102:
+				
+				dialog_offline();
+				break;
 
 			case RECEIVED_BALL:
 				if (Data.inviter == false) {
@@ -179,9 +187,6 @@ public class GdxApplication extends AndroidApplication {
 					json = new JSONObject((String) msg.obj);
 					if (json.getInt("type") > 30 && json.getInt("type") < 35) {//被动
 						po.setChange(json.getInt("type"), json.getInt("id"));
-						if(json.getInt("type")==34){
-							System.out.println("heidong dsdfdsfsdfsd");
-						}
 					} else {
 						if(json.getInt("id")==Data.myID){
 							if(Data.mode==2)
@@ -279,6 +284,10 @@ public class GdxApplication extends AndroidApplication {
 						intent = new Intent(GdxApplication.this,
 								ResultActivity.class);					
 						startActivity(intent);	
+						Destroy();
+					}
+					if(sendtimer!=null){
+						sendtimer.cancel();
 					}
 					Gdx.app.exit();
 
@@ -299,37 +308,15 @@ public class GdxApplication extends AndroidApplication {
 						//PolygonShape shapeRect;
 						switch (json.getInt("id")) {
 						case 0:
-//							shapeRect = (PolygonShape) tBoard0.getFixtureList()
-//									.get(0).getShape();
-//							//board_halfwidth0 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
-//							board_halfwidth0 = 10f;
-//							shapeRect.setAsBox(board_halfwidth0, board_halfheight);
-//							board_halfwidth0 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
 							tBoard0.setTransform(250.0f, 1000.0f, 0);
 							break;
 						case 1:
-//							shapeRect = (PolygonShape) tBoard1.getFixtureList()
-//									.get(0).getShape();
-//							//board_halfwidth1 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
-//							board_halfwidth1 = 10f;
-//							shapeRect.setAsBox(board_halfwidth1, board_halfheight);
 							tBoard1.setTransform(250.0f, 1000.0f, 0);
 							break;
 						case 2:
-//							shapeRect = (PolygonShape) tBoard2.getFixtureList()
-//									.get(0).getShape();
-//							//board_halfwidth2 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
-//							board_halfwidth2 = 10f;
-//							shapeRect.setAsBox(board_halfwidth2, board_halfheight);
 							tBoard2.setTransform(250.0f, 1000.0f, 0);
 							break;
 						case 3:
-//							shapeRect = (PolygonShape) tBoard3.getFixtureList()
-//									.get(0).getShape();
-//							//board_halfwidth3 = (float) (SCREEN_WIDTH - 2 * board_halfheight);
-//							board_halfwidth3 = 10f;
-//							shapeRect.setAsBox(board_halfwidth3, board_halfheight);
-//							System.out.println("aaaaaaaaaaaaaaaaaa  dead3"+board_halfwidth3+" sw :"+SCREEN_WIDTH);
 							tBoard3.setTransform(500.0f,1000.0f, 0);
 							break;
 						default:
@@ -443,6 +430,10 @@ public class GdxApplication extends AndroidApplication {
 								intent = new Intent(GdxApplication.this,
 										ResultActivity.class);
 								startActivity(intent);
+								Destroy();
+							}
+							if(sendtimer!=null){
+								sendtimer.cancel();
 							}
 							Gdx.app.exit();
 						} else {
@@ -461,7 +452,11 @@ public class GdxApplication extends AndroidApplication {
 								intent = new Intent(GdxApplication.this,
 										ResultActivity.class);
 								startActivity(intent);
+								Destroy();
 							}	
+							if(sendtimer!=null){
+								sendtimer.cancel();
+							}
 							Gdx.app.exit();
 						}
 						
@@ -535,6 +530,42 @@ public class GdxApplication extends AndroidApplication {
 
 		}
 	};
+	
+	
+	private void dialog_offline() {
+		AlertDialog.Builder builder = new Builder(this);
+		builder.setTitle("警告");
+		builder.setMessage("您的小伙伴离开了游戏，游戏可能无法正常进行，请退出游戏");
+		CharSequence cs = "确定";
+		builder.setPositiveButton(cs, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+					
+					arg0.dismiss();
+					Data.mGameShare.quitGame();
+					Gdx.app.exit();
+					System.exit(0);
+                  
+				
+			}
+		});
+		
+		
+		 builder.setOnKeyListener(new OnKeyListener() {
+
+	            @Override
+	            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+	                if (keyCode == KeyEvent.KEYCODE_BACK) {
+	                    return true;
+	                }
+	                return false;
+	            }
+	        });
+	
+		
+		builder.create().show();
+	}
 
 	private void dialog2() {
 		AlertDialog.Builder builder = new Builder(this);
@@ -566,7 +597,9 @@ public class GdxApplication extends AndroidApplication {
 			public void onClick(DialogInterface arg0, int arg1) {
 				// TODO Auto-generated method stub
 				arg0.dismiss();
+				Data.mGameShare.quitGame();
 				Gdx.app.exit();
+				System.exit(0);
 			}
 		});
 
@@ -682,6 +715,15 @@ public class GdxApplication extends AndroidApplication {
 
 		@Override
 		public void onRemoteUserChanged(UserEventType type, GameUserInfo user) {
+			
+			switch (type) {
+            case OFFLINE:
+                    mHandler.sendEmptyMessage(102);
+               
+                break;
+            default:
+                break;
+        }
 
 		}
 	};
@@ -771,5 +813,12 @@ public class GdxApplication extends AndroidApplication {
 			});
 		}
 	};
+	
+	protected void Destroy() {
+		Data.mGameShare.removeMessageListener(mMessageListener);
+		Data.mGameShare.removeUserListener(mUserListener);
+		Data.mGameShare.unbind(mBindlistener);
+	
+	}
 
 }

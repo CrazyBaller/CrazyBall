@@ -22,8 +22,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnKeyListener;
+
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.view.KeyEvent;
 import android.view.Window;
 import android.widget.Toast;
 
@@ -47,7 +50,7 @@ public class LoadActivity extends Activity {
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 
-			switch (msg.what) {
+			switch (msg.what) {			
 			case RECEIVED_UNFITY_ID:
 				if (Data.inviter == false) {
 
@@ -67,6 +70,7 @@ public class LoadActivity extends Activity {
 								intentactivity= new Intent(LoadActivity.this,
 										ReadyActivity.class);
 								startActivity(intentactivity);
+								onDestroy();
 								finish();
 							}
 							
@@ -104,6 +108,7 @@ public class LoadActivity extends Activity {
 								 intentactivity= new Intent(LoadActivity.this,
 											ReadyActivity.class);
 									startActivity(intentactivity);
+									onDestroy();
 									finish();
 							}
 		
@@ -163,11 +168,15 @@ public class LoadActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
+		
 		Data.mGameShare.removeMessageListener(mMessageListener);
 		Data.mGameShare.removeUserListener(mUserListener);
 		Data.mGameShare.unbind(mBindlistener);
 		super.onDestroy();
 	}
+	
+
+
 
 	TimerTask task = new TimerTask() {
 		@Override
@@ -200,6 +209,7 @@ public class LoadActivity extends Activity {
 			@Override
 			public void onClick(DialogInterface arg0, int arg1) {
 				// TODO Auto-generated method stub
+				LoadActivity.this.finish();
 				System.exit(0);
 			}
 		});
@@ -222,8 +232,9 @@ public class LoadActivity extends Activity {
 						Intent intent = new Intent(LoadActivity.this,
 								ReadyActivity.class);
 						startActivity(intent);
-						finish();
+						
 						onDestroy();
+						finish();
 					} else {
 						timer.schedule(task, 0, 500);
 
@@ -252,8 +263,6 @@ public class LoadActivity extends Activity {
 
 		@Override
 		public void onRemoteUserChanged(UserEventType type, GameUserInfo user) {
-			// Log.v(TAG, "onRemoteUserChanged, eventType : " + type +
-			// ", userInfo : " + user);
 
 		}
 	};

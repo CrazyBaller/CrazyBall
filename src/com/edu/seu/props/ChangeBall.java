@@ -17,18 +17,22 @@ public class ChangeBall {
 		this.changeType = changeType;
 		if (changeType == BodyData.BALL_TOBIGGER) {
 			this.toBigger();
-			//warningSound.play(30);
+			timeVoid();
 		} else if (changeType == BodyData.BALL_TOSMALLER) {
 			this.toSmaller();
-			//warningSound.play(30);
+			timeVoid();
 		} else if (changeType == BodyData.BALL_TOFASTTER) {
-			this.toFaster();
-			//warningSound.play(30);
+			if(Data.myID==0){
+				 this.toFaster();
+					timeVoid();
+			}
 		} else if (changeType == BodyData.BALL_TOSLOWER) {
-			this.toSlower();
-			//warningSound.play(30);
+			if(Data.myID==0){
+				this.toSlower();
+				timeVoid();
+			}		
 		}
-		timeVoid();
+
 	}
 
 	public void timeVoid() {
@@ -106,7 +110,8 @@ public class ChangeBall {
 		if (Data.myID == 0) {
 			float x = tBall.getLinearVelocity().x;
 			float y = tBall.getLinearVelocity().y;
-			float multiple=(float) (SCREEN_WIDTH/(Math.sqrt(x*x+y*y)));
+			float multiple=(float) ((SCREEN_WIDTH/2)/(Math.sqrt(x*x+y*y)));
+			//float multiple=(float) (SCREEN_WIDTH*(Math.sqrt(x*x+y*y)));
 			tBall.setLinearVelocity(multiple*x, multiple*y);
 		}
 	}

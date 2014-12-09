@@ -1,9 +1,13 @@
 package com.edu.seu.UI;
 
+import static com.edu.seu.message.Data.state;
+
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.badlogic.gdx.Gdx;
 import com.edu.seu.crazyball2.GdxApplication;
 import com.edu.seu.message.Data;
 import com.edu.seu.message.GameMessages;
@@ -21,8 +25,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnKeyListener;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -56,6 +65,12 @@ public class ReadyActivity extends Activity {
 
 			JSONObject json;
 			switch (msg.what) {
+			
+			case 101:
+				
+				dialog_offline();
+				break;
+			
 			case RECEIVED_MYSTATE:
 
 				try {
@@ -138,6 +153,9 @@ public class ReadyActivity extends Activity {
 		intent = null;
 		clock =true;
 		
+		
+		
+		
 		Data.mGameShare = new GameShare(getApplicationContext());
 		Data.mGameShare.bind(mBindlistener);
 		Data.mGameShare.addUserListener(mUserListener);
@@ -191,6 +209,42 @@ public class ReadyActivity extends Activity {
 		Data.mGameShare.unbind(mBindlistener);
 		super.onDestroy();
 	}
+	
+	private void dialog_offline() {
+		AlertDialog.Builder builder = new Builder(ReadyActivity.this);
+		builder.setTitle("警告");
+		builder.setMessage("您的小伙伴离开了游戏，游戏可能无法正常进行，请退出游戏");
+		CharSequence cs = "确定";
+		builder.setPositiveButton(cs, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+					
+					arg0.dismiss();
+					Data.mGameShare.quitGame();
+					ReadyActivity.this.finish();
+					System.exit(0);
+                  
+				
+			}
+		});
+		
+		
+		 builder.setOnKeyListener(new OnKeyListener() {
+
+	            @Override
+	            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+	                if (keyCode == KeyEvent.KEYCODE_BACK) {
+	                    return true;
+	                }
+	                return false;
+	            }
+	        });
+		 
+		
+		
+		builder.create().show();
+	}
 
 	private Bindlistener mBindlistener = new Bindlistener() {
 		@Override
@@ -226,7 +280,17 @@ public class ReadyActivity extends Activity {
 
 		@Override
 		public void onRemoteUserChanged(UserEventType type, GameUserInfo user) {
-			// Log.v(TAG, "onRemoteUserChanged, eventType : " + type +
+			
+			
+			switch (type) {
+            case OFFLINE:
+           
+                    mHandler.sendEmptyMessage(101);
+               
+                break;
+            default:
+                break;
+        }
 
 		}
 	};
@@ -268,9 +332,81 @@ public class ReadyActivity extends Activity {
 		if(intent==null){
 			intent = new Intent(ReadyActivity.this, GdxApplication.class);
 			startActivity(intent);
+			onDestroy();
 			finish();
 		}
 		
+	}
+	
+	
+	private void dialog_back() {
+		AlertDialog.Builder builder = new Builder(this);
+		builder.setTitle("提示");
+		boolean flag = false;
+		for (int i = 0; i < Data.mode; i++) {
+			if (state.get(i) == 2)
+				flag = true;
+		}
+		if (flag)
+			builder.setMessage("您的小伙伴正在游戏中，您的退出将导致他们无法愉快玩耍，您确定退出么？");
+		else {
+			builder.setMessage("确定退出么？");
+		}
+		if (Data.mode == 1) {
+			builder.setMessage("确定退出么？");
+		}
+		CharSequence cs = "确定";
+		builder.setPositiveButton(cs, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+					
+					arg0.dismiss();
+					Data.mGameShare.quitGame();
+					ReadyActivity.this.finish();
+					System.exit(0);
+                  
+				
+			}
+		});
+		
+		cs = "取消";
+		
+		builder.setNegativeButton(cs,  new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+					
+					arg0.dismiss();
+
+			}
+		});
+		
+		 builder.setOnKeyListener(new OnKeyListener() {
+
+	            @Override
+	            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+	                if (keyCode == KeyEvent.KEYCODE_BACK) {
+	                    return true;
+	                }
+	                return false;
+	            }
+	        });
+		 
+
+		builder.create().show();
+	}
+
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		
+		if(keyCode==KeyEvent.KEYCODE_BACK){
+			dialog_back();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	private OnClickListener mClickListener = new OnClickListener() {

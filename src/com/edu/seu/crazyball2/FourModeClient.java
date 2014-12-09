@@ -521,7 +521,6 @@ public class FourModeClient implements ApplicationListener, ContactListener,
 
 		mCreateWorld.getScreen().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBackground().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_one().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_two().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_three().render(GL10.GL_TRIANGLE_STRIP, 0, 4);

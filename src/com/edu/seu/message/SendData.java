@@ -34,7 +34,11 @@ public class SendData {
 				return;
 
 			// send message
-			Data.mGameShare.sendMessage(gameMsg);
+			try {
+				Data.mGameShare.sendMessage(gameMsg);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -60,7 +64,11 @@ public class SendData {
 			return;
 
 		// send message
-		Data.mGameShare.sendMessage(gameMsg);
+		try {
+			Data.mGameShare.sendMessage(gameMsg);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -87,7 +95,11 @@ public class SendData {
 				return;
 
 			// send message
-			Data.mGameShare.sendMessage(gameMsg);
+			try {
+				Data.mGameShare.sendMessage(gameMsg);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -117,7 +129,11 @@ public class SendData {
 				return;
 
 			// send message
-			Data.mGameShare.sendMessage(gameMsg);
+			try {
+				Data.mGameShare.sendMessage(gameMsg);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -145,7 +161,11 @@ public class SendData {
 				return;
 
 			// send message
-			Data.mGameShare.sendMessage(gameMsg);
+			try {
+				Data.mGameShare.sendMessage(gameMsg);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -175,7 +195,11 @@ public class SendData {
 				return;
 
 			// send message
-			Data.mGameShare.sendMessage(gameMsg);
+			try {
+				Data.mGameShare.sendMessage(gameMsg);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -203,7 +227,11 @@ public class SendData {
 				return;
 
 			// send message
-			Data.mGameShare.sendMessage(gameMsg);
+			try {
+				Data.mGameShare.sendMessage(gameMsg);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -230,7 +258,11 @@ public class SendData {
 				return;
 
 			// send message
-			Data.mGameShare.sendMessage(gameMsg);
+			try {
+				Data.mGameShare.sendMessage(gameMsg);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -257,7 +289,11 @@ public class SendData {
 				return;
 
 			// send message
-			Data.mGameShare.sendMessage(gameMsg);
+			try {
+				Data.mGameShare.sendMessage(gameMsg);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -292,7 +328,11 @@ public class SendData {
 				return;
 
 			// send message
-			Data.mGameShare.sendMessage(gameMsg);
+			try {
+				Data.mGameShare.sendMessage(gameMsg);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -320,7 +360,11 @@ public class SendData {
 				return;
 
 			// send message
-			Data.mGameShare.sendMessage(gameMsg);
+			try {
+				Data.mGameShare.sendMessage(gameMsg);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -348,7 +392,11 @@ public class SendData {
 				return;
 
 			// send message
-			Data.mGameShare.sendMessage(gameMsg);
+			try {
+				Data.mGameShare.sendMessage(gameMsg);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -380,7 +428,11 @@ public class SendData {
 				return;
 
 			// send message
-			Data.mGameShare.sendMessage(gameMsg);
+			try {
+				Data.mGameShare.sendMessage(gameMsg);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -407,7 +459,11 @@ public class SendData {
 				return;
 
 			// send message
-			Data.mGameShare.sendMessage(gameMsg);
+			try {
+				Data.mGameShare.sendMessage(gameMsg);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -441,7 +497,11 @@ public class SendData {
 				return;
 
 			// send message
-			Data.mGameShare.sendMessage(gameMsg);
+			try {
+				Data.mGameShare.sendMessage(gameMsg);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -468,7 +528,11 @@ public class SendData {
 				return;
 
 			// send message
-			Data.mGameShare.sendMessage(gameMsg);
+			try {
+				Data.mGameShare.sendMessage(gameMsg);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -506,7 +570,11 @@ public class SendData {
 				return;
 
 			// send message
-			Data.mGameShare.sendMessage(gameMsg);
+			try {
+				Data.mGameShare.sendMessage(gameMsg);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

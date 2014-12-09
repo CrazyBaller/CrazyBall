@@ -34,20 +34,18 @@ public class ChangeBoard {
 		if (ifvalidate(this.id)) {
 			if (changeType == BodyData.BOARD_TOLONGER) {
 				this.toLonger();
-				//warningSound.play(30);
 				timeVoid(5000);
 			} else if (changeType == BodyData.BOARD_TOSHORTER) {
 				this.toShorter();
-				//warningSound.play(30);
 				timeVoid(5000);
 			} else if (changeType == BodyData.BOARD_DISAPPEAR) {
 				this.toDisappear();
-				//warningSound.play(30);
 				timeVoid(2000);
 			} else if (changeType == BodyData.BOARD_NOCONTROL) {
-				this.noControl();
-				//warningSound.play(30);
-				timeVoid(2000);
+				if(id==Data.myID){
+					this.noControl();
+					timeVoid(2000);
+				}	
 			}
 			
 		}
@@ -154,22 +152,22 @@ public class ChangeBoard {
 				if (vertex.x > board_halfwidth) {
 					vertex.x = (float) (vertex.x * 1.2);
 					shapeRect.setAsBox((float) (vertex.x * 1.2), board_halfheight);
-					board_halfwidth0 = (float) (vertex.x * 1.2);
+					board_halfwidth1 = (float) (vertex.x * 1.2);
 				} else {
 					shapeRect.setAsBox((float) (board_halfwidth * 1.2),
 							board_halfheight);
-					board_halfwidth0 = (float) (board_halfwidth * 1.2);
+					board_halfwidth1 = (float) (board_halfwidth * 1.2);
 				}
 			}
 			else{
 				if (vertex.y > board_halfwidth) {
 					vertex.y = (float) (vertex.y * 1.2);
 					shapeRect.setAsBox( board_halfheight,(float) (vertex.y * 1.2));
-					board_halfwidth0 = (float) (vertex.y * 1.2);
+					board_halfwidth1 = (float) (vertex.y * 1.2);
 				} else {
 					shapeRect.setAsBox(board_halfheight,(float) (board_halfwidth * 1.2)
 							);
-					board_halfwidth0 = (float) (board_halfwidth * 1.2);
+					board_halfwidth1 = (float) (board_halfwidth * 1.2);
 				}
 			}
 			break;
@@ -182,22 +180,22 @@ public class ChangeBoard {
 				if (vertex.x > board_halfwidth) {
 					vertex.x = (float) (vertex.x * 1.2);
 					shapeRect.setAsBox((float) (vertex.x * 1.2), board_halfheight);
-					board_halfwidth0 = (float) (vertex.x * 1.2);
+					board_halfwidth2 = (float) (vertex.x * 1.2);
 				} else {
 					shapeRect.setAsBox((float) (board_halfwidth * 1.2),
 							board_halfheight);
-					board_halfwidth0 = (float) (board_halfwidth * 1.2);
+					board_halfwidth2 = (float) (board_halfwidth * 1.2);
 				}
 			}
 			else{
 				if (vertex.y > board_halfwidth) {
 					vertex.y = (float) (vertex.y * 1.2);
 					shapeRect.setAsBox( board_halfheight,(float) (vertex.y * 1.2));
-					board_halfwidth0 = (float) (vertex.y * 1.2);
+					board_halfwidth2 = (float) (vertex.y * 1.2);
 				} else {
 					shapeRect.setAsBox(board_halfheight,(float) (board_halfwidth * 1.2)
 							);
-					board_halfwidth0 = (float) (board_halfwidth * 1.2);
+					board_halfwidth2 = (float) (board_halfwidth * 1.2);
 				}
 			}
 			break;
@@ -210,22 +208,22 @@ public class ChangeBoard {
 				if (vertex.x > board_halfwidth) {
 					vertex.x = (float) (vertex.x * 1.2);
 					shapeRect.setAsBox((float) (vertex.x * 1.2), board_halfheight);
-					board_halfwidth0 = (float) (vertex.x * 1.2);
+					board_halfwidth3 = (float) (vertex.x * 1.2);
 				} else {
 					shapeRect.setAsBox((float) (board_halfwidth * 1.2),
 							board_halfheight);
-					board_halfwidth0 = (float) (board_halfwidth * 1.2);
+					board_halfwidth3 = (float) (board_halfwidth * 1.2);
 				}
 			}
 			else{
 				if (vertex.y > board_halfwidth) {
 					vertex.y = (float) (vertex.y * 1.2);
 					shapeRect.setAsBox( board_halfheight,(float) (vertex.y * 1.2));
-					board_halfwidth0 = (float) (vertex.y * 1.2);
+					board_halfwidth3 = (float) (vertex.y * 1.2);
 				} else {
 					shapeRect.setAsBox(board_halfheight,(float) (board_halfwidth * 1.2)
 							);
-					board_halfwidth0 = (float) (board_halfwidth * 1.2);
+					board_halfwidth3 = (float) (board_halfwidth * 1.2);
 				}
 			}
 			break;
@@ -245,13 +243,10 @@ public class ChangeBoard {
 				if (vertex.x < board_halfwidth) {
 					if(vertex.x / 1.2>board_halfheight){
 					vertex.x = (float) (vertex.x / 1.2);
-					System.out.println("the vertex.x is"+vertex.x +"board_halfheight is"+board_halfheight);
 					shapeRect.setAsBox((float) (vertex.x / 1.2), board_halfheight);
 					board_halfwidth0 = (float) (vertex.x / 1.2);
 					}
-					//System.out.println("the vertex.x is"+vertex.x +"board_halfheight is"+board_halfheight);
 				} else {
-					//System.out.println("the vertex.x is"+vertex.x +"board_halfheight is"+board_halfheight);
 					shapeRect.setAsBox((float) (board_halfwidth / 1.2),
 							board_halfheight);
 					board_halfwidth0 = (float) (board_halfwidth / 1.2);
@@ -264,7 +259,6 @@ public class ChangeBoard {
 					shapeRect.setAsBox(board_halfheight,(float) (vertex.y / 1.2));
 					board_halfwidth0 = (float) (vertex.y / 1.2);
 					}
-					System.out.println("the vertex.x is"+vertex.y +"board_halfheight is"+board_halfheight);
 				} else {
 					shapeRect.setAsBox(board_halfheight,(float) (board_halfwidth / 1.2));
 					board_halfwidth0 = (float) (board_halfwidth / 1.2);
@@ -281,12 +275,12 @@ public class ChangeBoard {
 					if(vertex.x / 1.2>board_halfheight){
 					vertex.x = (float) (vertex.x / 1.2);
 					shapeRect.setAsBox((float) (vertex.x / 1.2), board_halfheight);
-					board_halfwidth0 = (float) (vertex.x / 1.2);
+					board_halfwidth1 = (float) (vertex.x / 1.2);
 					}
 				} else {
 					shapeRect.setAsBox((float) (board_halfwidth / 1.2),
 							board_halfheight);
-					board_halfwidth0 = (float) (board_halfwidth / 1.2);
+					board_halfwidth1 = (float) (board_halfwidth / 1.2);
 				}
 			}
 			else{
@@ -294,11 +288,11 @@ public class ChangeBoard {
 					if(vertex.y / 1.2>board_halfheight){
 					vertex.y = (float) (vertex.y / 1.2);
 					shapeRect.setAsBox(board_halfheight,(float) (vertex.y / 1.2));
-					board_halfwidth0 = (float) (vertex.y / 1.2);
+					board_halfwidth1 = (float) (vertex.y / 1.2);
 					}
 				} else {
 					shapeRect.setAsBox(board_halfheight,(float) (board_halfwidth / 1.2));
-					board_halfwidth0 = (float) (board_halfwidth / 1.2);
+					board_halfwidth1= (float) (board_halfwidth / 1.2);
 				}
 				}
 			break;
@@ -312,12 +306,12 @@ public class ChangeBoard {
 					if(vertex.x / 1.2>board_halfheight){
 					vertex.x = (float) (vertex.x / 1.2);
 					shapeRect.setAsBox((float) (vertex.x / 1.2), board_halfheight);
-					board_halfwidth0 = (float) (vertex.x / 1.2);
+					board_halfwidth2 = (float) (vertex.x / 1.2);
 					}
 				} else {
 					shapeRect.setAsBox((float) (board_halfwidth / 1.2),
 							board_halfheight);
-					board_halfwidth0 = (float) (board_halfwidth / 1.2);
+					board_halfwidth2 = (float) (board_halfwidth / 1.2);
 				}
 			}
 			else{
@@ -325,11 +319,11 @@ public class ChangeBoard {
 					if(vertex.y / 1.2>board_halfheight){
 					vertex.y = (float) (vertex.y / 1.2);
 					shapeRect.setAsBox(board_halfheight,(float) (vertex.y / 1.2));
-					board_halfwidth0 = (float) (vertex.y / 1.2);
+					board_halfwidth2 = (float) (vertex.y / 1.2);
 					}
 				} else {
 					shapeRect.setAsBox(board_halfheight,(float) (board_halfwidth / 1.2));
-					board_halfwidth0 = (float) (board_halfwidth / 1.2);
+					board_halfwidth2 = (float) (board_halfwidth / 1.2);
 				}
 				}
 			break;
@@ -343,12 +337,12 @@ public class ChangeBoard {
 					if(vertex.x / 1.2>board_halfheight){
 					vertex.x = (float) (vertex.x / 1.2);
 					shapeRect.setAsBox((float) (vertex.x / 1.2), board_halfheight);
-					board_halfwidth0 = (float) (vertex.x / 1.2);
+					board_halfwidth3 = (float) (vertex.x / 1.2);
 					}
 				} else {
 					shapeRect.setAsBox((float) (board_halfwidth / 1.2),
 							board_halfheight);
-					board_halfwidth0 = (float) (board_halfwidth / 1.2);
+					board_halfwidth3 = (float) (board_halfwidth / 1.2);
 				}
 			}
 			else{
@@ -356,11 +350,11 @@ public class ChangeBoard {
 					if(vertex.y / 1.2>board_halfheight){
 					vertex.y = (float) (vertex.y / 1.2);
 					shapeRect.setAsBox(board_halfheight,(float) (vertex.y / 1.2));
-					board_halfwidth0 = (float) (vertex.y / 1.2);
+					board_halfwidth3 = (float) (vertex.y / 1.2);
 					}
 				} else {
 					shapeRect.setAsBox(board_halfheight,(float) (board_halfwidth / 1.2));
-					board_halfwidth0 = (float) (board_halfwidth / 1.2);
+					board_halfwidth3 = (float) (board_halfwidth / 1.2);
 				}
 				}
 			break;
@@ -386,6 +380,7 @@ public class ChangeBoard {
 		default:
 			return;
 		}
+		System.out.println("to dispear !11111111111111111111111111"+"  "+showBoard[0]);
 	}
 
 	public void noControl() {

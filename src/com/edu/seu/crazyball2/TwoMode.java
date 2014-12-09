@@ -3,6 +3,9 @@ package com.edu.seu.crazyball2;
 import static com.edu.seu.crazyball2.Constant.*;
 
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.os.Handler;
@@ -152,6 +155,9 @@ public class TwoMode implements ApplicationListener, ContactListener,
 
 		// 初始化title
 		initTitle();
+		
+		sendtimer=new Timer();
+		sendtimer.schedule(sendPosition, 0, 20);
 
 		// 创建感应区
 		tSensor = B2Util.createSensor(mworld, base_width * 2, m_sensor, 0f,
@@ -288,7 +294,6 @@ public class TwoMode implements ApplicationListener, ContactListener,
 
 		mCreateWorld.getScreen().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBackground().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		board_mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_one().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_two().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		mCreateWorld.getBound_three().render(GL10.GL_TRIANGLE_STRIP, 0, 4);
@@ -425,24 +430,36 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		camera.update();
 		camera.apply(gl);
 
-		if (old_ball_x == tBall.getWorldCenter().x
-				&& old_ball_y == tBall.getWorldCenter().y) {
-
-		} else {
-			Data.ball.set(0, tBall.getWorldCenter().x / (SCREEN_WIDTH / 2));
-			Data.ball.set(1, tBall.getWorldCenter().y / (SCREEN_WIDTH / 2));
-			send.myboard();
-			send.ball();
-			old_ball_x = tBall.getWorldCenter().x;
-			old_ball_y = tBall.getWorldCenter().y;
-		}
-
-		if (old_board_x != tBoard0.getWorldCenter().x) {
-
-			old_board_x = tBoard0.getWorldCenter().x;
-		}
+//		if (old_ball_x == tBall.getWorldCenter().x
+//				&& old_ball_y == tBall.getWorldCenter().y) {
+//
+//		} else {
+//			Data.ball.set(0, tBall.getWorldCenter().x / (SCREEN_WIDTH / 2));
+//			Data.ball.set(1, tBall.getWorldCenter().y / (SCREEN_WIDTH / 2));
+//			send.myboard();
+//			send.ball();
+//			old_ball_x = tBall.getWorldCenter().x;
+//			old_ball_y = tBall.getWorldCenter().y;
+//		}
+//
+//		if (old_board_x != tBoard0.getWorldCenter().x) {
+//
+//			old_board_x = tBoard0.getWorldCenter().x;
+//		}
 
 	}
+	
+	TimerTask sendPosition=new TimerTask() {
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			send.myboard();
+			Data.ball.set(0, tBall.getWorldCenter().x / (SCREEN_WIDTH / 2));
+			Data.ball.set(1, tBall.getWorldCenter().y / (SCREEN_WIDTH / 2));
+			 send.ball(); 
+		}
+	}; 
 
 	@Override
 	public boolean touchDown(int arg0, int arg1, int arg2, int arg3) {
@@ -450,8 +467,8 @@ public class TwoMode implements ApplicationListener, ContactListener,
 		camera.unproject(touchV);
 		if (firstTouch) {
 			Random r = new Random();
-			float xv = r.nextFloat() * SCREEN_WIDTH;
-			float yv = (float) Math.sqrt(SCREEN_WIDTH * SCREEN_WIDTH - xv * xv);
+			float xv = r.nextFloat() * (SCREEN_WIDTH/2);
+			float yv = (float) Math.sqrt(SCREEN_WIDTH * SCREEN_WIDTH/4 - xv * xv);
 			if (r.nextInt(2) == 0)
 				xv = -xv;
 			if (r.nextInt(2) == 0)
