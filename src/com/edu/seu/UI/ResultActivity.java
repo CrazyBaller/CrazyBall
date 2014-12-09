@@ -394,32 +394,9 @@ public class ResultActivity extends Activity {
 		
     	
 
-		
-		// timer.schedule(task, 0,10); 
-
 	}
 	
-	  TimerTask task = new TimerTask() {  
-	        @Override  
-	        public void run() {  
-	  
-	            runOnUiThread(new Runnable() {      // UI thread  
-	                @Override  
-	                public void run() {  
-	                	count++;  
-	                      
-	                    if(count < 150){  
-	                    	
-	                      
-	                    } else {
-	                    	 timer.cancel(); 
-						} 
-	                }  
-	            });  
-	        }  
-	    };  
-	    
-	    private void dialog_offline() {
+   private void dialog_offline() {
 			AlertDialog.Builder builder = new Builder(ResultActivity.this);
 			builder.setTitle("警告");
 			builder.setMessage("您的小伙伴离开了游戏，游戏可能无法正常进行，请退出游戏");
@@ -546,26 +523,6 @@ public class ResultActivity extends Activity {
 					Data.mLocalUser = Data.mGameShare.getLocalUser();
 					Data.mRemoteUser = Data.mGameShare.getRemoteUsers();
 
-					if (Data.inviter == true) {
-						if (Data.mode == 1) {
-							Intent intent = new Intent(ResultActivity.this,
-									ReadyActivity.class);
-							startActivity(intent);
-							
-							onDestroy();
-							finish();
-						} else {
-							timer.schedule(task, 0, 500);
-
-						}
-
-					}
-
-				} else {
-
-					Toast.makeText(getApplicationContext(), "Bind Service failed.",
-							Toast.LENGTH_LONG).show();
-					return;
 				}
 			}
 		};

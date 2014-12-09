@@ -496,8 +496,8 @@ public class ThreeMode implements ApplicationListener, ContactListener,
 		camera.unproject(touchV);
 		if (firstTouch) {
 			Random r = new Random();
-			float xv = r.nextFloat() * SCREEN_WIDTH;
-			float yv = (float) Math.sqrt(SCREEN_WIDTH*SCREEN_WIDTH-xv*xv);
+			float xv = r.nextFloat() * (SCREEN_WIDTH/2);
+			float yv = (float) Math.sqrt(SCREEN_WIDTH*SCREEN_WIDTH/4-xv*xv);
 			if (r.nextInt(2) == 0)
 				xv = -xv;
 			if (r.nextInt(2) == 0)
